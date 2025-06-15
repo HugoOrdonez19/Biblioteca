@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <canvas id="myChart" width="800" height="400"></canvas>
+    <canvas id="myChart"></canvas>
     <script>
         // Cargar datos desde el archivo JSON
         fetch('libros_leidos_grafica.json')
@@ -57,13 +57,18 @@
                         plugins: {
                             legend: {
                                 position: 'top',
+								labels: {
+									font: {
+										size: 10, // Reduce el tamaño del texto de la leyenda
+									},
+								},
                             },
                             title: {
                                 display: true,
-                                text: 'Libros Leídos por Año y Acumulados',
+                                text: 'Libros Leídos',
                                 font: {
                                     family: 'Roboto',
-                                    size: 20,
+                                    size: 18,
                                     weight: 'normal',
                                 },
                             },
@@ -87,7 +92,7 @@
                                 align: 'top',
                                 font: {
                                     family: 'Roboto',
-                                    size: 11,
+                                    size: 10,
                                     weight: 'normal',
                                 },
                                 formatter: value => value,
@@ -99,13 +104,21 @@
                                 position: 'left',
                                 title: {
                                     display: true,
-                                    text: 'Total Libros Leídos',
+                                    text: 'Total Libros',
                                     font: {
                                         family: 'Roboto',
-                                        size: 12,
+                                        size: 11,
                                         weight: 'normal',
                                     },
                                 },
+								ticks: {
+									font: {
+										size: 10, // Reduce el tamaño de los números en el eje Y
+									},
+								},
+								grid: {
+                                    drawOnChartArea: false,
+								},
                                 min: 0,
                                 max: 100,
                             },
@@ -117,31 +130,39 @@
                                     text: 'Libros Leídos Acumulados',
                                     font: {
                                         family: 'Roboto',
-                                        size: 12,
+                                        size: 11,
                                         weight: 'normal',
                                     },
                                 },
                                 grid: {
                                     drawOnChartArea: false,
                                 },
+								ticks: {
+									font: {
+										size: 10, // Reduce el tamaño de los números en el eje Y
+									},
+								},
                                 min: -50,
                                 max: 300,
                             },
                             x: {
-								grid: {
-									display: false // Oculta las líneas verticales
-								}
+                                grid: {
+                                    display: false, // Oculta las líneas verticales
+                                },
                                 ticks: {
                                     autoSkip: true,
                                     maxRotation: 45,
                                     minRotation: 0,
+									font: {
+										size: 10, // Reduce el tamaño de los números en el eje Y
+									},
                                 },
                                 title: {
                                     display: true,
                                     text: 'Año de Lectura',
                                     font: {
                                         family: 'Roboto',
-                                        size: 12,
+                                        size: 11,
                                         weight: 'normal',
                                     },
                                 },
