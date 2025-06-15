@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Libros Leídos por Año</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+</head>
+<body>
+    <canvas id="myChart" width="800" height="400"></canvas>
+    <script>
+        // Cargar datos desde el archivo JSON
+        fetch('libros_leidos_grafica.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Datos cargados correctamente:", data);
+
+                // Procesar datos
+                const labels = data.map(item => item['A\u00f1o de Lectura']);
+                const totalLibros = data.map(item => item['Total Libros Le\u00eddos']);
+                const acumulados = data.map(item => item['Libros Le\u00eddos Acumulados']);
+
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Total Libros Leídos',
+                                data: totalLibros,
+                                backgroundColor: 'rgba(28, 78, 96, 0.5)',
+                                hoverBackgroundColor: 'rgba(28, 78, 96, 0.8)',
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'Libros Leídos Acumulados',
+                                data: acumulados,
+                                type: 'line',
+                                borderColor: 'rgba(100, 183, 141, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointBackgroundColor: 'rgba(100, 183, 141, 1)',
+                                tension: 0.4, // Redondear línea
+                                yAxisID: 'y1',
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Libros Leídos por Año y Acumulados',
+                                font: {
+                                    family: 'Roboto',
+                                    size: 20,
+                                    weight: 'normal',
+                                },
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += context.raw !== undefined ? context.raw : '0';
+                                        label += ' libros';
+                                        return label;
+                                    },
+                                },
+                            },
+                            datalabels: {
+                                display: true,
+                                color: 'black',
+                                anchor: 'end',
+                                align: 'top',
+                                font: {
+                                    family: 'Roboto',
+                                    size: 11,
+                                    weight: 'normal',
+                                },
+                                formatter: value => value,
+                            },
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Total Libros Leídos',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 12,
+                                        weight: 'normal',
+                                    },
+                                },
+                                min: 0,
+                                max: 100,
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Libros Leídos Acumulados',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 12,
+                                        weight: 'normal',
+                                    },
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                min: -50,
+                                max: 300,
+                            },
+                            x: {
+								grid: {
+									display: false // Oculta las líneas verticales
+								}
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Año de Lectura',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 12,
+                                        weight: 'normal',
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    plugins: [ChartDataLabels], // Activar el plugin
+                });
+            })
+            .catch(error => console.error('Error al cargar el archivo JSON:', error));
+    </script>
+</body>
+</html>
