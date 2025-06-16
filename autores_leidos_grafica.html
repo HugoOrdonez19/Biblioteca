@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Libros Leídos por Año</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+    <script>
+        // Cargar datos desde el archivo JSON
+        fetch('autores_leidos_grafica.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Datos cargados correctamente:", data);
+				
+
+                // Procesar datos
+                const labels = data.map(item => item['A\u00f1o de Lectura']);
+				const totalAutores = data.map(item => item['Autores \u00danicos Anuales']);
+				const acumulados = data.map(item => item['Total Acumulado de Autores \u00danicos']);
+
+
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Autores Leídos',
+                                data: totalAutores,
+                                backgroundColor: 'rgba(100, 183, 141, 0.7)',
+                                hoverBackgroundColor: 'rgba(100, 183, 141, 1)',
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'Total de Autores Leídos',
+                                data: acumulados,
+                                type: 'line',
+                                borderColor: 'rgba(28, 78, 96, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointBackgroundColor: 'rgba(100, 183, 141, 1)',
+								pointHoverRadius: 6,
+                                tension: 0.4, // Redondear línea
+                                yAxisID: 'y1',
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+								labels: {
+									font: {
+										size: 10, 
+										family: '',
+									},
+								},
+                            },
+                            title: {
+                                display: true,
+                                text: 'Autores Leídos',
+                                font: {
+                                    size: 18,
+                                    weight: 'normal',
+                                },
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += context.raw !== undefined ? context.raw : '0';
+                                        label += ' autores';
+                                        return label;
+                                    },
+                                },
+                            },
+                            datalabels: {
+                                display: true,
+                                color: 'black',
+                                anchor: 'end',
+                                align: 'top',
+                                font: {
+                                    family: '',
+                                    size: 10,
+                                    weight: 'normal',
+                                },
+                                formatter: value => value,
+                            },
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Autores Leídos',
+                                    font: {
+                                        family: '',
+                                        size: 11,
+                                        weight: 'normal',
+                                    },
+                                },
+								ticks: {
+									font: {
+										size: 10, // Reduce el tamaño de los números en el eje Y
+									},
+								},
+								grid: {
+                                    drawOnChartArea: false,
+								},
+                                min: 0,
+                                max: 85,
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Total de Autores Leídos',
+                                    font: {
+                                        family: '',
+                                        size: 11,
+                                        weight: 'normal',
+                                    },
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+								ticks: {
+									font: {
+										size: 10, // Reduce el tamaño de los números en el eje Y
+									},
+								},
+                                min: -50,
+                                max: 300,
+                            },
+                            x: {
+                                grid: {
+                                    display: false, // Oculta las líneas verticales
+                                },
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 45,
+                                    minRotation: 0,
+									font: {
+										size: 10, // Reduce el tamaño de los números en el eje Y
+									},
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Año de Lectura',
+                                    font: {
+                                        family: '',
+                                        size: 11,
+                                        weight: 'normal',
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    plugins: [ChartDataLabels], // Activar el plugin
+                });
+            })
+            .catch(error => console.error('Error al cargar el archivo JSON:', error));
+    </script>
+</body>
+</html>
