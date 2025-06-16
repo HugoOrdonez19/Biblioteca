@@ -1,0 +1,94 @@
+[
+    {
+        "G\u00e9neros":"Drama",
+        "Total Libros":43
+    },
+    {
+        "G\u00e9neros":"Fant\u00e1stico",
+        "Total Libros":39
+    },
+    {
+        "G\u00e9neros":"Suspenso",
+        "Total Libros":34
+    },
+    {
+        "G\u00e9neros":"Realista",
+        "Total Libros":30
+    },
+    {
+        "G\u00e9neros":"Hist\u00f3rico",
+        "Total Libros":29
+    },
+    {
+        "G\u00e9neros":"Terror",
+        "Total Libros":28
+    },
+    {
+        "G\u00e9neros":"Otros",
+        "Total Libros":25
+    },
+    {
+        "G\u00e9neros":"Policial",
+        "Total Libros":24
+    },
+    {
+        "G\u00e9neros":"Psicol\u00f3gico",
+        "Total Libros":20
+    },
+    {
+        "G\u00e9neros":"Ciencia ficci\u00f3n",
+        "Total Libros":20
+    },
+    {
+        "G\u00e9neros":"Rom\u00e1ntico",
+        "Total Libros":16
+    },
+    {
+        "G\u00e9neros":"Humor",
+        "Total Libros":15
+    },
+    {
+        "G\u00e9neros":"Misterio",
+        "Total Libros":15
+    },
+    {
+        "G\u00e9neros":"Filos\u00f3fico",
+        "Total Libros":15
+    },
+    {
+        "G\u00e9neros":"Distop\u00eda",
+        "Total Libros":10
+    },
+    {
+        "G\u00e9neros":"Er\u00f3tico",
+        "Total Libros":9
+    },
+    {
+        "G\u00e9neros":"Autoayuda",
+        "Total Libros":6
+    },
+    {
+        "G\u00e9neros":"S\u00e1tira",
+        "Total Libros":6
+    },
+    {
+        "G\u00e9neros":"B\u00e9lico",
+        "Total Libros":5
+    },
+    {
+        "G\u00e9neros":"Ciencias sociales",
+        "Total Libros":3
+    },
+    {
+        "G\u00e9neros":"Aventuras",
+        "Total Libros":3
+    },
+    {
+        "G\u00e9neros":"True crime",
+        "Total Libros":3
+    },
+    {
+        "G\u00e9neros":"Ciencias exactas",
+        "Total Libros":2
+    }
+]
