@@ -1,0 +1,117 @@
+[
+    {
+        "G\u00e9nero":"Drama",
+        "Calificaci\u00f3n Promedio":3.49,
+        "Total Libros":43
+    },
+    {
+        "G\u00e9nero":"Fant\u00e1stico",
+        "Calificaci\u00f3n Promedio":3.46,
+        "Total Libros":39
+    },
+    {
+        "G\u00e9nero":"Suspenso",
+        "Calificaci\u00f3n Promedio":3.79,
+        "Total Libros":34
+    },
+    {
+        "G\u00e9nero":"Realista",
+        "Calificaci\u00f3n Promedio":3.9,
+        "Total Libros":30
+    },
+    {
+        "G\u00e9nero":"Hist\u00f3rico",
+        "Calificaci\u00f3n Promedio":4.24,
+        "Total Libros":29
+    },
+    {
+        "G\u00e9nero":"Terror",
+        "Calificaci\u00f3n Promedio":3.86,
+        "Total Libros":28
+    },
+    {
+        "G\u00e9nero":"Otros",
+        "Calificaci\u00f3n Promedio":3.32,
+        "Total Libros":25
+    },
+    {
+        "G\u00e9nero":"Policial",
+        "Calificaci\u00f3n Promedio":3.75,
+        "Total Libros":24
+    },
+    {
+        "G\u00e9nero":"Psicol\u00f3gico",
+        "Calificaci\u00f3n Promedio":3.8,
+        "Total Libros":20
+    },
+    {
+        "G\u00e9nero":"Ciencia ficci\u00f3n",
+        "Calificaci\u00f3n Promedio":3.85,
+        "Total Libros":20
+    },
+    {
+        "G\u00e9nero":"Rom\u00e1ntico",
+        "Calificaci\u00f3n Promedio":4.0,
+        "Total Libros":16
+    },
+    {
+        "G\u00e9nero":"Misterio",
+        "Calificaci\u00f3n Promedio":3.73,
+        "Total Libros":15
+    },
+    {
+        "G\u00e9nero":"Humor",
+        "Calificaci\u00f3n Promedio":4.0,
+        "Total Libros":15
+    },
+    {
+        "G\u00e9nero":"Filos\u00f3fico",
+        "Calificaci\u00f3n Promedio":3.4,
+        "Total Libros":15
+    },
+    {
+        "G\u00e9nero":"Distop\u00eda",
+        "Calificaci\u00f3n Promedio":3.5,
+        "Total Libros":10
+    },
+    {
+        "G\u00e9nero":"Er\u00f3tico",
+        "Calificaci\u00f3n Promedio":4.0,
+        "Total Libros":9
+    },
+    {
+        "G\u00e9nero":"Autoayuda",
+        "Calificaci\u00f3n Promedio":3.17,
+        "Total Libros":6
+    },
+    {
+        "G\u00e9nero":"S\u00e1tira",
+        "Calificaci\u00f3n Promedio":3.83,
+        "Total Libros":6
+    },
+    {
+        "G\u00e9nero":"B\u00e9lico",
+        "Calificaci\u00f3n Promedio":3.8,
+        "Total Libros":5
+    },
+    {
+        "G\u00e9nero":"Aventuras",
+        "Calificaci\u00f3n Promedio":3.33,
+        "Total Libros":3
+    },
+    {
+        "G\u00e9nero":"Ciencias sociales",
+        "Calificaci\u00f3n Promedio":4.0,
+        "Total Libros":3
+    },
+    {
+        "G\u00e9nero":"True crime",
+        "Calificaci\u00f3n Promedio":4.67,
+        "Total Libros":3
+    },
+    {
+        "G\u00e9nero":"Ciencias exactas",
+        "Calificaci\u00f3n Promedio":4.0,
+        "Total Libros":2
+    }
+]
