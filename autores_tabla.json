@@ -1,0 +1,892 @@
+[
+    {
+        "Autor":"Gabriel GARC\u00cdA M\u00c1RQUEZ",
+        "Cantidad de Libros":16,
+        "Calificaci\u00f3n Promedio":"4.25"
+    },
+    {
+        "Autor":"Jos\u00e9 SARAMAGO",
+        "Cantidad de Libros":9,
+        "Calificaci\u00f3n Promedio":"4.33"
+    },
+    {
+        "Autor":"Claudia PI\u00d1EIRO",
+        "Cantidad de Libros":7,
+        "Calificaci\u00f3n Promedio":"3.71"
+    },
+    {
+        "Autor":"C.S. LEWIS",
+        "Cantidad de Libros":7,
+        "Calificaci\u00f3n Promedio":"3.57"
+    },
+    {
+        "Autor":"Carlos SANCHEZ",
+        "Cantidad de Libros":5,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Mario VARGAS LLOSA",
+        "Cantidad de Libros":5,
+        "Calificaci\u00f3n Promedio":"4.20"
+    },
+    {
+        "Autor":"J.R.R. TOLKIEN",
+        "Cantidad de Libros":4,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"David FOENKINOS",
+        "Cantidad de Libros":4,
+        "Calificaci\u00f3n Promedio":"4.50"
+    },
+    {
+        "Autor":"Pedro MAIRAL",
+        "Cantidad de Libros":4,
+        "Calificaci\u00f3n Promedio":"3.75"
+    },
+    {
+        "Autor":"Paul AUSTER",
+        "Cantidad de Libros":4,
+        "Calificaci\u00f3n Promedio":"3.25"
+    },
+    {
+        "Autor":"Stephen KING",
+        "Cantidad de Libros":4,
+        "Calificaci\u00f3n Promedio":"3.25"
+    },
+    {
+        "Autor":"Selva ALMADA",
+        "Cantidad de Libros":4,
+        "Calificaci\u00f3n Promedio":"4.25"
+    },
+    {
+        "Autor":"Adolfo BIOY CASERES",
+        "Cantidad de Libros":3,
+        "Calificaci\u00f3n Promedio":"4.33"
+    },
+    {
+        "Autor":"Andreu MARTIN",
+        "Cantidad de Libros":3,
+        "Calificaci\u00f3n Promedio":"3.67"
+    },
+    {
+        "Autor":"Anthony DOERR",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Agustina BAZTERRICA",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Alessandro BARICCO",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Alejandro ZAMBRA",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"1.50"
+    },
+    {
+        "Autor":"Eva GARC\u00cdA S\u00c1ENZ",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Jack KETCHUM",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Irene NEMIROVSKY",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"2.50"
+    },
+    {
+        "Autor":"Isabel ALLENDE",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"3.50"
+    },
+    {
+        "Autor":"Jose Carlos SOMOZA",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"2.50"
+    },
+    {
+        "Autor":"Mario BENEDETTI",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.50"
+    },
+    {
+        "Autor":"Mariana ENRIQUEZ",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Mart\u00edn KOHAN",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Pierre LEMAITRE",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Sergio OLGU\u00cdN",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Pedro Juan GUTI\u00c9RREZ",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Samanta SCHWEBLIN",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"3.50"
+    },
+    {
+        "Autor":"Osvaldo SORIANO",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Miguel Angel ASTURIAS",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.50"
+    },
+    {
+        "Autor":"M\u00f3nica OJEDA",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"1.50"
+    },
+    {
+        "Autor":"Miguel DELIBES",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"2.50"
+    },
+    {
+        "Autor":"Blake CROUCH",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Eduardo SACHERI",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"3.50"
+    },
+    {
+        "Autor":"El\u00edas VALDEZ",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Camila SOSA VILLADA",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Horacio QUIROGA",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.50"
+    },
+    {
+        "Autor":"Jorge Luis BORGES",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Joel DICKER",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Jean ECHENOZ",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Benjam\u00edn LABATUT",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Arto PAASILINNA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Anna STAROBINETS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Andy WEIR",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Agatha CHRISTIE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Algernon BLACKWOOD",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Alex MICHAELIDES",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Aldous HUXLEY",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Ernesto S\u00c1BATO",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Ernest HEMINGWAY",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Emily ST. JOHN MANDEL",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Eloy MORENO",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Donald Ray POLLOCK",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Dror MISHANI",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Dolores REYES",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Domingo VILLAR",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Dave EGGERS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Dan BROWN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Delia OWENS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Deborah LEVY",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Cormac MCCARTHY",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Charlotte PERKINS GILMAN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Chi TA-WEI",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Chuck PALAHNIUK",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Bernhard SCHLINK",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Carlos BUSQUED",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Carlos FUENTES",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Catherine LACEY",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Carlos SIS\u00cd",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Carmen MOLA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Carlos MONTERO CASTI\u00d1EIRA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Carlos RUIZ ZAF\u00d3N",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Andre GIDE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Alissa NUTTING",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Andrea CAMILLERI",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Andrea ABREU L\u00d3PEZ",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Fonda LEE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Franz KAFKA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"F. Scott FITZGERALD",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Erskine CALDWELL",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"J. D. SALINGER",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Isaac ASIMOV",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Honore BALZAC",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Hisham MATAR",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Heinrich B\u00d6LL",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Henry JAMES",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Jason REKULAK",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Jacqueline HARPMAN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Jeffrey EUGENIDES",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Johann Wolfgang GOETHE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"John FOWLES",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"John FANTE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Jon FOSSE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Jon KRAKAUER",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Jeff VANDERMEER",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Jack LONDON",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Giovanni PAPINI",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Gerald GREEN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Geovani MARTINS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"George SAUNDERS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Grady HENDRIX",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Graeme SIMSION",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Groucho MARX",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Gustavo MALAJOVICH",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Hern\u00e1n RIVERA LETELIER",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Herman HESSE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"F\u00edodor DOSTOYEVSKY",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"George ORWELL",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Federico AXAT",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Fernando ARAMBURU",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Fernando GARC\u00cdA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Federico ANDAHAZI",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Leandro PADURA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Layla MARTINEZ",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Laurence BERGREEN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Kristopher TRIANA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Kenzaburo OE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Ken GRIMWOOD",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Ken FOLLETT",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Kang HAN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Julio CORT\u00c1ZAR",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Julio CORTAZAR",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Juan RULFO",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Juan Pablo VILLALOBOS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Juan Jos\u00e9 SAER",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Jos\u00e9 Emilio PACHECO",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Jorge AMADO",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Jorge VOLPI",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Masuji IBUSE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Martha WELLS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Margaret ATWOOD",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Mario BELLATIN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Michio KAKU",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Michel HOUELLEBECQ",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Mempo GIARDINELLI",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Matt HAIG",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Marc-Uwe KLING",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Malba TAHAN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Luisg\u00e9 MART\u00cdN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Luciano LAMBERTI",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Lev Nikol\u00e1ievich TOLST\u00d3I",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Liliana BLUM",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Liu CIXIN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Luciana DE LUCA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Pablo RAMOS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Ottessa MOSHFEGH",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Octavia E. BUTLER",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Noah GORDON",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Nicholas BINGE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Nicolai GOGOL",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Neil GAIMAN",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Milan KUNDERA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Rafael CHIRBES",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Pilar QUINTANA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Ricardo PIGLIA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Robert Charles WILSON",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Roberto ARLT",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Robert FISHER",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Patricia HIGHSMITH",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Patrick SUSKIND",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Sergio AGUIRRE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Sequoia NAGAMATSU",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Shirley JACKSON",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Sergio RAMIREZ",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Sof\u00eda SEGOVIA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Stuart TURTON",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"1.00"
+    },
+    {
+        "Autor":"Sylvia PLATH",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Tom SWETERLITSCH",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Tom\u00e1s GONZ\u00c1LEZ",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Tom\u00e1s MORO",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"2.00"
+    },
+    {
+        "Autor":"Torcuato LUCA DE TENA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Truman CAPOTE",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"V.C. ANDREWS",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Virgilio RODRIGUEZ MACAL",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"5.00"
+    },
+    {
+        "Autor":"Vladimir NABOKOV",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"4.00"
+    },
+    {
+        "Autor":"Yoko OGAWA",
+        "Cantidad de Libros":1,
+        "Calificaci\u00f3n Promedio":"3.00"
+    }
+]
