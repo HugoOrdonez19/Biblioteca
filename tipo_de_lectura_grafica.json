@@ -1,0 +1,22 @@
+[
+    {
+        "Tipo de Lectura":"Cr\u00f3nica",
+        "Total Libros":8
+    },
+    {
+        "Tipo de Lectura":"Divulgaci\u00f3n",
+        "Total Libros":2
+    },
+    {
+        "Tipo de Lectura":"Ensayo",
+        "Total Libros":8
+    },
+    {
+        "Tipo de Lectura":"Novela",
+        "Total Libros":215
+    },
+    {
+        "Tipo de Lectura":"Relato",
+        "Total Libros":38
+    }
+]
