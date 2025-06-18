@@ -1,0 +1,18 @@
+[
+    {
+        "Estado":"Disponible",
+        "Total Libros":393
+    },
+    {
+        "Estado":"En espera",
+        "Total Libros":23
+    },
+    {
+        "Estado":"Leyendo",
+        "Total Libros":2
+    },
+    {
+        "Estado":"Le\u00eddo",
+        "Total Libros":271
+    }
+]
