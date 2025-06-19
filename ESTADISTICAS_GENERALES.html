@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard de Lectura - Generales y Estado</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Definición de colores principales para fácil mantenimiento */
+            --primary-bg: #f9f9f9; /* Color de fondo */
+            --main-accent: #5ca593; /* Color de acento principal */
+            --dark-accent: #2d6c68; /* Color de título oscuro */
+            --text-color: #333; /* Color de texto general */
+            --hover-bg: #dce8e5; /* Color de hover de tabla/botones */
+            --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
+            --button-text-color: white;
+            --shadow-color: rgba(0, 0, 0, 0.08); /* Sombra suave para elementos flotantes */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--primary-bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark-accent);
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Contenedor para el menú desplegable y botones de navegación */
+        .navigation-container {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Estilos para los botones Anterior/Siguiente */
+        .nav-button {
+            background-color: var(--main-accent);
+            color: var(--button-text-color);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            white-space: nowrap;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background-color: var(--button-active-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .nav-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        /* Estilos para el menú desplegable */
+        .chart-dropdown {
+            padding: 10px 25px 10px 15px;
+            border: 1px solid var(--main-accent);
+            border-radius: 8px;
+            background-color: white;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: var(--text-color);
+            box-shadow: 0 2px 4px var(--shadow-color);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235ca593'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        #chartDisplayArea {
+            width: 100%;
+            max-width: 900px; /* Ancho máximo estandarizado */
+            min-height: 500px; /* Altura mínima estandarizada */
+            height: auto; /* Permite que la altura se ajuste al contenido */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Alineación vertical por defecto */
+            align-items: center;
+            gap: 25px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: none; /* Sin transición para cambios instantáneos */
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Clase para aplicar estilo de "tarjeta" dinámicamente */
+        .card-style {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px var(--shadow-color);
+            padding: 20px;
+        }
+
+        /* Animación de transición (solo opacidad y transformación, no fondo) */
+        .chart-transition-out {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Estilos para indicadores */
+        .indicators-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start; /* Alinea los indicadores en la parte superior de su línea */
+            gap: 20px;
+            width: 100%;
+			padding-bottom: 375px;
+        }
+
+        .indicator {
+            text-align: center;
+            background-color: var(--main-accent);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 150px;
+            box-shadow: 0px 4px 6px var(--shadow-color);
+            user-select: none;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .indicator .value {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .indicator .label {
+            font-size: 14px;
+            margin: 0;
+            margin-top: 8px;
+            min-height: 38px;
+        }
+
+        /* Estilos genéricos para los canvas de Chart.js */
+        .chartjs-canvas {
+            max-width: 800px; /* Ancho máximo estandarizado */
+            width: 100%;
+            height: 400px; /* Altura estandarizada */
+            box-sizing: border-box;
+        }
+
+        /* Ajuste específico para la gráfica de dona (Libros por Estado) */
+        .donut-chart-canvas {
+            max-width: 600px; /* Un poco más pequeño para donas */
+            height: 400px; /* Altura estandarizada para donas, igual que otros canvas */
+            box-sizing: border-box; /* Asegura que el padding/borde se incluya en la dimensión */
+        }
+        
+        /* Responsividad para pantallas más pequeñas */
+        @media (max-width: 768px) {
+            .navigation-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .nav-button, .chart-dropdown {
+                width: 90%;
+                text-align: center;
+            }
+            .chart-dropdown {
+                background-position: right 15px center;
+            }
+            #chartDisplayArea {
+                gap: 15px;
+                min-height: 300px;
+                height: auto;
+                padding: 15px; /* Ajuste el padding para pantallas pequeñas */
+            }
+            .indicators-grid {
+                align-content: t; /* Para que no se centren verticalmente en pantallas pequeñas */
+            }
+            .indicator {
+                width: calc(50% - 10px);
+                padding: 15px;
+            }
+            .indicator .value {
+                font-size: 32px;
+            }
+            .indicator .label {
+                min-height: auto;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navigation-container">
+        <button id="prevChartButton" class="nav-button">Anterior</button>
+        <select id="chartSelector" class="chart-dropdown">
+            <!-- Las opciones se generarán dinámicamente con JavaScript -->
+        </select>
+        <button id="nextChartButton" class="nav-button">Siguiente</button>
+    </div>
+
+    <div id="chartDisplayArea">
+        <!-- Las visualizaciones se renderizarán aquí -->
+    </div>
+
+    <script>
+        // Array para almacenar los datos de cada JSON una vez cargados
+        const chartData = {};
+        const chartInstances = {}; // Para almacenar instancias de Chart.js y poder destruirlas
+
+        // Referencias a los elementos del DOM
+        const chartDisplayArea = document.getElementById('chartDisplayArea');
+        const chartSelector = document.getElementById('chartSelector');
+        const prevChartButton = document.getElementById('prevChartButton');
+        const nextChartButton = document.getElementById('nextChartButton');
+
+        // Función para animar el valor de un número (utilizada por los indicadores)
+        function animateValue(element, targetValue, duration = 500) {
+            let startTimestamp = null;
+            const isFloat = targetValue.toString().includes(".");
+            const decimalPlaces = isFloat ? targetValue.toString().split(".")[1].length : 0;
+            const startValue = 0;
+            targetValue = Number(targetValue);
+
+            function step(timestamp) {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                let currentValue = startValue + progress * (targetValue - startValue);
+
+                if (isFloat) {
+                    element.textContent = currentValue.toFixed(decimalPlaces);
+                } else {
+                    element.textContent = Math.floor(currentValue);
+                }
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        // --- Funciones para renderizar cada tipo de visualización ---
+
+        async function renderEstadisticasGeneralesIndicators() {
+            try {
+                const jsonFileName = 'estadisticas_generales_resumen.json'; 
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                const indicatorsGrid = document.createElement('div');
+                indicatorsGrid.classList.add('indicators-grid');
+                chartDisplayArea.appendChild(indicatorsGrid);
+
+                const data = chartData[jsonFileName];
+
+                data.forEach(item => {
+                    const indicatorDiv = document.createElement('div');
+                    indicatorDiv.classList.add('indicator');
+
+                    const valueP = document.createElement('p');
+                    valueP.classList.add('value');
+                    valueP.textContent = '0'; // Valor inicial para la animación
+                    valueP.dataset.targetValue = item.Valor; // Almacenar el valor objetivo
+
+                    const labelP = document.createElement('p');
+                    labelP.classList.add('label');
+                    labelP.textContent = item.Descripción;
+
+                    indicatorDiv.appendChild(valueP);
+                    indicatorDiv.appendChild(labelP);
+                    indicatorsGrid.appendChild(indicatorDiv);
+                });
+
+                // Disparar animaciones después de que los elementos estén en el DOM
+                setTimeout(() => {
+                    document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                        const target = parseFloat(valueElement.dataset.targetValue);
+                        if (!isNaN(target)) {
+                            animateValue(valueElement, target);
+                        }
+                    });
+                }, 0);
+                
+            } catch (error) {
+                console.error('Error al renderizar los indicadores de Estadísticas Generales:', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar las estadísticas generales.</p>';
+            }
+        }
+
+        async function renderLibrosPorEstadoDonutChart() {
+            try {
+                const jsonFileName = 'libros_por_estado.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'donutChart';
+                canvas.classList.add('chartjs-canvas', 'donut-chart-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item.Estado);
+                const values = data.map(item => item["Total Libros"]);
+
+                const colors = [
+                    'rgba(92, 165, 147, 1)',
+                    'rgba(135, 194, 163, 1)',
+                    'rgba(173, 213, 187, 1)',
+                    'rgba(45, 108, 104, 1)'
+                ];
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
+                            borderWidth: 0,
+                            hoverOffset: 20,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 30,
+                            },
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Libros por Estado',
+                                font: {
+                                    size: 20,
+                                    family: 'Roboto',
+                                    weight: 'bold'
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Libros en la biblioteca agrupados por estado',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                padding: { bottom: 20 },
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 12,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        return `${value} libros`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            animationDuration: 500
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica de dona:', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de dona.</p>';
+            }
+        }
+
+        async function renderDistribucionPaginasHistogram() {
+            try {
+                const jsonFileName = 'distribucion_paginas_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'pagesHistogramChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item['Rango de Páginas']);
+                const values = data.map(item => item['Cantidad']);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Frecuencia',
+                            data: values,
+                            barPercentage: 1.5,
+                            backgroundColor: 'rgba(92, 165, 147, 1)',
+                            hoverBackgroundColor: 'rgba(60, 120, 100, 1)',
+                            borderRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Páginas',
+                                font: {
+                                    size: 20,
+                                    family: 'Roboto',
+                                    weight: 'bold'
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Distribución de la cantidad de páginas de los libros en la biblioteca',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                padding: { bottom: 20 },
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Rango de Páginas',
+                                    font: {
+                                        size: 13,
+                                        family: 'Roboto'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: { font: { size: 12 }, color: 'var(--text-color)' },
+                                grid: { display: false }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Frecuencia',
+                                    font: {
+                                        size: 13,
+                                        family: 'Roboto'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: { font: { size: 12 }, color: 'var(--text-color)' },
+                                grid: { color: '#eee' }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            } catch (error) {
+                console.error('Error al renderizar el Histograma de Páginas:', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar el histograma de páginas.</p>';
+            }
+        }
+
+        async function renderDistribucionAniosHistogram() {
+            try {
+                const jsonFileName = 'distribucion_anios_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'yearsHistogramChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item['Año de publicación']);
+                const values = data.map(item => item['Cantidad']);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Frecuencia',
+                            data: values,
+                            barPercentage: 1.5,
+                            backgroundColor: 'rgba(92, 165, 147, 1)',
+                            hoverBackgroundColor: 'rgba(60, 120, 100, 1)',
+                            borderRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Año de publicación',
+                                font: {
+                                    size: 20,
+                                    family: 'Roboto',
+                                    weight: 'bold'
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Distribución de los años de publicación de los libros en la biblioteca',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                padding: { bottom: 20 },
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Rango de Años',
+                                    font: {
+                                        size: 13,
+                                        family: 'Roboto'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: { font: { size: 12 }, color: 'var(--text-color)' },
+                                grid: { display: false }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Frecuencia',
+                                    font: {
+                                        size: 13,
+                                        family: 'Roboto'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: { font: { size: 12 }, color: 'var(--text-color)' },
+                                grid: { color: '#eee' }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            } catch (error) {
+                console.error('Error al renderizar el Histograma de Años:', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar el histograma de años.</p>';
+            }
+        }
+
+
+        // --- Manejo de la navegación entre visualizaciones ---
+
+        const chartMap = {
+            'general-indicators': {
+                render: renderEstadisticasGeneralesIndicators,
+                label: 'Estadísticas Generales',
+                isIndicatorChart: true
+            },
+            'book-status-donut': {
+                render: renderLibrosPorEstadoDonutChart,
+                label: 'Libros ordenados por Estado',
+                isIndicatorChart: false
+            },
+            'pages-histogram': {
+                render: renderDistribucionPaginasHistogram,
+                label: 'Distribución de Páginas',
+                isIndicatorChart: false
+            },
+            'years-histogram': {
+                render: renderDistribucionAniosHistogram,
+                label: 'Distribución de Años',
+                isIndicatorChart: false
+            }
+        };
+
+        const chartKeys = Object.keys(chartMap);
+        let currentChartIndex = 0;
+
+        function updateNavigationState() {
+            chartSelector.value = chartKeys[currentChartIndex];
+            prevChartButton.disabled = currentChartIndex === 0;
+            nextChartButton.disabled = currentChartIndex === chartKeys.length - 1;
+        }
+
+        async function switchChart(newChartKeyOrIndex) {
+            let newIndex;
+            if (typeof newChartKeyOrIndex === 'string') {
+                newIndex = chartKeys.indexOf(newChartKeyOrIndex);
+            } else {
+                newIndex = newChartKeyOrIndex;
+            }
+
+            if (newIndex === -1 || newIndex === currentChartIndex) return;
+
+            currentChartIndex = newIndex;
+
+            chartDisplayArea.classList.add('chart-transition-out');
+            updateNavigationState();
+
+            // Ajustar el estilo de tarjeta y alineación explícitamente
+            const isIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
+            if (isIndicator) {
+                chartDisplayArea.classList.remove('card-style');
+                chartDisplayArea.style.justifyContent = 'flex-start';
+                chartDisplayArea.style.padding = '0px'; /* Sin padding para indicadores */
+                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
+                chartDisplayArea.style.borderRadius = '0';
+                chartDisplayArea.style.boxShadow = 'none';
+            } else {
+                chartDisplayArea.classList.add('card-style');
+                chartDisplayArea.style.justifyContent = 'center';
+                chartDisplayArea.style.padding = '20px'; /* Con padding para gráficas tipo tarjeta */
+                chartDisplayArea.style.backgroundColor = 'white';
+                chartDisplayArea.style.borderRadius = '10px';
+                chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
+            }
+
+            setTimeout(async () => {
+                await chartMap[chartKeys[currentChartIndex]].render();
+                chartDisplayArea.classList.remove('chart-transition-out');
+            }, 0);
+
+            setTimeout(() => {
+                if (isIndicator) {
+                    document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                        const target = parseFloat(valueElement.dataset.targetValue);
+                        if (!isNaN(target)) {
+                            animateValue(valueElement, target);
+                        }
+                    });
+                }
+            }, 50);
+        }
+
+        // --- Inicialización ---
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            chartKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = chartMap[key].label;
+                chartSelector.appendChild(option);
+            });
+
+            chartSelector.addEventListener('change', (event) => {
+                switchChart(event.target.value);
+            });
+
+            prevChartButton.addEventListener('click', () => {
+                if (currentChartIndex > 0) {
+                    switchChart(currentChartIndex - 1);
+                }
+            });
+
+            nextChartButton.addEventListener('click', () => {
+                if (currentChartIndex < chartKeys.length - 1) {
+                    switchChart(currentChartIndex + 1);
+                }
+            });
+
+            // Cargar la primera visualización al inicio y ajustar estilos
+            await chartMap[chartKeys[currentChartIndex]].render();
+            updateNavigationState();
+
+            // Ajustar los estilos iniciales basados en si la primera es un indicador o una gráfica
+            const isInitialIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
+            if (isInitialIndicator) {
+                chartDisplayArea.classList.remove('card-style');
+                chartDisplayArea.style.justifyContent = 'flex-start';
+                chartDisplayArea.style.padding = '0px';
+                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
+                chartDisplayArea.style.borderRadius = '0';
+                chartDisplayArea.style.boxShadow = 'none';
+            } else {
+                chartDisplayArea.classList.add('card-style');
+                chartDisplayArea.style.justifyContent = 'center';
+                chartDisplayArea.style.padding = '20px';
+                chartDisplayArea.style.backgroundColor = 'white';
+                chartDisplayArea.style.borderRadius = '10px';
+                chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
+            }
+
+            // Disparar la animación si el primer elemento es un indicador
+            if (isInitialIndicator) {
+                document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                    const target = parseFloat(valueElement.dataset.targetValue);
+                    if (!isNaN(target)) {
+                        animateValue(valueElement, target);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

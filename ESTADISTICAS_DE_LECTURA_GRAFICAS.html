@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard de Gráficas Secundarias</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Definición de colores principales para fácil mantenimiento */
+            --primary-bg: #f9f9f9; /* Color de fondo original */
+            --main-accent: #5ca593; /* Color de acento principal original */
+            --dark-accent: #2d6c68; /* Color de título original */
+            --text-color: #333; /* Color de texto general para contraste suave */
+            --hover-bg: #dce8e5; /* Color de hover de tabla original */
+            --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
+            --button-text-color: white;
+            --shadow-color: rgba(0, 0, 0, 0.08); /* Sombra suave para elementos flotantes */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif; /* Fuente: Roboto */
+            background-color: var(--primary-bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark-accent);
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Contenedor para el menú desplegable y botones de navegación */
+        .navigation-container {
+            display: flex;
+            flex-wrap: nowrap; /* Mantiene los elementos en una fila en pantallas grandes */
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Espacio entre elementos */
+            margin-bottom: 40px; /* Más espacio debajo de la navegación */
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Estilos para los botones Anterior/Siguiente */
+        .nav-button {
+            background-color: var(--main-accent);
+            color: var(--button-text-color);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            white-space: nowrap; /* Evita que el texto se rompa */
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background-color: var(--button-active-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .nav-button:disabled {
+            background-color: #cccccc; /* Gris para botones deshabilitados */
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        /* Estilos para el menú desplegable */
+        .chart-dropdown {
+            padding: 10px 25px 10px 15px; /* Más padding a la derecha para la flecha SVG */
+            border: 1px solid var(--main-accent);
+            border-radius: 8px;
+            background-color: white;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: var(--text-color);
+            box-shadow: 0 2px 4px var(--shadow-color);
+            appearance: none; /* Elimina la flecha de dropdown predeterminada del navegador */
+            /* Añade una flecha SVG personalizada como fondo */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235ca593'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            cursor: pointer;
+            outline: none; /* Eliminar el contorno al enfocar */
+        }
+
+        #chartDisplayArea {
+            width: 100%;
+            max-width: 900px; /* Ancho máximo estandarizado */
+            min-height: 500px; /* Altura mínima estandarizada */
+            height: auto; /* Permite que la altura se ajuste al contenido */
+            display: flex;
+            flex-wrap: wrap; /* Permite que los indicadores o la gráfica se distribuyan */
+            justify-content: center;
+            align-items: center;
+            gap: 25px; /* Espacio entre los indicadores */
+            opacity: 1;
+            transform: translateY(0);
+            transition: none; /* Sin transición para cambios instantáneos */
+            box-sizing: border-box;
+            position: relative;
+            background-color: white; /* Añadido para el fondo de la "tarjeta" */
+            border-radius: 10px; /* Añadido para esquinas redondeadas */
+            box-shadow: 0 6px 18px var(--shadow-color); /* Añadido para la sombra */
+            padding: 20px; /* Añadido para el padding de la "tarjeta" */
+            overflow: hidden; /* Asegura que no haya desbordamiento si la gráfica es más grande de lo esperado */
+        }
+
+        /* Clase para aplicar estilo de "tarjeta" */
+        .card-style {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px var(--shadow-color);
+            padding: 20px;
+        }
+
+        /* Clases para animación de transición (estas ya no tendrán efecto visual) */
+        .chart-transition-out {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Estilos genéricos para los canvas de Chart.js */
+        .chartjs-canvas {
+            max-width: 800px; /* Ancho máximo estandarizado */
+            width: 100%;
+            height: 400px; /* Altura estandarizada para la mayoría de las gráficas */
+            box-sizing: border-box;
+        }
+        
+        /* Ajuste específico para donas */
+        .donut-chart-canvas {
+            max-width: 600px; /* Un poco más pequeño para donas */
+            height: auto; /* Permite que la altura se ajuste al contenido del gráfico */
+        }
+
+        /* Responsividad para pantallas más pequeñas */
+        @media (max-width: 768px) {
+            .navigation-container {
+                flex-direction: column; /* Apila los elementos en pantallas pequeñas */
+                gap: 15px;
+            }
+            .nav-button, .chart-dropdown {
+                width: 90%; /* Los elementos ocupan más ancho en móvil */
+                text-align: center; /* Centra el texto en los botones */
+            }
+            .chart-dropdown {
+                background-position: right 15px center; /* Ajusta la posición de la flecha en móvil */
+            }
+            #chartDisplayArea {
+                gap: 15px;
+                min-height: 300px;
+                height: auto;
+                padding: 15px; /* Ajuste el padding para pantallas pequeñas */
+            }
+            .chartjs-canvas, .donut-chart-canvas { /* Aplicar a todas las gráficas Chart.js */
+                padding: 0; /* Ya tiene padding el contenedor */
+                height: 300px; /* Ajustar altura para móvil */
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navigation-container">
+        <button id="prevChartButton" class="nav-button">Anterior</button>
+        <select id="chartSelector" class="chart-dropdown">
+            <!-- Las opciones se generarán dinámicamente con JavaScript -->
+        </select>
+        <button id="nextChartButton" class="nav-button">Siguiente</button>
+    </div>
+
+    <div id="chartDisplayArea" class="card-style">
+        <!-- Las gráficas se renderizarán aquí -->
+    </div>
+
+    <script>
+        // Array para almacenar los datos de cada JSON una vez cargados
+        const chartData = {};
+        const chartInstances = {}; // Para almacenar instancias de Chart.js y poder destruirlas
+
+        // Referencias a los elementos del DOM
+        const chartDisplayArea = document.getElementById('chartDisplayArea');
+        const chartSelector = document.getElementById('chartSelector');
+        const prevChartButton = document.getElementById('prevChartButton');
+        const nextChartButton = document.getElementById('nextChartButton');
+
+        // Función para animar el valor de un número (utilizada por los indicadores, aunque estas gráficas no los usan)
+        function animateValue(element, targetValue, duration = 2000) {
+            let startTimestamp = null;
+            const isFloat = targetValue.toString().includes(".");
+            const decimalPlaces = isFloat ? targetValue.toString().split(".")[1].length : 0;
+            const startValue = 0;
+            targetValue = Number(targetValue);
+
+            function step(timestamp) {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                let currentValue = startValue + progress * (targetValue - startValue);
+
+                if (isFloat) {
+                    element.textContent = currentValue.toFixed(decimalPlaces);
+                } else {
+                    element.textContent = Math.floor(currentValue);
+                }
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        // --- Funciones para renderizar cada tipo de gráfica ---
+
+        async function renderLibrosLeidosAnioChart() {
+            try {
+                const jsonFileName = 'libros_leidos_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                // Destruir la instancia anterior del gráfico si existe
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'librosLeidosChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item['Año de Lectura']);
+                const totalLibros = data.map(item => item['Total Libros Leídos']);
+                const acumulados = data.map(item => item['Libros Leídos Acumulados']);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Total Libros Leídos',
+                                data: totalLibros,
+                                backgroundColor: 'rgba(92, 165, 147, 1)',
+                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                yAxisID: 'y',
+                                borderRadius: 8,
+                            },
+                            {
+                                label: 'Libros Leídos Acumulados',
+                                data: acumulados,
+                                type: 'line',
+                                borderColor: 'rgba(28, 78, 96, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointBackgroundColor: 'rgba(28, 78, 96, 1)',
+                                pointHoverRadius: 6,
+                                hoverBackgroundColor: 'rgba(100, 183, 141, 1)',
+                                tension: 0.5,
+                                yAxisID: 'y1',
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                            },
+                            title: {
+                                display: true,
+                                text: 'Libros Leídos por Año',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto',
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Cantidad de libros leídos cada año y total acumulado',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal',
+                                },
+                                padding: { bottom: 10, top: 0 },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Libros Leídos (Anual)',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                min: 0,
+                                max: 90,
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Libros Leídos (Acumulado)',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
+                                    }
+                                },
+                                min: -50,
+                                max: 300,
+                            },
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Año de Lectura',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                            },
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Libros Leídos por Año":', error);
+                chartDisplayArea.innerHTML = `<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de libros por año.</p>`;
+            }
+        }
+
+        async function renderAutoresLeidosAnioChart() {
+            try {
+                const jsonFileName = 'autores_leidos_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'autoresChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item['Año de Lectura']);
+                const totalAutores = data.map(item => item['Autores Únicos Anuales']);
+                const acumulados = data.map(item => item['Total Acumulado de Autores Únicos']);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Autores Leídos',
+                                data: totalAutores,
+                                backgroundColor: 'rgba(92, 165, 147, 1)',
+                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                yAxisID: 'y',
+                                borderRadius: 8,
+                            },
+                            {
+                                label: 'Total de Autores Leídos',
+                                data: acumulados,
+                                type: 'line',
+                                borderColor: 'rgba(28, 78, 96, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointBackgroundColor: 'rgba(28, 78, 96, 1)',
+                                pointHoverRadius: 6,
+                                hoverBackgroundColor: 'rgba(100, 183, 141, 1)',
+                                tension: 0.5,
+                                yAxisID: 'y1',
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                            },
+                            title: {
+                                display: true,
+                                text: 'Autores Leídos por Año',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto',
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Cantidad de autores leídos cada año y total acumulado',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal',
+                                },
+                                padding: { bottom: 10, top: 0 },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Autores Leídos (Anual)',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                min: 0,
+                                max: 80,
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Autores Leídos (Acumulado)',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
+                                    }
+                                },
+                                min: -50,
+                                max: 250,
+                            },
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Año de Lectura',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                            },
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Autores Leídos por Año":', error);
+                chartDisplayArea.innerHTML = `<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de autores por año.</p>`;
+            }
+        }
+
+        async function renderPaginasLeidasAnioChart() {
+            try {
+                const jsonFileName = 'paginas_leidas_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'paginasLeidasChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item['Año de Lectura']);
+                const totalPaginas = data.map(item => item['Páginas Leídas Anuales']);
+                const acumulados = data.map(item => item['Total Acumulado de Páginas']);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Páginas Leídas',
+                                data: totalPaginas,
+                                backgroundColor: 'rgba(92, 165, 147, 1)',
+                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                yAxisID: 'y',
+                                borderRadius: 8,
+                            },
+                            {
+                                label: 'Total de Páginas Leídas',
+                                data: acumulados,
+                                type: 'line',
+                                borderColor: 'rgba(28, 78, 96, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointBackgroundColor: 'rgba(28, 78, 96, 1)',
+                                pointHoverRadius: 6,
+                                hoverBackgroundColor: 'rgba(100, 183, 141, 1)',
+                                tension: 0.5,
+                                yAxisID: 'y1',
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                            },
+                            title: {
+                                display: true,
+                                text: 'Páginas Leídas por Año',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto',
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Cantidad de páginas leídas cada año y total acumulado',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal',
+                                },
+                                padding: { bottom: 10, top: 0 },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                                color: 'black',
+                                anchor: 'end',
+                                align: 'top',
+                                font: {
+                                    family: 'Roboto',
+                                    size: 11,
+                                    weight: 'normal',
+                                },
+                                formatter: (value) => value.toLocaleString(),
+                            },
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Páginas Leídas (Anual)',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                min: 0,
+                                max: 25000,
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Páginas Leídas (Acumulado)',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
+                                    }
+                                },
+                                min: -10000,
+                                max: 80000,
+                            },
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Año de Lectura',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                            },
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Páginas Leídas por Año":', error);
+                chartDisplayArea.innerHTML = `<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de páginas por año.</p>`;
+            }
+        }
+
+        async function renderFormatoGraficaChart() {
+            try {
+                const jsonFileName = 'formato_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'formatoChart';
+                canvas.classList.add('donut-chart-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item.Formato);
+                const values = data.map(item => item["Total Libros"]);
+
+                const colors = [
+                    'rgba(92, 165, 147, 1)',
+                    'rgba(135, 194, 163, 1)',
+                    'rgba(173, 213, 187, 1)',
+                    'rgba(45, 108, 104, 1)'
+                ];
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
+                            borderWidth: 0,
+                            hoverOffset: 20,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 30,
+                            },
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Formato',
+                                font: {
+                                    size: 20,
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Libros leídos agrupados por formato de lectura',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                padding: { bottom: 20 },
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                                anchor: 'end',
+                                align: 'top',
+                                font: {
+                                    family: 'Roboto',
+                                    size: 11
+                                },
+                                formatter: value => value
+                            },
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 12,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        return `${value} libros`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            animationDuration: 500
+                        }
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Formato":', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de formato.</p>';
+            }
+        }
+
+        async function renderTipoLecturaGraficaChart() {
+            try {
+                const jsonFileName = 'tipo_de_lectura_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'tipoLecturaChart';
+                canvas.classList.add('donut-chart-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item["Tipo de Lectura"]);
+                const values = data.map(item => item["Total Libros"]);
+
+                const colors = [
+                    'rgba(92, 165, 147, 1)',
+                    'rgba(135, 194, 163, 1)',
+                    'rgba(173, 213, 187, 1)',
+                    'rgba(45, 108, 104, 1)',
+                ];
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
+                            borderWidth: 0,
+                            hoverOffset: 20,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 30,
+                            },
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Tipo de Lectura',
+                                font: {
+                                    size: 20,
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Libros leídos agrupados por tipo de lectura',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                padding: { bottom: 20 },
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                                anchor: 'end',
+                                align: 'top',
+                                font: {
+                                    family: 'Roboto',
+                                    size: 11
+                                },
+                                formatter: value => value
+                            },
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 12,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        return `${value} libros`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            animationDuration: 500
+                        }
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Tipo de Lectura":', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de tipo de lectura.</p>';
+            }
+        }
+
+        // Nueva función para renderizar la gráfica de burbujas (scatter chart)
+        async function renderScatterChart() {
+            try {
+                const jsonFileName = 'publicacion_vs_lectura.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'scatterChart';
+                canvas.classList.add('chartjs-canvas'); // Usar la clase genérica para canvas
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const dataset = data.map(item => ({
+                    x: item["Año de Lectura"],
+                    y: item["Año de publicación"],
+                    r: item["Total Libros Leídos"] * 6, // Multiplicar por 6 para un tamaño de burbuja visible
+                }));
+
+                // Extraer todos los años de lectura únicos para definir los ticks del eje X
+                const allReadYears = Array.from(new Set(data.map(item => item["Año de Lectura"]))).sort((a, b) => a - b);
+                
+                // Determinar el rango mínimo y máximo de años de lectura para el eje X
+                const minReadYear = Math.min(...allReadYears);
+                const maxReadYear = Math.max(...allReadYears);
+
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bubble',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Año Leído vs. Año de Publicación',
+                                data: dataset,
+                                backgroundColor: 'rgba(92, 165, 147, 0.85)',
+                                borderColor: 'rgba(45, 108, 104, 1)',
+                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                borderWidth: 1,
+                                hoverRadius: 10,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, // Importante para que el tamaño del canvas se ajuste
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            title: {
+                                display: true,
+                                text: 'Año Leído vs. Año de Publicación',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto',
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Relación entre el año de lectura y el año de publicación de los libros leídos (tamaño de la burbuja: total de libros leídos)',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal',
+                                },
+                                padding: {
+                                    bottom: 30,
+                                    top: 0
+                                },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false, // Desactivar datalabels para burbujas a menos que se necesite mostrar 'r'
+                                color: 'black',
+                                anchor: 'end',
+                                align: 'top',
+                                font: {
+                                    family: 'Roboto',
+                                    size: 11,
+                                    weight: 'normal',
+                                },
+                                formatter: (value) => value.r / 6, // Formato para mostrar el Total Libros Leídos
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        return `Año de Lectura: ${context.raw.x}\nAño de Publicación: ${context.raw.y}\nTotal Libros Leídos: ${context.raw.r / 6}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: {
+                                    display: true,
+                                    text: 'Año de Lectura',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    autoSkip: false, // Esencial para mostrar todos los ticks
+                                    source: 'auto', // Deja que Chart.js decida los ticks, o 'labels' si quieres todos los años presentes
+                                    maxRotation: 90,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        if (Number.isInteger(value)) {
+                                            return value;
+                                        }
+                                        return null; // No mostrar tick si no es un entero
+                                    }
+                                },
+                                min: minReadYear - 1, // Establece el mínimo del eje al año más bajo de tus datos
+                                max: maxReadYear + 1, // Establece el máximo del eje al año más alto de tus datos
+                                grid: {
+                                    display: false,
+                                },
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Año de Publicación',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                type: 'linear',
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        if (Number.isInteger(value)) {
+                                            return value;
+                                        }
+                                        return null;
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                            },
+                        },
+                        animation: {
+                            duration: 1000, // Animación de 1 segundo para la carga inicial de la gráfica
+                            easing: 'easeOutQuart'
+                        },
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Año leído vs. Año de publicación":', error);
+                chartDisplayArea.innerHTML = `<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de dispersión.</p>`;
+            }
+        }
+
+
+        // --- Manejo de la navegación entre gráficas ---
+
+        // Mapeo de botones a funciones de renderizado, sus títulos para el desplegable y tipo
+        const chartMap = {
+            'libros-leidos-anio': {
+                render: renderLibrosLeidosAnioChart,
+                label: 'Libros Leídos por Año',
+            },
+            'autores-leidos-anio': {
+                render: renderAutoresLeidosAnioChart,
+                label: 'Autores Leídos por Año',
+            },
+            'paginas-leidas-anio': {
+                render: renderPaginasLeidasAnioChart,
+                label: 'Páginas Leídas por Año',
+            },
+            'formato-grafica': {
+                render: renderFormatoGraficaChart,
+                label: 'Libros por Formato',
+            },
+            'tipo-lectura-grafica': {
+                render: renderTipoLecturaGraficaChart,
+                label: 'Libros por Tipo de Lectura',
+            },
+            'publicacion-vs-lectura': { // Nueva entrada para la gráfica de burbujas
+                render: renderScatterChart,
+                label: 'Año de Lectura vs. Publicación',
+            }
+        };
+
+        const chartKeys = Object.keys(chartMap); // Array de claves para navegación secuencial
+        let currentChartIndex = 0; // Índice de la gráfica actual en chartKeys
+
+        // Función para actualizar el estado de los botones Anterior/Siguiente y el selector
+        function updateNavigationState() {
+            chartSelector.value = chartKeys[currentChartIndex]; // Sincroniza el selector
+
+            // Deshabilita/habilita botones de navegación
+            prevChartButton.disabled = currentChartIndex === 0;
+            nextChartButton.disabled = currentChartIndex === chartKeys.length - 1;
+        }
+
+        // Función para cambiar la gráfica activa
+        async function switchChart(newChartKeyOrIndex) {
+            let newIndex;
+            if (typeof newChartKeyOrIndex === 'string') {
+                newIndex = chartKeys.indexOf(newChartKeyOrIndex);
+            } else { // Asumimos que es un índice numérico
+                newIndex = newChartKeyOrIndex;
+            }
+
+            if (newIndex === -1 || newIndex === currentChartIndex) return; // No hacer nada si es inválido o ya es la gráfica activa
+
+            currentChartIndex = newIndex; // Actualiza el índice global
+
+            // Animación de salida (ya no hay transición CSS, pero mantenemos la clase para consistencia)
+            chartDisplayArea.classList.add('chart-transition-out');
+            updateNavigationState(); // Actualiza los botones inmediatamente para reflejar el cambio
+
+            // Retrasar el cambio de contenido, con 0ms de retardo para hacerlo instantáneo
+            setTimeout(async () => {
+                // Renderizar la nueva gráfica
+                await chartMap[chartKeys[currentChartIndex]].render();
+
+                // Animación de entrada (remueve la clase para hacerla visible instantáneamente)
+                chartDisplayArea.classList.remove('chart-transition-out');
+
+                // No hay indicadores que animar en estas gráficas, pero mantenemos la estructura general
+                // setTimeout(() => { ... }, 100);
+            }, 0); // Duración de la transición CSS (ahora 0s)
+        }
+
+        // --- Inicialización ---
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Rellenar el menú desplegable
+            chartKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = chartMap[key].label;
+                chartSelector.appendChild(option);
+            });
+
+            // Asignar listeners a los elementos de navegación
+            chartSelector.addEventListener('change', (event) => {
+                switchChart(event.target.value);
+            });
+
+            prevChartButton.addEventListener('click', () => {
+                if (currentChartIndex > 0) {
+                    switchChart(currentChartIndex - 1);
+                }
+            });
+
+            nextChartButton.addEventListener('click', () => {
+                if (currentChartIndex < chartKeys.length - 1) {
+                    switchChart(currentChartIndex + 1);
+                }
+            });
+
+            // Cargar la primera gráfica al inicio
+            await chartMap[chartKeys[currentChartIndex]].render();
+            updateNavigationState(); // Establece el estado inicial de los botones y el selector
+        });
+    </script>
+</body>
+</html>

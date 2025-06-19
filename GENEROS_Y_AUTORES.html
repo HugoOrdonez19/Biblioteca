@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard de Géneros y Autores</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Definición de colores principales para fácil mantenimiento */
+            --primary-bg: #f9f9f9; /* Color de fondo original */
+            --main-accent: #5ca593; /* Color de acento principal original */
+            --dark-accent: #2d6c68; /* Color de título original */
+            --text-color: #333; /* Color de texto general para contraste suave */
+            --hover-bg: #dce8e5; /* Color de hover de tabla original */
+            --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
+            --button-text-color: white;
+            --shadow-color: rgba(0, 0, 0, 0.08); /* Sombra suave para elementos flotantes */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif; /* Fuente: Roboto */
+            background-color: var(--primary-bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark-accent);
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Contenedor para el menú desplegable y botones de navegación */
+        .navigation-container {
+            display: flex;
+            flex-wrap: nowrap; /* Mantiene los elementos en una fila en pantallas grandes */
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Espacio entre elementos */
+            margin-bottom: 40px; /* Más espacio debajo de la navegación */
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Estilos para los botones Anterior/Siguiente */
+        .nav-button {
+            background-color: var(--main-accent);
+            color: var(--button-text-color);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            white-space: nowrap; /* Evita que el texto se rompa */
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background-color: var(--button-active-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .nav-button:disabled {
+            background-color: #cccccc; /* Gris para botones deshabilitados */
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        /* Estilos para el menú desplegable */
+        .chart-dropdown {
+            padding: 10px 25px 10px 15px; /* Más padding a la derecha para la flecha SVG */
+            border: 1px solid var(--main-accent);
+            border-radius: 8px;
+            background-color: white;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: var(--text-color);
+            box-shadow: 0 2px 4px var(--shadow-color);
+            appearance: none; /* Elimina la flecha de dropdown predeterminada del navegador */
+            /* Añade una flecha SVG personalizada como fondo */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235ca593'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            cursor: pointer;
+            outline: none; /* Eliminar el contorno al enfocar */
+        }
+
+        #chartDisplayArea {
+            width: 100%;
+            max-width: 900px; /* Ancho máximo estandarizado */
+            min-height: 500px; /* Altura mínima estandarizada */
+            height: auto; /* Permite que la altura se ajuste al contenido */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px; /* Reducido el espacio entre los elementos */
+            opacity: 1;
+            transform: translateY(0);
+            transition: none; /* Sin transición para cambios instantáneos */
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden; /* Asegura que no haya desbordamiento si la gráfica es más grande de lo esperado */
+            background-color: white; /* Añadido para el fondo de la "tarjeta" */
+            border-radius: 10px; /* Añadido para esquinas redondeadas */
+            box-shadow: 0 6px 18px var(--shadow-color); /* Añadido para la sombra */
+            padding: 20px; /* Añadido para el padding de la "tarjeta" */
+        }
+
+        /* Clase para aplicar estilo de "tarjeta" */
+        .card-style {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px var(--shadow-color);
+            padding: 20px;
+        }
+
+        /* Clases para animación de transición (estas ya no tendrán efecto visual) */
+        .chart-transition-out {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Estilos genéricos para los canvas de Chart.js */
+        .chartjs-canvas {
+            max-width: 800px; /* Ancho máximo estandarizado */
+            width: 100%;
+            height: 400px; /* Altura estandarizada para la mayoría de las gráficas */
+            box-sizing: border-box;
+        }
+        
+        /* Estilos específicos para tablas */
+        .data-table-container {
+            width: 100%;
+            max-width: 800px; /* Ancho máximo estandarizado */
+            height: 400px; /* Altura estandarizada para la tabla */
+            overflow-x: auto; /* Permite scroll horizontal en tablas grandes */
+            overflow-y: auto; /* Añadido para desplazamiento vertical dentro del contenedor */
+            /* Se eliminan background-color, box-shadow y border-radius de aquí
+               ya que chartDisplayArea (con .card-style) ya los proporciona */
+            padding: 0; /* Se elimina el padding para que el padding de #chartDisplayArea sea el único */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background-color: var(--main-accent);
+            color: white;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 13px;
+            cursor: pointer;
+            position: sticky;
+            top: 0; /* Fija los encabezados al hacer scroll */
+            z-index: 1; /* Asegura que los encabezados estén por encima de las filas */
+        }
+
+        .data-table th:hover {
+            background-color: var(--button-active-bg);
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f6f6f6;
+        }
+
+        .data-table tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .sort-indicator {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Ajuste para el slider (no aplica directamente aquí, pero se mantiene por consistencia) */
+        #yearSlider {
+            width: 80%; /* Ancho del slider */
+            max-width: 600px; /* Max-width para el slider */
+            margin-top: 5px; /* Reducido el margen superior */
+        }
+        
+        #selectedYearDisplayContainer {
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px; /* Ajustado el tamaño de fuente para el texto del año */
+            margin-top: 5px; /* Asegura un pequeño espacio desde el slider */
+            color: var(--text-color);
+        }
+        #selectedYear {
+            font-weight: normal; /* Asegura que no sea negrita por defecto si se hereda */
+            font-size: 14px;
+        }
+
+
+        /* Responsividad para pantallas más pequeñas */
+        @media (max-width: 768px) {
+            .navigation-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .nav-button, .chart-dropdown {
+                width: 90%;
+                text-align: center;
+            }
+            .chart-dropdown {
+                background-position: right 15px center;
+            }
+            #chartDisplayArea {
+                gap: 15px;
+                min-height: 300px; /* Mantenemos min-height para asegurar espacio */
+                height: auto; /* Permite que se ajuste para evitar recortes severos en pantallas pequeñas */
+                padding: 15px; /* Ajuste el padding para pantallas pequeñas */
+            }
+            .chartjs-canvas, .data-table-container {
+                padding: 0; /* Ya tiene padding el contenedor */
+                height: 300px; /* Ajuste de altura para móvil */
+            }
+            h1 {
+                font-size: 24px;
+            }
+            #yearSlider {
+                width: 90%;
+            }
+            #selectedYearDisplayContainer {
+                font-size: 12px;
+            }
+            #selectedYear {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navigation-container">
+        <button id="prevChartButton" class="nav-button">Anterior</button>
+        <select id="chartSelector" class="chart-dropdown">
+            <!-- Las opciones se generarán dinámicamente con JavaScript -->
+        </select>
+        <button id="nextChartButton" class="nav-button">Siguiente</button>
+    </div>
+
+    <div id="chartDisplayArea" class="card-style">
+        <!-- Las gráficas y la tabla se renderizarán aquí -->
+    </div>
+
+    <script>
+        // Array para almacenar los datos de cada JSON una vez cargados
+        const chartData = {};
+        const chartInstances = {}; // Para almacenar instancias de Chart.js y poder destruirlas
+
+        // Referencias a los elementos del DOM
+        const chartDisplayArea = document.getElementById('chartDisplayArea');
+        const chartSelector = document.getElementById('chartSelector');
+        const prevChartButton = document.getElementById('prevChartButton');
+        const nextChartButton = document.getElementById('nextChartButton');
+
+        // --- Funciones para renderizar cada tipo de gráfica o tabla ---
+
+        async function renderGenerosLeidosChart() {
+            try {
+                const jsonFileName = 'generos_leidos_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                // Destruir la instancia anterior del gráfico si existe
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'generosLeidosChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item['Géneros']);
+                const totalLeidos = data.map(item => item['Total Libros']);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Libros Leídos por Género',
+                                data: totalLeidos,
+                                backgroundColor: 'rgba(92, 165, 147, 1)',
+                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                yAxisID: 'y',
+                                borderRadius: 8,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            title: {
+                                display: true,
+                                text: 'Géneros Leídos',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto',
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Cantidad de libros leídos agrupados por géneros',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal',
+                                },
+                                padding: {
+                                    bottom: 30,
+                                    top: 0
+                                },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 90,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Géneros',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                            },
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Libros Leídos',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : '';
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                            },
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        },
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Géneros Leídos":', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de géneros leídos.</p>';
+            }
+        }
+
+        async function renderCalificacionPorGeneroChart() {
+            try {
+                const jsonFileName = 'calificacion_por_genero.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'calificacionPorGeneroChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item.Género);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bubble',
+                    data: {
+                        labels: labels, // Esto es crucial para la escala de categoría
+                        datasets: [{
+                            label: 'Calificación por Género',
+                            data: data.map(item => ({
+                                x: labels.indexOf(item.Género), // Usar el índice como valor x para la escala de categoría
+                                y: item["Calificación Promedio"],
+                                r: item["Total Libros"],
+                            })),
+                            backgroundColor: 'rgba(92, 165, 147, 0.85)',
+                            borderColor: 'rgba(45, 108, 104, 1)',
+                            hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                            borderWidth: 1,
+                            hoverRadius: 10,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Calificación por Género',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Calificación promedio de cada género leído (tamaño de la burbuja: total de libros)',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal'
+                                },
+                                padding: {
+                                    bottom: 30,
+                                    top: 0
+                                },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const genero = labels[context.raw.x];
+                                        const calificacion = context.raw.y;
+                                        const totalLibros = context.raw.r;
+                                        return `Género: ${genero}\nCalificación Promedio: ${calificacion}\nTotal Libros: ${totalLibros}`;
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                display: false,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'category',
+                                labels: labels,
+                                title: {
+                                    display: true,
+                                    text: 'Género',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 90,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 12,
+                                        color: 'var(--text-color)'
+                                    }
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Calificación Promedio',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return parseFloat(value).toFixed(1);
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                },
+                                min: 2,
+                                max: 5
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        },
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Calificación por Género":', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de calificación por género.</p>';
+            }
+        }
+
+        async function renderLibrosLeidosPorAutorTable() {
+            try {
+                const jsonFileName = 'autores_tabla.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                // La chartDisplayArea ya tiene la clase 'card-style' y el padding,
+                // por lo que el contenedor de la tabla no necesita duplicar esos estilos visuales.
+                const tableContainer = document.createElement('div');
+                tableContainer.classList.add('data-table-container'); // Esta clase ahora solo controla dimensiones y overflow
+                chartDisplayArea.appendChild(tableContainer);
+
+                const tableTitle = document.createElement('h2');
+                tableTitle.textContent = 'Libros Leídos por Autor';
+                // Añadir un margen inferior al título para separarlo de la tabla
+                tableTitle.style.marginBottom = '15px';
+                tableContainer.appendChild(tableTitle);
+
+                const tableElement = document.createElement('table');
+                tableElement.classList.add('data-table');
+                tableContainer.appendChild(tableElement);
+
+                const thead = document.createElement('thead');
+                tableElement.appendChild(thead);
+                const tbody = document.createElement('tbody');
+                tbody.id = 'tableBody';
+                tableElement.appendChild(tbody);
+
+                thead.innerHTML = `
+                    <tr>
+                        <th data-column="Autor" data-type="string">
+                            Autor
+                            <span class="sort-indicator"></span>
+                        </th>
+                        <th data-column="Cantidad de Libros" data-type="number">
+                            Cantidad de Libros
+                            <span class="sort-indicator"></span>
+                        </th>
+                        <th data-column="Calificación Promedio" data-type="number">
+                            Calificación Promedio
+                            <span class="sort-indicator"></span>
+                        </th>
+                    </tr>
+                `;
+
+                let allTableData = chartData[jsonFileName];
+
+                if (!Array.isArray(allTableData) || allTableData.length === 0) {
+                    throw new Error('Los datos del JSON de autores no son válidos o están vacíos.');
+                }
+
+                let currentSortColumn = null;
+                let currentSortDirection = 'asc';
+
+                function renderTable(dataToRender) {
+                    const currentTableBody = document.getElementById("tableBody");
+                    currentTableBody.innerHTML = '';
+
+                    dataToRender.forEach(item => {
+                        const calificacionPromedio = typeof item["Calificación Promedio"] === 'number' ? item["Calificación Promedio"].toFixed(1) : item["Calificación Promedio"];
+                        const row = `
+                            <tr>
+                                <td>${item.Autor}</td>
+                                <td>${item["Cantidad de Libros"]}</td>
+                                <td>${calificacionPromedio}</td>
+                            </tr>
+                        `;
+                        currentTableBody.insertAdjacentHTML("beforeend", row);
+                    });
+                    updateSortIndicators();
+                }
+
+                tableElement.querySelectorAll('th').forEach(header => {
+                    header.addEventListener('click', () => {
+                        const column = header.dataset.column;
+                        const type = header.dataset.type;
+
+                        if (currentSortColumn === column) {
+                            currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                        } else {
+                            currentSortColumn = column;
+                            currentSortDirection = 'asc';
+                        }
+                        sortTable(column, type, currentSortDirection);
+                    });
+                });
+
+                function sortTable(column, type, direction) {
+                    const sortedData = [...allTableData].sort((a, b) => {
+                        let valA = a[column];
+                        let valB = b[column];
+
+                        if (type === 'number') {
+                            valA = parseFloat(valA);
+                            valB = parseFloat(valB);
+                            if (direction === 'asc') {
+                                return valA - valB;
+                            } else {
+                                return valB - valA;
+                            }
+                        } else { // string type
+                            valA = String(valA).toLowerCase();
+                            valB = String(valB).toLowerCase();
+                            if (direction === 'asc') {
+                                return valA.localeCompare(valB);
+                            } else {
+                                return valB.localeCompare(valA);
+                            }
+                        }
+                    });
+                    renderTable(sortedData);
+                }
+
+                function updateSortIndicators() {
+                    tableElement.querySelectorAll('th').forEach(header => {
+                        const indicator = header.querySelector('.sort-indicator');
+                        indicator.textContent = '';
+
+                        if (header.dataset.column === currentSortColumn) {
+                            if (currentSortDirection === 'asc') {
+                                indicator.textContent = ' ▲';
+                            } else {
+                                indicator.textContent = ' ▼';
+                            }
+                        }
+                    });
+                }
+
+                renderTable(allTableData);
+
+            } catch (error) {
+                console.error('Error al renderizar la tabla "Libros Leídos por Autor":', error);
+                console.error('Detalle del error:', error.message);
+                chartDisplayArea.innerHTML = `<p style="color:red; text-align:center;">No se pudo cargar o renderizar la tabla de libros por autor. <br>Error: ${error.message}</p>`;
+            }
+        }
+
+
+        // --- Manejo de la navegación entre gráficas ---
+
+        const chartMap = {
+            'generos-leidos': {
+                render: renderGenerosLeidosChart,
+                label: 'Géneros Leídos',
+            },
+            'calificacion-por-genero': {
+                render: renderCalificacionPorGeneroChart,
+                label: 'Calificación por Género',
+            },
+            'libros-leidos-por-autor': {
+                render: renderLibrosLeidosPorAutorTable,
+                label: 'Autores Leídos',
+            }
+        };
+
+        const chartKeys = Object.keys(chartMap);
+        let currentChartIndex = 0;
+
+        function updateNavigationState() {
+            chartSelector.value = chartKeys[currentChartIndex];
+            prevChartButton.disabled = currentChartIndex === 0;
+            nextChartButton.disabled = currentChartIndex === chartKeys.length - 1;
+        }
+
+        async function switchChart(newChartKeyOrIndex) {
+            let newIndex;
+            if (typeof newChartKeyOrIndex === 'string') {
+                newIndex = chartKeys.indexOf(newChartKeyOrIndex);
+            } else {
+                newIndex = newChartKeyOrIndex;
+            }
+
+            if (newIndex === -1 || newIndex === currentChartIndex) return;
+
+            currentChartIndex = newIndex;
+
+            chartDisplayArea.classList.add('chart-transition-out');
+            updateNavigationState();
+
+            setTimeout(async () => {
+                await chartMap[chartKeys[currentChartIndex]].render();
+                chartDisplayArea.classList.remove('chart-transition-out');
+            }, 0); 
+        }
+
+        // --- Inicialización ---
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            chartKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = chartMap[key].label;
+                chartSelector.appendChild(option);
+            });
+
+            chartSelector.addEventListener('change', (event) => {
+                switchChart(event.target.value);
+            });
+
+            prevChartButton.addEventListener('click', () => {
+                if (currentChartIndex > 0) {
+                    switchChart(currentChartIndex - 1);
+                }
+            });
+
+            nextChartButton.addEventListener('click', () => {
+                if (currentChartIndex < chartKeys.length - 1) {
+                    switchChart(currentChartIndex + 1);
+                }
+            });
+
+            // Cargar la primera gráfica o tabla al inicio
+            await chartMap[chartKeys[currentChartIndex]].render();
+            updateNavigationState();
+        });
+    </script>
+</body>
+</html>

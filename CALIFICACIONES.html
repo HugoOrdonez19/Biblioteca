@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard de Calificaciones de Libros</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Definición de colores principales para fácil mantenimiento */
+            --primary-bg: #f9f9f9; /* Color de fondo original */
+            --main-accent: #5ca593; /* Color de acento principal original */
+            --dark-accent: #2d6c68; /* Color de título original */
+            --text-color: #333; /* Color de texto general para contraste suave */
+            --hover-bg: #dce8e5; /* Color de hover de tabla original */
+            --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
+            --button-text-color: white;
+            --shadow-color: rgba(0, 0, 0, 0.08); /* Sombra suave para elementos flotantes */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif; /* Fuente: Roboto */
+            background-color: var(--primary-bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark-accent);
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Contenedor para el menú desplegable y botones de navegación */
+        .navigation-container {
+            display: flex;
+            flex-wrap: nowrap; /* Mantiene los elementos en una fila en pantallas grandes */
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Espacio entre elementos */
+            margin-bottom: 40px; /* Más espacio debajo de la navegación */
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Estilos para los botones Anterior/Siguiente */
+        .nav-button {
+            background-color: var(--main-accent);
+            color: var(--button-text-color);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            white-space: nowrap; /* Evita que el texto se rompa */
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background-color: var(--button-active-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .nav-button:disabled {
+            background-color: #cccccc; /* Gris para botones deshabilitados */
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        /* Estilos para el menú desplegable */
+        .chart-dropdown {
+            padding: 10px 25px 10px 15px; /* Más padding a la derecha para la flecha SVG */
+            border: 1px solid var(--main-accent);
+            border-radius: 8px;
+            background-color: white;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: var(--text-color);
+            box-shadow: 0 2px 4px var(--shadow-color);
+            appearance: none; /* Elimina la flecha de dropdown predeterminada del navegador */
+            /* Añade una flecha SVG personalizada como fondo */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235ca593'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            cursor: pointer;
+            outline: none; /* Eliminar el contorno al enfocar */
+        }
+
+        #chartDisplayArea {
+            width: 100%;
+            max-width: 900px; /* Ancho máximo estandarizado */
+            min-height: 500px; /* Altura mínima estandarizada */
+            height: auto; /* Permite que la altura se ajuste al contenido si es necesario */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: none; /* Sin transición para cambios instantáneos */
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            background-color: white; /* Añadido para el fondo de la "tarjeta" */
+            border-radius: 10px; /* Añadido para esquinas redondeadas */
+            box-shadow: 0 6px 18px var(--shadow-color); /* Añadido para la sombra */
+            padding: 20px; /* Añadido para el padding de la "tarjeta" */
+        }
+
+        /* Clase para aplicar estilo de "tarjeta" (usada para gráficas Chart.js) */
+        .card-style {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px var(--shadow-color);
+            padding: 20px;
+        }
+
+        /* Clases para animación de transición (estas ya no tendrán efecto visual) */
+        .chart-transition-out {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Estilos genéricos para los canvas de Chart.js */
+        .chartjs-canvas {
+            max-width: 800px; /* Ancho máximo estandarizado */
+            width: 100%;
+            height: 400px; /* Altura estandarizada para la mayoría de las gráficas */
+            box-sizing: border-box; /* Incluye padding y borde en el ancho/alto */
+        }
+        
+        /* Ajuste para el slider */
+        #yearSlider {
+            width: 80%; /* Ancho del slider */
+            max-width: 600px; /* Max-width para el slider */
+            margin-top: 15px; /* Espacio entre la gráfica y el slider */
+        }
+        
+        #selectedYearDisplayContainer {
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px; /* Ajustado el tamaño de fuente para el texto del año */
+            margin-top: -15px; /* Acercar el texto al slider */
+            color: var(--text-color);
+        }
+        #selectedYear {
+            font-weight: normal; /* Asegura que no sea negrita por defecto si se hereda */
+            font-size: 14px;
+        }
+
+
+        /* Responsividad para pantallas más pequeñas */
+        @media (max-width: 768px) {
+            .navigation-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .nav-button, .chart-dropdown {
+                width: 90%;
+                text-align: center;
+            }
+            .chart-dropdown {
+                background-position: right 15px center;
+            }
+            #chartDisplayArea {
+                gap: 15px;
+                min-height: 300px; /* Mantenemos min-height para asegurar espacio */
+                height: auto; /* Permite que se ajuste para evitar recortes severos en pantallas pequeñas */
+                padding: 15px; /* Ajuste el padding para pantallas pequeñas */
+            }
+            .chartjs-canvas {
+                padding: 0; /* Ya tiene padding el contenedor */
+                height: 300px; /* Ajuste de altura para móvil */
+            }
+            h1 {
+                font-size: 24px;
+            }
+            #yearSlider {
+                width: 90%;
+            }
+            #selectedYearDisplayContainer {
+                font-size: 12px;
+            }
+            #selectedYear {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navigation-container">
+        <button id="prevChartButton" class="nav-button">Anterior</button>
+        <select id="chartSelector" class="chart-dropdown">
+            <!-- Las opciones se generarán dinámicamente con JavaScript -->
+        </select>
+        <button id="nextChartButton" class="nav-button">Siguiente</button>
+    </div>
+
+    <div id="chartDisplayArea" class="card-style">
+        <!-- Las gráficas se renderizarán aquí -->
+    </div>
+
+    <script>
+        // Array para almacenar los datos de cada JSON una vez cargados
+        const chartData = {};
+        const chartInstances = {}; // Para almacenar instancias de Chart.js y poder destruirlas
+
+        // Referencias a los elementos del DOM
+        const chartDisplayArea = document.getElementById('chartDisplayArea');
+        const chartSelector = document.getElementById('chartSelector');
+        const prevChartButton = document.getElementById('prevChartButton');
+        const nextChartButton = document.getElementById('nextChartButton');
+
+        // --- Funciones para renderizar cada tipo de gráfica ---
+
+        async function renderCalificacionesChart() {
+            try {
+                const jsonFileName = 'calificaciones_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                // Destruir la instancia anterior del gráfico si existe
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'calificacionesChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item['Calificación']);
+                const totalLeidos = data.map(item => item['Cantidad de Libros']);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Libros por Calificación',
+                                data: totalLeidos,
+                                backgroundColor: 'rgba(92, 165, 147, 1)',
+                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                yAxisID: 'y',
+                                borderRadius: 8,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            title: {
+                                display: true,
+                                text: 'Calificaciones',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto',
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Libros leídos agrupados por calificación dada',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal',
+                                },
+                                padding: {
+                                    bottom: 30,
+                                    top: 0
+                                },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Calificación',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                                grid: {
+                                    display: false,
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Cantidad de Libros',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1000, // Animación para la carga inicial de la gráfica
+                            easing: 'easeOutQuart'
+                        },
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Calificaciones":', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de calificaciones.</p>';
+            }
+        }
+
+        async function renderCalificacionesPorAnioChart() {
+            try {
+                const jsonFileName = 'calificaciones_por_anio_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'calificacionesPorAnioChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const yearSlider = document.createElement('input');
+                yearSlider.type = 'range';
+                yearSlider.id = 'yearSlider';
+                yearSlider.min = Math.min(...chartData[jsonFileName].map(item => item["Año"]));
+                yearSlider.max = Math.max(...chartData[jsonFileName].map(item => item["Año"]));
+                yearSlider.step = 1;
+                yearSlider.value = yearSlider.max; // Set initial value to the max year
+                chartDisplayArea.appendChild(yearSlider);
+
+                const selectedYearDisplayContainer = document.createElement('p');
+                selectedYearDisplayContainer.id = 'selectedYearDisplayContainer';
+                selectedYearDisplayContainer.innerHTML = `Año seleccionado: <span id="selectedYear">${yearSlider.value}</span>`;
+                chartDisplayArea.appendChild(selectedYearDisplayContainer);
+
+                const selectedYearDisplay = document.getElementById('selectedYear');
+
+
+                // Función para filtrar y procesar datos por año
+                function filterDataByYear(year) {
+                    const dataForYear = chartData[jsonFileName].filter(item => item["Año"] === year);
+                    return {
+                        labels: dataForYear.map(item => item["Calificación"]),
+                        values: dataForYear.map(item => item["Cantidad"])
+                    };
+                }
+
+                const initialYear = parseInt(yearSlider.value);
+                const initialData = filterDataByYear(initialYear);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: initialData.labels,
+                        datasets: [{
+                            label: `Libros Leídos (${initialYear})`,
+                            data: initialData.values,
+                            backgroundColor: 'rgba(92, 165, 147, 1)',
+                            hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Calificaciones por Año',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto'
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Libros leídos agrupados por calificación (filtrado por año)',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal',
+                                },
+                                padding: {
+                                    bottom: 25,
+                                    top: 0
+                                },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Calificación',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    }
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Cantidad de Libros',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal'
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                },
+                                // Eliminamos el min y max fijos para permitir escalado dinámico
+                                // min: 0,
+                                // max: 30
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    },
+                    plugins: [ChartDataLabels],
+                });
+
+                // Actualizar gráfica cuando se mueve el slider
+                yearSlider.addEventListener('input', () => {
+                    const currentSelectedYear = parseInt(yearSlider.value);
+                    selectedYearDisplay.textContent = currentSelectedYear;
+
+                    const updatedData = filterDataByYear(currentSelectedYear);
+
+                    chartInstances.currentChart.data.labels = updatedData.labels;
+                    chartInstances.currentChart.data.datasets[0].data = updatedData.values;
+                    chartInstances.currentChart.data.datasets[0].label = `Libros Leídos (${currentSelectedYear})`;
+                    chartInstances.currentChart.update();
+                });
+
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Calificaciones por Año":', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de calificaciones por año.</p>';
+            }
+        }
+
+        async function renderCalificacionesPromedioChart() {
+            try {
+                const jsonFileName = 'calificaciones_promedio_grafica.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'calificacionesPromedioChart';
+                canvas.classList.add('chartjs-canvas');
+                chartDisplayArea.appendChild(canvas);
+
+                const data = chartData[jsonFileName];
+                const labels = data.map(item => item['Año de Lectura']);
+                const calificacionesPromedio = data.map(item => item['Calificación Promedio Anual']);
+                const promedioGlobal = data.map(item => item['Calificación Promedio Global']);
+
+                const ctx = canvas.getContext('2d');
+                chartInstances.currentChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Calificación promedio global',
+                                data: promedioGlobal,
+                                type: 'line',
+                                borderColor: 'rgba(28, 78, 96, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointBackgroundColor: 'rgba(28, 78, 96, 1)',
+                                pointHoverRadius: 6,
+                                hoverBackgroundColor: 'rgba(100, 183, 141, 1)',
+                                tension: 0.5,
+                                yAxisID: 'y1',
+                            },
+                            {
+                                label: 'Calificaciones anuales promedio',
+                                data: calificacionesPromedio,
+                                backgroundColor: 'rgba(92, 165, 147, 1)',
+                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                yAxisID: 'y',
+                                borderRadius: 8,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                            },
+                            title: {
+                                display: true,
+                                text: 'Calificaciones promedio',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold',
+                                    family: 'Roboto',
+                                },
+                                align: 'start',
+                                color: 'var(--dark-accent)'
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Calificaciones anuales promedio y calificación promedio global',
+                                font: {
+                                    size: 14,
+                                    family: 'Roboto',
+                                    weight: 'normal',
+                                },
+                                padding: {
+                                    bottom: 10,
+                                    top: 0
+                                },
+                                align: 'start',
+                                color: 'var(--text-color)'
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Calificaciones Promedio',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return parseFloat(value).toFixed(1); // Muestra con un decimal
+                                    }
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                min: 3,
+                                max: 4.5,
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Promedio Global',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                    callback: function(value) {
+                                        return parseFloat(value).toFixed(1); // Muestra con un decimal
+                                    }
+                                },
+                                min: 3,
+                                max: 4.5,
+                            },
+                            x: {
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 12,
+                                        family: 'Roboto',
+                                        color: 'var(--text-color)'
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Año de Lectura',
+                                    font: {
+                                        family: 'Roboto',
+                                        size: 13,
+                                        weight: 'normal',
+                                    },
+                                    color: 'var(--text-color)'
+                                },
+                            },
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    },
+                    plugins: [ChartDataLabels],
+                });
+            } catch (error) {
+                console.error('Error al renderizar la gráfica "Calificaciones Promedio":', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de calificaciones promedio.</p>';
+            }
+        }
+
+
+        // --- Manejo de la navegación entre gráficas ---
+
+        const chartMap = {
+            'calificaciones': {
+                render: renderCalificacionesChart,
+                label: 'Calificaciones',
+            },
+            'calificaciones-por-anio': {
+                render: renderCalificacionesPorAnioChart,
+                label: 'Calificaciones por Año',
+            },
+            'calificaciones-promedio': {
+                render: renderCalificacionesPromedioChart,
+                label: 'Calificaciones Promedio',
+            }
+        };
+
+        const chartKeys = Object.keys(chartMap);
+        let currentChartIndex = 0;
+
+        function updateNavigationState() {
+            chartSelector.value = chartKeys[currentChartIndex];
+            prevChartButton.disabled = currentChartIndex === 0;
+            nextChartButton.disabled = currentChartIndex === chartKeys.length - 1;
+        }
+
+        async function switchChart(newChartKeyOrIndex) {
+            let newIndex;
+            if (typeof newChartKeyOrIndex === 'string') {
+                newIndex = chartKeys.indexOf(newChartKeyOrIndex);
+            } else {
+                newIndex = newChartKeyOrIndex;
+            }
+
+            if (newIndex === -1 || newIndex === currentChartIndex) return;
+
+            currentChartIndex = newIndex;
+
+            // La clase 'chart-transition-out' y el setTimeout ahora son principalmente para consistencia
+            // ya que la transición CSS se ha eliminado (transition: none;)
+            chartDisplayArea.classList.add('chart-transition-out');
+            updateNavigationState();
+
+            setTimeout(async () => {
+                await chartMap[chartKeys[currentChartIndex]].render();
+                chartDisplayArea.classList.remove('chart-transition-out');
+            }, 0); 
+        }
+
+        // --- Inicialización ---
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            chartKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = chartMap[key].label;
+                chartSelector.appendChild(option);
+            });
+
+            chartSelector.addEventListener('change', (event) => {
+                switchChart(event.target.value);
+            });
+
+            prevChartButton.addEventListener('click', () => {
+                if (currentChartIndex > 0) {
+                    switchChart(currentChartIndex - 1);
+                }
+            });
+
+            nextChartButton.addEventListener('click', () => {
+                if (currentChartIndex < chartKeys.length - 1) {
+                    switchChart(currentChartIndex + 1);
+                }
+            });
+
+            // Cargar la primera gráfica al inicio
+            await chartMap[chartKeys[currentChartIndex]].render();
+            updateNavigationState();
+        });
+    </script>
+</body>
+</html>
