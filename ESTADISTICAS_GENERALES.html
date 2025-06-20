@@ -9,15 +9,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Definición de colores principales para fácil mantenimiento */
-            --primary-bg: #FFFFFF; /* Color de fondo */
-            --main-accent: #5ca593; /* Color de acento principal */
-            --dark-accent: #2d6c68; /* Color de título oscuro */
-            --text-color: #333; /* Color de texto general */
-            --hover-bg: #dce8e5; /* Color de hover de tabla/botones */
-            --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
+            /* Colores modo claro */
+            --primary-bg: #FFFFFF;
+            --main-accent: #5ca593;
+            --dark-accent: #2d6c68;
+            --text-color: #333;
+            --hover-bg: #dce8e5;
+            --button-active-bg: #4a8c7b;
             --button-text-color: white;
-            --shadow-color: rgba(0, 0, 0, 0.25); /* Sombra suave para elementos flotantes */
+            --shadow-color: rgba(0, 0, 0, 0.25);
+            --chart-title-color: var(--dark-accent);
+            --chart-subtitle-color: var(--text-color);
+            --chart-label-color: var(--text-color);
+            --chart-grid-color: #eee;
+            --chart-bar-color: rgba(92, 165, 147, 1);
+            --chart-bar-hover-color: rgba(60, 120, 100, 1);
+        }
+
+        /* Colores modo oscuro */
+        [data-theme="dark"] {
+            --primary-bg: #252424; /* Fondo del cuerpo */
+            --main-accent: #6aa89c; /* Un poco más claro para contraste en oscuro */
+            --dark-accent: #9bb5b3; /* Títulos y elementos importantes */
+            --text-color: #e0e0e0; /* Texto general */
+            --hover-bg: #3a3939; /* Hover de tabla/botones */
+            --button-active-bg: #5c9489; /* Tono más oscuro de main-accent */
+            --button-text-color: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.5); /* Sombra más pronunciada en oscuro */
+            --card-bg: #191818; /* Fondo de las tarjetas de gráficas */
+            --chart-title-color: var(--dark-accent);
+            --chart-subtitle-color: var(--text-color);
+            --chart-label-color: var(--text-color);
+            --chart-grid-color: #444; /* Líneas de la cuadrícula más oscuras */
+            --chart-bar-color: rgba(106, 168, 156, 0.8); /* Barras del histograma */
+            --chart-bar-hover-color: rgba(90, 150, 138, 1); /* Hover de barras */
         }
 
         body {
@@ -31,6 +56,7 @@
             min-height: 100vh;
             color: var(--text-color);
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave para el modo */
         }
 
         h1 {
@@ -40,9 +66,9 @@
             margin-bottom: 30px;
             text-align: center;
             width: 100%;
+            transition: color 0.3s ease;
         }
 
-        /* Contenedor para el menú desplegable y botones de navegación */
         .navigation-container {
             display: flex;
             flex-wrap: nowrap;
@@ -54,7 +80,6 @@
             max-width: 900px;
         }
 
-        /* Estilos para los botones Anterior/Siguiente */
         .nav-button {
             background-color: var(--main-accent);
             color: var(--button-text-color);
@@ -64,7 +89,7 @@
             font-size: 10px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
             box-shadow: 0 2px 4px var(--shadow-color);
             white-space: nowrap;
         }
@@ -82,71 +107,81 @@
             opacity: 0.7;
         }
 
-        /* Estilos para el menú desplegable */
         .chart-dropdown {
             padding: 9px 25px 9px 15px;
             border: 1px solid var(--main-accent);
             border-radius: 8px;
-            background-color: white;
+            background-color: var(--primary-bg); /* Cambiado para que respete el tema */
             font-family: 'Roboto', sans-serif;
             font-size: 12px;
             color: var(--text-color);
             box-shadow: 0 2px 4px var(--shadow-color);
             appearance: none;
+            /* Background image para la flecha del dropdown, ajusta el color para ambos modos */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235ca593'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 10px center;
             background-size: 20px;
             cursor: pointer;
             outline: none;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
+
+        [data-theme="dark"] .chart-dropdown {
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236aa89c'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+             border-color: var(--main-accent);
+        }
+
 
         #chartDisplayArea {
             width: 100%;
-            max-width: 800px; /* Ancho máximo estandarizado */
-            min-height: 400px; /* Altura mínima estandarizada para gráficas */
-            height: auto; /* Permite que la altura se ajuste al contenido */
+            max-width: 800px;
+            min-height: 400px;
+            height: auto;
             display: flex;
             flex-wrap: wrap;
-            justify-content: center; /* Alineación vertical por defecto */
+            justify-content: center;
             align-items: center;
             gap: 25px;
             opacity: 1;
             transform: translateY(0);
-            transition: none; /* Sin transición para cambios instantáneos */
+            transition: none;
             box-sizing: border-box;
             position: relative;
         }
 
-        /* Clase para aplicar estilo de "tarjeta" dinámicamente */
         .card-style {
-            background-color: white;
+            background-color: var(--primary-bg); /* Ajuste para el modo oscuro */
             border-radius: 10px;
             box-shadow: 0 6px 18px var(--shadow-color);
             padding: 20px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        /* Específico para el modo oscuro */
+        [data-theme="dark"] .card-style {
+            background-color: var(--card-bg); /* Usa el color específico de tarjeta para dark mode */
         }
 
-        /* Animación de transición (solo opacidad y transformación, no fondo) */
+
         .chart-transition-out {
             opacity: 0;
             transform: translateY(20px);
         }
 
-        /* Estilos para indicadores (se mantiene aunque ya no haya en este archivo por consistencia) */
         .indicators-grid {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: flex-start; /* Alinea los indicadores en la parte superior de su línea */
+            align-items: flex-start;
             gap: 20px;
             width: 100%;
-            padding-bottom: 375px; /* Esto probablemente necesite ajuste si no hay indicadores */
+            padding-bottom: 375px;
         }
 
         .indicator {
             text-align: center;
             background-color: var(--main-accent);
-            color: white;
+            color: white; /* El texto en el indicador siempre blanco o muy claro */
             padding: 10px 10px 10px 10px;
             border-radius: 10px;
             width: 150px;
@@ -154,6 +189,7 @@
             user-select: none;
             flex-shrink: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         .indicator .value {
             font-size: 32px;
@@ -167,22 +203,73 @@
             min-height: 38px;
         }
 
-        /* Estilos genéricos para los canvas de Chart.js */
         .chartjs-canvas {
-            max-width: 800px; /* Ancho máximo estandarizado */
+            max-width: 800px;
             width: 100%;
-            height: 400px; /* Altura estandarizada */
+            height: 400px;
             box-sizing: border-box;
         }
 
-        /* Ajuste específico para la gráfica de dona (Libros por Estado) */
         .donut-chart-canvas {
-            max-width: 600px; /* Un poco más pequeño para donas */
-            height: 400px; /* Altura estandarizada para donas, igual que otros canvas */
-            box-sizing: border-box; /* Asegura que el padding/borde se incluya en la dimensión */
+            max-width: 600px;
+            height: 400px;
+            box-sizing: border-box;
         }
 
-        /* Responsividad para pantallas más pequeñas */
+        /* Estilos para el interruptor de modo nocturno */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            position: fixed; /* O absolute, según dónde lo quieras */
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 24px;
+            position: relative;
+            width: 48px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 16px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 16px;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--main-accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Responsividad */
         @media (max-width: 768px) {
             .navigation-container {
                 flex-direction: column;
@@ -199,10 +286,10 @@
                 gap: 15px;
                 min-height: 300px;
                 height: auto;
-                padding: 15px; /* Ajuste el padding para pantallas pequeñas */
+                padding: 15px;
             }
             .indicators-grid {
-                align-content: t; /* Para que no se centren verticalmente en pantallas pequeñas */
+                align-content: flex-start;
             }
             .indicator {
                 width: calc(50% - 10px);
@@ -217,35 +304,42 @@
             h1 {
                 font-size: 24px;
             }
+            .theme-switch-wrapper {
+                top: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+    </div>
+
     <div class="navigation-container">
         <button id="prevChartButton" class="nav-button">Anterior</button>
         <select id="chartSelector" class="chart-dropdown">
-            <!-- Las opciones se generarán dinámicamente con JavaScript -->
-        </select>
+            </select>
         <button id="nextChartButton" class="nav-button">Siguiente</button>
     </div>
 
     <div id="chartDisplayArea">
-        <!-- Las visualizaciones se renderizarán aquí -->
-    </div>
+        </div>
 
     <script>
-        // Array para almacenar los datos de cada JSON una vez cargados
         const chartData = {};
-        const chartInstances = {}; // Para almacenar instancias de Chart.js y poder destruirlas
+        const chartInstances = {};
 
-        // Referencias a los elementos del DOM
         const chartDisplayArea = document.getElementById('chartDisplayArea');
         const chartSelector = document.getElementById('chartSelector');
         const prevChartButton = document.getElementById('prevChartButton');
         const nextChartButton = document.getElementById('nextChartButton');
+        const themeToggle = document.getElementById('checkbox'); // Nuevo: Referencia al checkbox
 
-        // Función para animar el valor de un número (utilizada por los indicadores)
         function animateValue(element, targetValue, duration = 500) {
             let startTimestamp = null;
             const isFloat = targetValue.toString().includes(".");
@@ -271,10 +365,6 @@
             window.requestAnimationFrame(step);
         }
 
-        // --- Funciones para renderizar cada tipo de visualización (permanecen aquí) ---
-
-        // NOTA: renderEstadisticasGeneralesIndicators ha sido movido a ESTADISTICAS_DE_LECTURA.html
-
         async function renderLibrosPorEstadoDonutChart() {
             try {
                 const jsonFileName = 'libros_por_estado.json';
@@ -284,7 +374,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
+                chartDisplayArea.innerHTML = '';
 
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
@@ -300,12 +390,21 @@
                 const labels = data.map(item => item.Estado);
                 const values = data.map(item => item["Total Libros"]);
 
-                const colors = [
+                // Colores para el donut chart, ajustados para ambos modos
+                const lightModeColors = [
                     'rgba(92, 165, 147, 1)',
                     'rgba(135, 194, 163, 1)',
                     'rgba(173, 213, 187, 1)',
                     'rgba(45, 108, 104, 1)'
                 ];
+                const darkModeColors = [
+                    'rgba(106, 168, 156, 1)', /* Slightly brighter primary accent */
+                    'rgba(149, 203, 175, 1)',
+                    'rgba(188, 222, 201, 1)',
+                    'rgba(70, 130, 125, 1)'  /* Darker accent */
+                ];
+
+                const currentColors = document.documentElement.getAttribute('data-theme') === 'dark' ? darkModeColors : lightModeColors;
 
                 const ctx = canvas.getContext('2d');
                 chartInstances.currentChart = new Chart(ctx, {
@@ -314,8 +413,8 @@
                         labels: labels,
                         datasets: [{
                             data: values,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
+                            backgroundColor: currentColors,
+                            hoverBackgroundColor: currentColors.map(color => color.replace('1)', '0.8)')),
                             borderWidth: 0,
                             hoverOffset: 20,
                         }]
@@ -338,7 +437,7 @@
                                     weight: 'bold'
                                 },
                                 align: 'start',
-                                color: 'var(--dark-accent)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-title-color') // Dynamic color
                             },
                             subtitle: {
                                 display: true,
@@ -349,7 +448,7 @@
                                 },
                                 align: 'start',
                                 padding: { bottom: 20 },
-                                color: 'var(--text-color)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-subtitle-color') // Dynamic color
                             },
                             datalabels: {
                                 display: false,
@@ -363,7 +462,7 @@
                                         size: 12,
                                         weight: 'normal'
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color') // Dynamic color
                                 }
                             },
                             tooltip: {
@@ -401,7 +500,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
+                chartDisplayArea.innerHTML = '';
 
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
@@ -426,8 +525,8 @@
                             label: 'Frecuencia',
                             data: values,
                             barPercentage: 1.5,
-                            backgroundColor: 'rgba(92, 165, 147, 1)',
-                            hoverBackgroundColor: 'rgba(60, 120, 100, 1)',
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color'), // Dynamic color
+                            hoverBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-hover-color'), // Dynamic color
                             borderRadius: 0
                         }]
                     },
@@ -445,7 +544,7 @@
                                     weight: 'bold'
                                 },
                                 align: 'start',
-                                color: 'var(--dark-accent)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
                                 display: true,
@@ -456,7 +555,7 @@
                                 },
                                 align: 'start',
                                 padding: { bottom: 20 },
-                                color: 'var(--text-color)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-subtitle-color')
                             },
                             datalabels: {
                                 display: false,
@@ -471,9 +570,9 @@
                                         size: 13,
                                         family: 'Roboto'
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
-                                ticks: { font: { size: 12 }, color: 'var(--text-color)' },
+                                ticks: { font: { size: 12 }, color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color') },
                                 grid: { display: false }
                             },
                             y: {
@@ -484,10 +583,10 @@
                                         size: 13,
                                         family: 'Roboto'
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
-                                ticks: { font: { size: 12 }, color: 'var(--text-color)' },
-                                grid: { color: '#eee' }
+                                ticks: { font: { size: 12 }, color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color') },
+                                grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--chart-grid-color') }
                             }
                         }
                     },
@@ -508,7 +607,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
+                chartDisplayArea.innerHTML = '';
 
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
@@ -533,8 +632,8 @@
                             label: 'Frecuencia',
                             data: values,
                             barPercentage: 1.5,
-                            backgroundColor: 'rgba(92, 165, 147, 1)',
-                            hoverBackgroundColor: 'rgba(60, 120, 100, 1)',
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color'), // Dynamic color
+                            hoverBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-hover-color'), // Dynamic color
                             borderRadius: 0
                         }]
                     },
@@ -552,7 +651,7 @@
                                     weight: 'bold'
                                 },
                                 align: 'start',
-                                color: 'var(--dark-accent)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
                                 display: true,
@@ -563,7 +662,7 @@
                                 },
                                 align: 'start',
                                 padding: { bottom: 20 },
-                                color: 'var(--text-color)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-subtitle-color')
                             },
                             datalabels: {
                                 display: false,
@@ -578,9 +677,9 @@
                                         size: 13,
                                         family: 'Roboto'
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
-                                ticks: { font: { size: 12 }, color: 'var(--text-color)' },
+                                ticks: { font: { size: 12 }, color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color') },
                                 grid: { display: false }
                             },
                             y: {
@@ -591,10 +690,10 @@
                                         size: 13,
                                         family: 'Roboto'
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
-                                ticks: { font: { size: 12 }, color: 'var(--text-color)' },
-                                grid: { color: '#eee' }
+                                ticks: { font: { size: 12 }, color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color') },
+                                grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--chart-grid-color') }
                             }
                         }
                     },
@@ -606,11 +705,7 @@
             }
         }
 
-
-        // --- Manejo de la navegación entre visualizaciones ---
-
         const chartMap = {
-            // Se elimina 'general-indicators' de este chartMap
             'book-status-donut': {
                 render: renderLibrosPorEstadoDonutChart,
                 label: 'Libros ordenados por Estado',
@@ -629,7 +724,7 @@
         };
 
         const chartKeys = Object.keys(chartMap);
-        let currentChartIndex = 0; // Se inicializa a 0, que ahora será 'book-status-donut'
+        let currentChartIndex = 0;
 
         function updateNavigationState() {
             chartSelector.value = chartKeys[currentChartIndex];
@@ -652,22 +747,25 @@
             chartDisplayArea.classList.add('chart-transition-out');
             updateNavigationState();
 
-            // Ajustar el estilo de tarjeta y alineación explícitamente
             const isIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
             if (isIndicator) {
                 chartDisplayArea.classList.remove('card-style');
                 chartDisplayArea.style.justifyContent = 'flex-start';
-                chartDisplayArea.style.padding = '0px'; /* Sin padding para indicadores */
+                chartDisplayArea.style.padding = '0px';
                 chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
                 chartDisplayArea.style.borderRadius = '0';
                 chartDisplayArea.style.boxShadow = 'none';
             } else {
                 chartDisplayArea.classList.add('card-style');
                 chartDisplayArea.style.justifyContent = 'center';
-                chartDisplayArea.style.padding = '20px'; /* Con padding para gráficas tipo tarjeta */
-                chartDisplayArea.style.backgroundColor = 'white';
+                chartDisplayArea.style.padding = '20px';
+                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)'; // Usar la variable CSS
                 chartDisplayArea.style.borderRadius = '10px';
                 chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
+                 // Asegurarse de que el fondo de la tarjeta se actualice al cambiar el tema
+                if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                     chartDisplayArea.style.backgroundColor = 'var(--card-bg)';
+                }
             }
 
             setTimeout(async () => {
@@ -691,9 +789,87 @@
             }, 50);
         }
 
-        // --- Inicialización ---
+        // --- Dark Mode Logic ---
+        function setPreferredTheme() {
+            // Check for parent page theme (if embedded in an iframe)
+            try {
+                if (window.parent && window.parent.document && window.parent.document.body.classList.contains('dark-mode')) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    themeToggle.checked = true;
+                    return;
+                }
+            } catch (e) {
+                // Cross-origin iframe security prevents accessing parent document,
+                // so we fallback to local storage or system preference.
+                console.warn("Could not access parent document for theme detection (likely cross-origin). Falling back to local storage/system preference.");
+            }
 
+            // Check local storage preference
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme) {
+                document.documentElement.setAttribute('data-theme', storedTheme);
+                themeToggle.checked = (storedTheme === 'dark');
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                // Check system preference
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.checked = true;
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.checked = false;
+            }
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            // Re-render the current chart to apply new colors
+            switchChart(currentChartIndex);
+        }
+
+        // Listen for changes in parent's theme (if accessible)
+        // This is a basic example and might need more robust implementation depending on parent's theme logic
+        try {
+            if (window.parent && window.parent.document) {
+                const parentObserver = new MutationObserver((mutations) => {
+                    mutations.forEach(mutation => {
+                        if (mutation.attributeName === 'class' && mutation.target === window.parent.document.body) {
+                            if (window.parent.document.body.classList.contains('dark-mode')) {
+                                if (document.documentElement.getAttribute('data-theme') !== 'dark') {
+                                    document.documentElement.setAttribute('data-theme', 'dark');
+                                    themeToggle.checked = true;
+                                    switchChart(currentChartIndex);
+                                }
+                            } else {
+                                if (document.documentElement.getAttribute('data-theme') !== 'light') {
+                                    document.documentElement.setAttribute('data-theme', 'light');
+                                    themeToggle.checked = false;
+                                    switchChart(currentChartIndex);
+                                }
+                            }
+                        }
+                    });
+                });
+                parentObserver.observe(window.parent.document.body, { attributes: true });
+            }
+        } catch (e) {
+            console.warn("Could not set up MutationObserver for parent document (likely cross-origin).");
+        }
+
+
+        // --- Inicialización ---
         document.addEventListener('DOMContentLoaded', async () => {
+            // Set initial theme based on preference
+            setPreferredTheme();
+
+            // Event listener for the theme toggle button
+            themeToggle.addEventListener('change', toggleTheme);
+
+
             chartKeys.forEach(key => {
                 const option = document.createElement('option');
                 option.value = key;
@@ -717,11 +893,9 @@
                 }
             });
 
-            // Cargar la primera visualización al inicio y ajustar estilos
             await chartMap[chartKeys[currentChartIndex]].render();
             updateNavigationState();
 
-            // Ajustar los estilos iniciales basados en si la primera es un indicador o una gráfica
             const isInitialIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
             if (isInitialIndicator) {
                 chartDisplayArea.classList.remove('card-style');
@@ -734,12 +908,16 @@
                 chartDisplayArea.classList.add('card-style');
                 chartDisplayArea.style.justifyContent = 'center';
                 chartDisplayArea.style.padding = '20px';
-                chartDisplayArea.style.backgroundColor = 'white';
+                // Set initial card background based on current theme
+                if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                    chartDisplayArea.style.backgroundColor = 'var(--card-bg)';
+                } else {
+                    chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
+                }
                 chartDisplayArea.style.borderRadius = '10px';
                 chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
             }
 
-            // Disparar la animación si el primer elemento es un indicador
             if (isInitialIndicator) {
                 document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
                     const target = parseFloat(valueElement.dataset.targetValue);
