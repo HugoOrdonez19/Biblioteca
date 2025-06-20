@@ -9,19 +9,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Definición de colores principales para fácil mantenimiento */
-            --primary-bg: #FFFFFF; /* Color de fondo original */
-            --main-accent: #5ca593; /* Color de acento principal original */
-            --dark-accent: #2d6c68; /* Color de título original */
+            /* Colores modo claro */
+            --primary-bg: #FFFFFF; /* Fondo del cuerpo */
+            --main-accent: #5ca593; /* Color de acento principal */
+            --dark-accent: #2d6c68; /* Color de título y elementos importantes */
             --text-color: #333; /* Color de texto general para contraste suave */
-            --hover-bg: #dce8e5; /* Color de hover de tabla original */
+            --hover-bg: #dce8e5; /* Color de hover de tabla/botones */
             --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
             --button-text-color: white;
             --shadow-color: rgba(0, 0, 0, 0.25); /* Sombra suave para elementos flotantes */
+            --card-bg: #FFFFFF; /* Fondo de las tarjetas de gráficas */
+            --chart-title-color: var(--dark-accent);
+            --chart-subtitle-color: var(--text-color);
+            --chart-label-color: var(--text-color);
+            --chart-grid-color: #eee;
+            --chart-bar-color: rgba(92, 165, 147, 1);
+            --chart-bar-hover-color: rgba(45, 108, 104, 1);
+            --chart-line-color: rgba(28, 78, 96, 1);
+            --chart-line-point-color: rgba(28, 78, 96, 1);
+        }
+
+        /* Colores modo oscuro */
+        [data-theme="dark"] {
+            --primary-bg: #191818; /* Fondo del cuerpo */
+            --main-accent: #6aa89c; /* Un poco más claro para contraste en oscuro */
+            --dark-accent: #9bb5b3; /* Títulos y elementos importantes */
+            --text-color: #e0e0e0; /* Texto general */
+            --hover-bg: #3a3939; /* Hover de tabla/botones */
+            --button-active-bg: #5c9489; /* Tono más oscuro de main-accent */
+            --button-text-color: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.5); /* Sombra más pronunciada en oscuro */
+            --card-bg: #252424; /* Fondo de las tarjetas de gráficas */
+            --chart-title-color: var(--dark-accent);
+            --chart-subtitle-color: var(--text-color);
+            --chart-label-color: var(--text-color);
+            --chart-grid-color: #444; /* Líneas de la cuadrícula más oscuras */
+            --chart-bar-color: rgba(106, 168, 156, 0.8); /* Barras del histograma */
+            --chart-bar-hover-color: rgba(90, 150, 138, 1); /* Hover de barras */
+            --chart-line-color: rgba(155, 181, 179, 1); /* Color de línea para modo oscuro */
+            --chart-line-point-color: rgba(155, 181, 179, 1);
         }
 
         body {
-            font-family: 'Roboto', sans-serif; /* Fuente: Roboto */
+            font-family: 'Roboto', sans-serif;
             background-color: var(--primary-bg);
             margin: 0;
             padding: 20px;
@@ -30,7 +60,8 @@
             align-items: center;
             min-height: 100vh;
             color: var(--text-color);
-            box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         h1 {
@@ -40,21 +71,20 @@
             margin-bottom: 30px;
             text-align: center;
             width: 100%;
+            transition: color 0.3s ease;
         }
 
-        /* Contenedor para el menú desplegable y botones de navegación */
         .navigation-container {
             display: flex;
-            flex-wrap: nowrap; /* Mantiene los elementos en una fila en pantallas grandes */
+            flex-wrap: nowrap;
             justify-content: center;
             align-items: center;
-            gap: 5px; /* Espacio entre elementos */
-            margin-bottom: 20px; /* Más espacio debajo de la navegación */
+            gap: 5px;
+            margin-bottom: 20px;
             width: 100%;
             max-width: 900px;
         }
 
-        /* Estilos para los botones Anterior/Siguiente */
         .nav-button {
             background-color: var(--main-accent);
             color: var(--button-text-color);
@@ -64,9 +94,9 @@
             font-size: 10px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
             box-shadow: 0 2px 4px var(--shadow-color);
-            white-space: nowrap; /* Evita que el texto se rompa */
+            white-space: nowrap;
         }
 
         .nav-button:hover:not(:disabled) {
@@ -76,164 +106,202 @@
         }
 
         .nav-button:disabled {
-            background-color: #cccccc; /* Gris para botones deshabilitados */
+            background-color: #cccccc;
             cursor: not-allowed;
             box-shadow: none;
             opacity: 0.7;
         }
 
-        /* Estilos para el menú desplegable */
         .chart-dropdown {
-            padding: 9px 25px 9px 15px; /* Más padding a la derecha para la flecha SVG */
+            padding: 9px 25px 9px 15px;
             border: 1px solid var(--main-accent);
             border-radius: 8px;
-            background-color: white;
+            background-color: var(--primary-bg);
             font-family: 'Roboto', sans-serif;
             font-size: 12px;
             color: var(--text-color);
             box-shadow: 0 2px 4px var(--shadow-color);
-            appearance: none; /* Elimina la flecha de dropdown predeterminada del navegador */
-            /* Añade una flecha SVG personalizada como fondo */
+            appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235ca593'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 10px center;
             background-size: 20px;
             cursor: pointer;
-            outline: none; /* Eliminar el contorno al enfocar */
+            outline: none;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
+        [data-theme="dark"] .chart-dropdown {
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236aa89c'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+             border-color: var(--main-accent);
+        }
+        
         #chartDisplayArea {
             width: 100%;
-            max-width: 800px; /* Ancho máximo estandarizado */
-            min-height: 400px; /* Altura mínima estandarizada */
-            height: auto; /* Permite que la altura se ajuste al contenido */
+            max-width: 800px;
+            min-height: 400px;
+            height: auto;
             display: flex;
-            flex-wrap: wrap; /* Permite que los indicadores o la gráfica se distribuyan */
+            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 25px; /* Espacio entre los indicadores */
+            gap: 25px;
             opacity: 1;
             transform: translateY(0);
-            transition: none; /* Sin transición para cambios instantáneos */
+            transition: none;
             box-sizing: border-box;
             position: relative;
-            background-color: white; /* Añadido para el fondo de la "tarjeta" */
-            border-radius: 10px; /* Añadido para esquinas redondeadas */
-            box-shadow: 0 6px 18px var(--shadow-color); /* Añadido para la sombra */
-            padding: 20px; /* Añadido para el padding de la "tarjeta" */
-            overflow: hidden; /* Asegura que no haya desbordamiento si la gráfica es más grande de lo esperado */
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 6px 18px var(--shadow-color);
+            padding: 20px;
+            overflow: hidden;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Clase para aplicar estilo de "tarjeta" */
         .card-style {
-            background-color: white;
+            background-color: var(--card-bg);
             border-radius: 10px;
             box-shadow: 0 6px 18px var(--shadow-color);
             padding: 20px;
         }
 
-        /* Clases para animación de transición (estas ya no tendrán efecto visual) */
         .chart-transition-out {
             opacity: 0;
             transform: translateY(20px);
         }
 
-        /* Estilos genéricos para los canvas de Chart.js */
         .chartjs-canvas {
-            max-width: 800px; /* Ancho máximo estandarizado */
+            max-width: 800px;
             width: 100%;
-            height: 400px; /* Altura estandarizada para la mayoría de las gráficas */
+            height: 400px;
             box-sizing: border-box;
         }
         
-        /* Ajuste específico para donas */
         .donut-chart-canvas {
-            max-width: 600px; /* Un poco más pequeño para donas */
-            height: 400px; /* Altura estandarizada para donas, igual que otros canvas */
-            box-sizing: border-box; /* Asegura que el padding/borde se incluya en la dimensión */
+            max-width: 600px;
+            height: 400px;
+            box-sizing: border-box;
+        }
+        
+        /* Estilos para el interruptor de modo nocturno */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            color: var(--text-color);
+            font-size: 14px;
+            gap: 10px;
+            transition: color 0.3s ease;
         }
 
-        /* Responsividad para pantallas más pequeñas */
+        .theme-switch {
+            display: inline-block;
+            height: 18px;
+            position: relative;
+            width: 36px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            background-color: #fff;
+            bottom: 3px;
+            content: "";
+            height: 12px;
+            left: 3px;
+            position: absolute;
+            transition: .4s;
+            width: 12px;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--main-accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
         @media (max-width: 768px) {
             .navigation-container {
-                flex-direction: column; /* Apila los elementos en pantallas pequeñas */
+                flex-direction: column;
                 gap: 15px;
             }
             .nav-button, .chart-dropdown {
-                width: 90%; /* Los elementos ocupan más ancho en móvil */
-                text-align: center; /* Centra el texto en los botones */
+                width: 90%;
+                text-align: center;
             }
             .chart-dropdown {
-                background-position: right 15px center; /* Ajusta la posición de la flecha en móvil */
+                background-position: right 15px center;
             }
             #chartDisplayArea {
                 gap: 15px;
                 min-height: 300px;
                 height: auto;
-                padding: 15px; /* Ajuste el padding para pantallas pequeñas */
+                padding: 15px;
             }
-            .chartjs-canvas, .donut-chart-canvas { /* Aplicar a todas las gráficas Chart.js */
-                padding: 0; /* Ya tiene padding el contenedor */
-                height: 300px; /* Ajustar altura para móvil */
+            .chartjs-canvas, .donut-chart-canvas {
+                padding: 0;
+                height: 300px;
             }
             h1 {
                 font-size: 24px;
+            }
+            .theme-switch-wrapper {
+                top: 10px;
+                left: 10px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
 
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+    </div>
+
     <div class="navigation-container">
         <button id="prevChartButton" class="nav-button">Anterior</button>
         <select id="chartSelector" class="chart-dropdown">
-            <!-- Las opciones se generarán dinámicamente con JavaScript -->
         </select>
         <button id="nextChartButton" class="nav-button">Siguiente</button>
     </div>
 
     <div id="chartDisplayArea" class="card-style">
-        <!-- Las gráficas se renderizarán aquí -->
     </div>
 
     <script>
-        // Array para almacenar los datos de cada JSON una vez cargados
         const chartData = {};
-        const chartInstances = {}; // Para almacenar instancias de Chart.js y poder destruirlas
+        const chartInstances = {};
 
-        // Referencias a los elementos del DOM
         const chartDisplayArea = document.getElementById('chartDisplayArea');
         const chartSelector = document.getElementById('chartSelector');
         const prevChartButton = document.getElementById('prevChartButton');
         const nextChartButton = document.getElementById('nextChartButton');
-
-        // Función para animar el valor de un número (utilizada por los indicadores, aunque estas gráficas no los usan)
-        function animateValue(element, targetValue, duration = 2000) {
-            let startTimestamp = null;
-            const isFloat = targetValue.toString().includes(".");
-            const decimalPlaces = isFloat ? targetValue.toString().split(".")[1].length : 0;
-            const startValue = 0;
-            targetValue = Number(targetValue);
-
-            function step(timestamp) {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                let currentValue = startValue + progress * (targetValue - startValue);
-
-                if (isFloat) {
-                    element.textContent = currentValue.toFixed(decimalPlaces);
-                } else {
-                    element.textContent = Math.floor(currentValue);
-                }
-
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            }
-            window.requestAnimationFrame(step);
-        }
-
-        // --- Funciones para renderizar cada tipo de gráfica ---
+        const themeToggle = document.getElementById('checkbox');
 
         async function renderLibrosLeidosAnioChart() {
             try {
@@ -244,9 +312,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
-
-                // Destruir la instancia anterior del gráfico si existe
+                chartDisplayArea.innerHTML = '';
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
                     chartInstances.currentChart = null;
@@ -261,6 +327,7 @@
                 const labels = data.map(item => item['Año de Lectura']);
                 const totalLibros = data.map(item => item['Total Libros Leídos']);
                 const acumulados = data.map(item => item['Libros Leídos Acumulados']);
+                const style = getComputedStyle(document.documentElement);
 
                 const ctx = canvas.getContext('2d');
                 chartInstances.currentChart = new Chart(ctx, {
@@ -271,8 +338,8 @@
                             {
                                 label: 'Total Libros Leídos',
                                 data: totalLibros,
-                                backgroundColor: 'rgba(92, 165, 147, 1)',
-                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                backgroundColor: style.getPropertyValue('--chart-bar-color'),
+                                hoverBackgroundColor: style.getPropertyValue('--chart-bar-hover-color'),
                                 yAxisID: 'y',
                                 borderRadius: 8,
                             },
@@ -280,12 +347,11 @@
                                 label: 'Libros Leídos Acumulados',
                                 data: acumulados,
                                 type: 'line',
-                                borderColor: 'rgba(28, 78, 96, 1)',
+                                borderColor: style.getPropertyValue('--chart-line-color'),
                                 borderWidth: 2,
                                 fill: false,
-                                pointBackgroundColor: 'rgba(28, 78, 96, 1)',
+                                pointBackgroundColor: style.getPropertyValue('--chart-line-point-color'),
                                 pointHoverRadius: 6,
-                                hoverBackgroundColor: 'rgba(100, 183, 141, 1)',
                                 tension: 0.5,
                                 yAxisID: 'y1',
                             },
@@ -298,129 +364,48 @@
                             legend: {
                                 position: 'top',
                                 labels: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
+                                    font: { size: 12, family: 'Roboto' },
+                                    color: style.getPropertyValue('--chart-label-color')
                                 },
                             },
                             title: {
                                 display: true,
                                 text: 'Libros Leídos por Año',
-                                font: {
-                                    size: 20,
-                                    weight: 'bold',
-                                    family: 'Roboto',
-                                },
+                                font: { size: 20, weight: 'bold', family: 'Roboto' },
                                 align: 'start',
-                                color: 'var(--dark-accent)'
+                                color: style.getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
                                 display: true,
                                 text: 'Cantidad de libros leídos cada año y total acumulado',
-                                font: {
-                                    size: 14,
-                                    family: 'Roboto',
-                                    weight: 'normal',
-                                },
+                                font: { size: 14, family: 'Roboto', weight: 'normal' },
                                 padding: { bottom: 10, top: 0 },
                                 align: 'start',
-                                color: 'var(--text-color)'
+                                color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: {
-                                display: false,
-                            },
+                            datalabels: { display: false },
                         },
                         scales: {
                             y: {
-                                type: 'linear',
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    text: 'Libros Leídos (Anual)',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                    callback: function(value) {
-                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
-                                    }
-                                },
-                                grid: {
-                                    drawOnChartArea: false,
-                                },
-                                min: 0,
-                                max: 90,
+                                type: 'linear', position: 'left',
+                                title: { display: true, text: 'Libros Leídos (Anual)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
+                                grid: { drawOnChartArea: false }, min: 0, max: 90,
                             },
                             y1: {
-                                type: 'linear',
-                                position: 'right',
-                                title: {
-                                    display: true,
-                                    text: 'Libros Leídos (Acumulado)',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
-                                grid: {
-                                    drawOnChartArea: false,
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                    callback: function(value) {
-                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
-                                    }
-                                },
-                                min: -50,
-                                max: 300,
+                                type: 'linear', position: 'right',
+                                title: { display: true, text: 'Libros Leídos (Acumulado)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                grid: { drawOnChartArea: false },
+                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
+                                min: -50, max: 300,
                             },
                             x: {
-                                grid: {
-                                    display: false,
-                                },
-                                ticks: {
-                                    autoSkip: true,
-                                    maxRotation: 45,
-                                    minRotation: 0,
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Año de Lectura',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
+                                grid: { display: false },
+                                ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
+                                title: { display: true, text: 'Año de Lectura', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
                             },
                         },
-                        animation: {
-                            duration: 1000,
-                            easing: 'easeOutQuart'
-                        }
+                        animation: { duration: 1000, easing: 'easeOutQuart' }
                     },
                     plugins: [ChartDataLabels],
                 });
@@ -439,8 +424,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
-
+                chartDisplayArea.innerHTML = '';
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
                     chartInstances.currentChart = null;
@@ -455,6 +439,7 @@
                 const labels = data.map(item => item['Año de Lectura']);
                 const totalAutores = data.map(item => item['Autores Únicos Anuales']);
                 const acumulados = data.map(item => item['Total Acumulado de Autores Únicos']);
+                const style = getComputedStyle(document.documentElement);
 
                 const ctx = canvas.getContext('2d');
                 chartInstances.currentChart = new Chart(ctx, {
@@ -465,8 +450,8 @@
                             {
                                 label: 'Autores Leídos',
                                 data: totalAutores,
-                                backgroundColor: 'rgba(92, 165, 147, 1)',
-                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                backgroundColor: style.getPropertyValue('--chart-bar-color'),
+                                hoverBackgroundColor: style.getPropertyValue('--chart-bar-hover-color'),
                                 yAxisID: 'y',
                                 borderRadius: 8,
                             },
@@ -474,12 +459,11 @@
                                 label: 'Total de Autores Leídos',
                                 data: acumulados,
                                 type: 'line',
-                                borderColor: 'rgba(28, 78, 96, 1)',
+                                borderColor: style.getPropertyValue('--chart-line-color'),
                                 borderWidth: 2,
                                 fill: false,
-                                pointBackgroundColor: 'rgba(28, 78, 96, 1)',
+                                pointBackgroundColor: style.getPropertyValue('--chart-line-point-color'),
                                 pointHoverRadius: 6,
-                                hoverBackgroundColor: 'rgba(100, 183, 141, 1)',
                                 tension: 0.5,
                                 yAxisID: 'y1',
                             },
@@ -491,130 +475,39 @@
                         plugins: {
                             legend: {
                                 position: 'top',
-                                labels: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                },
+                                labels: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
                             },
                             title: {
-                                display: true,
-                                text: 'Autores Leídos por Año',
-                                font: {
-                                    size: 20,
-                                    weight: 'bold',
-                                    family: 'Roboto',
-                                },
-                                align: 'start',
-                                color: 'var(--dark-accent)'
+                                display: true, text: 'Autores Leídos por Año',
+                                font: { size: 20, weight: 'bold', family: 'Roboto' }, align: 'start', color: style.getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
-                                display: true,
-                                text: 'Cantidad de autores leídos cada año y total acumulado',
-                                font: {
-                                    size: 14,
-                                    family: 'Roboto',
-                                    weight: 'normal',
-                                },
-                                padding: { bottom: 10, top: 0 },
-                                align: 'start',
-                                color: 'var(--text-color)'
+                                display: true, text: 'Cantidad de autores leídos cada año y total acumulado',
+                                font: { size: 14, family: 'Roboto', weight: 'normal' }, padding: { bottom: 10, top: 0 }, align: 'start', color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: {
-                                display: false,
-                            },
+                            datalabels: { display: false },
                         },
                         scales: {
                             y: {
-                                type: 'linear',
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    text: 'Autores Leídos (Anual)',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                    callback: function(value) {
-                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
-                                    }
-                                },
-                                grid: {
-                                    drawOnChartArea: false,
-                                },
-                                min: 0,
-                                max: 80,
+                                type: 'linear', position: 'left',
+                                title: { display: true, text: 'Autores Leídos (Anual)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
+                                grid: { drawOnChartArea: false }, min: 0, max: 80,
                             },
                             y1: {
-                                type: 'linear',
-                                position: 'right',
-                                title: {
-                                    display: true,
-                                    text: 'Autores Leídos (Acumulado)',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
-                                grid: {
-                                    drawOnChartArea: false,
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                    callback: function(value) {
-                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
-                                    }
-                                },
-                                min: -50,
-                                max: 250,
+                                type: 'linear', position: 'right',
+                                title: { display: true, text: 'Autores Leídos (Acumulado)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                grid: { drawOnChartArea: false },
+                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
+                                min: -50, max: 250,
                             },
                             x: {
-                                grid: {
-                                    display: false,
-                                },
-                                ticks: {
-                                    autoSkip: true,
-                                    maxRotation: 45,
-                                    minRotation: 0,
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Año de Lectura',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
+                                grid: { display: false },
+                                ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
+                                title: { display: true, text: 'Año de Lectura', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
                             },
                         },
-                        animation: {
-                            duration: 1000,
-                            easing: 'easeOutQuart'
-                        }
+                        animation: { duration: 1000, easing: 'easeOutQuart' }
                     },
                     plugins: [ChartDataLabels],
                 });
@@ -633,8 +526,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
-
+                chartDisplayArea.innerHTML = '';
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
                     chartInstances.currentChart = null;
@@ -649,6 +541,7 @@
                 const labels = data.map(item => item['Año de Lectura']);
                 const totalPaginas = data.map(item => item['Páginas Leídas Anuales']);
                 const acumulados = data.map(item => item['Total Acumulado de Páginas']);
+                const style = getComputedStyle(document.documentElement);
 
                 const ctx = canvas.getContext('2d');
                 chartInstances.currentChart = new Chart(ctx, {
@@ -659,8 +552,8 @@
                             {
                                 label: 'Páginas Leídas',
                                 data: totalPaginas,
-                                backgroundColor: 'rgba(92, 165, 147, 1)',
-                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                backgroundColor: style.getPropertyValue('--chart-bar-color'),
+                                hoverBackgroundColor: style.getPropertyValue('--chart-bar-hover-color'),
                                 yAxisID: 'y',
                                 borderRadius: 8,
                             },
@@ -668,156 +561,54 @@
                                 label: 'Total de Páginas Leídas',
                                 data: acumulados,
                                 type: 'line',
-                                borderColor: 'rgba(28, 78, 96, 1)',
+                                borderColor: style.getPropertyValue('--chart-line-color'),
                                 borderWidth: 2,
                                 fill: false,
-                                pointBackgroundColor: 'rgba(28, 78, 96, 1)',
+                                pointBackgroundColor: style.getPropertyValue('--chart-line-point-color'),
                                 pointHoverRadius: 6,
-                                hoverBackgroundColor: 'rgba(100, 183, 141, 1)',
                                 tension: 0.5,
                                 yAxisID: 'y1',
                             },
                         ],
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        responsive: true, maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'top',
-                                labels: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                },
+                                labels: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
                             },
                             title: {
-                                display: true,
-                                text: 'Páginas Leídas por Año',
-                                font: {
-                                    size: 20,
-                                    weight: 'bold',
-                                    family: 'Roboto',
-                                },
-                                align: 'start',
-                                color: 'var(--dark-accent)'
+                                display: true, text: 'Páginas Leídas por Año',
+                                font: { size: 20, weight: 'bold', family: 'Roboto' }, align: 'start', color: style.getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
-                                display: true,
-                                text: 'Cantidad de páginas leídas cada año y total acumulado',
-                                font: {
-                                    size: 14,
-                                    family: 'Roboto',
-                                    weight: 'normal',
-                                },
-                                padding: { bottom: 10, top: 0 },
-                                align: 'start',
-                                color: 'var(--text-color)'
+                                display: true, text: 'Cantidad de páginas leídas cada año y total acumulado',
+                                font: { size: 14, family: 'Roboto', weight: 'normal' }, padding: { bottom: 10, top: 0 }, align: 'start', color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: {
-                                display: false,
-                                color: 'black',
-                                anchor: 'end',
-                                align: 'top',
-                                font: {
-                                    family: 'Roboto',
-                                    size: 11,
-                                    weight: 'normal',
-                                },
-                                formatter: (value) => value.toLocaleString(),
-                            },
+                            datalabels: { display: false },
                         },
                         scales: {
                             y: {
-                                type: 'linear',
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    text: 'Páginas Leídas (Anual)',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                    callback: function(value) {
-                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
-                                    }
-                                },
-                                grid: {
-                                    drawOnChartArea: false,
-                                },
-                                min: 0,
-                                max: 25000,
+                                type: 'linear', position: 'left',
+                                title: { display: true, text: 'Páginas Leídas (Anual)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
+                                grid: { drawOnChartArea: false }, min: 0, max: 25000,
                             },
                             y1: {
-                                type: 'linear',
-                                position: 'right',
-                                title: {
-                                    display: true,
-                                    text: 'Páginas Leídas (Acumulado)',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
-                                grid: {
-                                    drawOnChartArea: false,
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                    callback: function(value) {
-                                        return Number.isInteger(value) ? value : ''; // Muestra solo enteros
-                                    }
-                                },
-                                min: -10000,
-                                max: 80000,
+                                type: 'linear', position: 'right',
+                                title: { display: true, text: 'Páginas Leídas (Acumulado)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                grid: { drawOnChartArea: false },
+                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
+                                min: -10000, max: 80000,
                             },
                             x: {
-                                grid: {
-                                    display: false,
-                                },
-                                ticks: {
-                                    autoSkip: true,
-                                    maxRotation: 45,
-                                    minRotation: 0,
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Año de Lectura',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
+                                grid: { display: false },
+                                ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
+                                title: { display: true, text: 'Año de Lectura', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
                             },
                         },
-                        animation: {
-                            duration: 1000,
-                            easing: 'easeOutQuart'
-                        }
+                        animation: { duration: 1000, easing: 'easeOutQuart' }
                     },
                     plugins: [ChartDataLabels],
                 });
@@ -836,8 +627,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
-
+                chartDisplayArea.innerHTML = '';
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
                     chartInstances.currentChart = null;
@@ -851,12 +641,11 @@
                 const data = chartData[jsonFileName];
                 const labels = data.map(item => item.Formato);
                 const values = data.map(item => item["Total Libros"]);
+                const style = getComputedStyle(document.documentElement);
 
                 const colors = [
-                    'rgba(92, 165, 147, 1)',
-                    'rgba(135, 194, 163, 1)',
-                    'rgba(173, 213, 187, 1)',
-                    'rgba(45, 108, 104, 1)'
+                    'rgba(92, 165, 147, 1)', 'rgba(135, 194, 163, 1)',
+                    'rgba(173, 213, 187, 1)', 'rgba(45, 108, 104, 1)'
                 ];
 
                 const ctx = canvas.getContext('2d');
@@ -865,83 +654,32 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            data: values,
-                            backgroundColor: colors,
+                            data: values, backgroundColor: colors,
                             hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
-                            borderWidth: 0,
-                            hoverOffset: 20,
+                            borderWidth: 0, hoverOffset: 20,
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: {
-                            padding: {
-                                bottom: 30,
-                            },
-                        },
+                        responsive: true, maintainAspectRatio: false,
+                        layout: { padding: { bottom: 30 } },
                         plugins: {
                             title: {
-                                display: true,
-                                text: 'Formato',
-                                font: {
-                                    size: 20,
-                                    family: 'Roboto'
-                                },
-                                align: 'start',
-                                color: 'var(--dark-accent)'
+                                display: true, text: 'Formato', font: { size: 20, family: 'Roboto' },
+                                align: 'start', color: style.getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
-                                display: true,
-                                text: 'Libros leídos agrupados por formato de lectura',
-                                font: {
-                                    size: 14,
-                                    family: 'Roboto'
-                                },
-                                align: 'start',
-                                padding: { bottom: 20 },
-                                color: 'var(--text-color)'
+                                display: true, text: 'Libros leídos agrupados por formato de lectura',
+                                font: { size: 14, family: 'Roboto' }, align: 'start',
+                                padding: { bottom: 20 }, color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: {
-                                display: false,
-                                anchor: 'end',
-                                align: 'top',
-                                font: {
-                                    family: 'Roboto',
-                                    size: 11
-                                },
-                                formatter: value => value
-                            },
+                            datalabels: { display: false },
                             legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 12,
-                                        weight: 'normal'
-                                    },
-                                    color: 'var(--text-color)'
-                                }
+                                display: true, position: 'top',
+                                labels: { font: { family: 'Roboto', size: 12 }, color: style.getPropertyValue('--chart-label-color') }
                             },
-                            tooltip: {
-                                callbacks: {
-                                    label: (context) => {
-                                        const label = context.label || '';
-                                        const value = context.raw || 0;
-                                        return `${value} libros`;
-                                    }
-                                }
-                            }
+                            tooltip: { callbacks: { label: context => `${context.raw || 0} libros` } }
                         },
-                        animation: {
-                            animateScale: true,
-                            animateRotate: true
-                        },
-                        hover: {
-                            mode: 'nearest',
-                            animationDuration: 500
-                        }
+                        animation: { animateScale: true, animateRotate: true },
                     },
                     plugins: [ChartDataLabels],
                 });
@@ -960,8 +698,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
-
+                chartDisplayArea.innerHTML = '';
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
                     chartInstances.currentChart = null;
@@ -975,12 +712,11 @@
                 const data = chartData[jsonFileName];
                 const labels = data.map(item => item["Tipo de Lectura"]);
                 const values = data.map(item => item["Total Libros"]);
+                const style = getComputedStyle(document.documentElement);
 
                 const colors = [
-                    'rgba(92, 165, 147, 1)',
-                    'rgba(135, 194, 163, 1)',
-                    'rgba(173, 213, 187, 1)',
-                    'rgba(45, 108, 104, 1)',
+                    'rgba(92, 165, 147, 1)', 'rgba(135, 194, 163, 1)',
+                    'rgba(173, 213, 187, 1)', 'rgba(45, 108, 104, 1)',
                 ];
 
                 const ctx = canvas.getContext('2d');
@@ -989,83 +725,32 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            data: values,
-                            backgroundColor: colors,
+                            data: values, backgroundColor: colors,
                             hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
-                            borderWidth: 0,
-                            hoverOffset: 20,
+                            borderWidth: 0, hoverOffset: 20,
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: {
-                            padding: {
-                                bottom: 30,
-                            },
-                        },
+                        responsive: true, maintainAspectRatio: false,
+                        layout: { padding: { bottom: 30 } },
                         plugins: {
                             title: {
-                                display: true,
-                                text: 'Tipo de Lectura',
-                                font: {
-                                    size: 20,
-                                    family: 'Roboto'
-                                },
-                                align: 'start',
-                                color: 'var(--dark-accent)'
+                                display: true, text: 'Tipo de Lectura',
+                                font: { size: 20, family: 'Roboto' }, align: 'start', color: style.getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
-                                display: true,
-                                text: 'Libros leídos agrupados por tipo de lectura',
-                                font: {
-                                    size: 14,
-                                    family: 'Roboto'
-                                },
-                                align: 'start',
-                                padding: { bottom: 20 },
-                                color: 'var(--text-color)'
+                                display: true, text: 'Libros leídos agrupados por tipo de lectura',
+                                font: { size: 14, family: 'Roboto' }, align: 'start',
+                                padding: { bottom: 20 }, color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: {
-                                display: false,
-                                anchor: 'end',
-                                align: 'top',
-                                font: {
-                                    family: 'Roboto',
-                                    size: 11
-                                },
-                                formatter: value => value
-                            },
+                            datalabels: { display: false },
                             legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 12,
-                                        weight: 'normal'
-                                    },
-                                    color: 'var(--text-color)'
-                                }
+                                display: true, position: 'top',
+                                labels: { font: { family: 'Roboto', size: 12 }, color: style.getPropertyValue('--chart-label-color') }
                             },
-                            tooltip: {
-                                callbacks: {
-                                    label: (context) => {
-                                        const label = context.label || '';
-                                        const value = context.raw || 0;
-                                        return `${value} libros`;
-                                    }
-                                }
-                            }
+                            tooltip: { callbacks: { label: context => `${context.raw || 0} libros` } }
                         },
-                        animation: {
-                            animateScale: true,
-                            animateRotate: true
-                        },
-                        hover: {
-                            mode: 'nearest',
-                            animationDuration: 500
-                        }
+                        animation: { animateScale: true, animateRotate: true },
                     },
                     plugins: [ChartDataLabels],
                 });
@@ -1074,8 +759,7 @@
                 chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica de tipo de lectura.</p>';
             }
         }
-
-        // Nueva función para renderizar la gráfica de burbujas (scatter chart)
+        
         async function renderScatterChart() {
             try {
                 const jsonFileName = 'publicacion_vs_lectura.json';
@@ -1085,8 +769,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
-
+                chartDisplayArea.innerHTML = '';
                 if (chartInstances.currentChart) {
                     chartInstances.currentChart.destroy();
                     chartInstances.currentChart = null;
@@ -1094,163 +777,61 @@
 
                 const canvas = document.createElement('canvas');
                 canvas.id = 'scatterChart';
-                canvas.classList.add('chartjs-canvas'); // Usar la clase genérica para canvas
+                canvas.classList.add('chartjs-canvas');
                 chartDisplayArea.appendChild(canvas);
 
                 const data = chartData[jsonFileName];
                 const dataset = data.map(item => ({
-                    x: item["Año de Lectura"],
-                    y: item["Año de publicación"],
-                    r: item["Total Libros Leídos"] * 6, // Multiplicar por 6 para un tamaño de burbuja visible
+                    x: item["Año de Lectura"], y: item["Año de publicación"],
+                    r: item["Total Libros Leídos"] * 6,
                 }));
-
-                // Extraer todos los años de lectura únicos para definir los ticks del eje X
                 const allReadYears = Array.from(new Set(data.map(item => item["Año de Lectura"]))).sort((a, b) => a - b);
-                
-                // Determinar el rango mínimo y máximo de años de lectura para el eje X
                 const minReadYear = Math.min(...allReadYears);
                 const maxReadYear = Math.max(...allReadYears);
-
+                const style = getComputedStyle(document.documentElement);
 
                 const ctx = canvas.getContext('2d');
                 chartInstances.currentChart = new Chart(ctx, {
                     type: 'bubble',
                     data: {
-                        datasets: [
-                            {
-                                label: 'Año Leído vs. Año de Publicación',
-                                data: dataset,
-                                backgroundColor: 'rgba(92, 165, 147, 0.85)',
-                                borderColor: 'rgba(45, 108, 104, 1)',
-                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
-                                borderWidth: 1,
-                                hoverRadius: 10,
-                            }
-                        ]
+                        datasets: [{
+                            label: 'Año Leído vs. Año de Publicación', data: dataset,
+                            backgroundColor: style.getPropertyValue('--chart-bar-color').replace('1)', '0.85)'),
+                            borderColor: style.getPropertyValue('--chart-bar-hover-color'),
+                            hoverBackgroundColor: style.getPropertyValue('--chart-bar-hover-color'),
+                            borderWidth: 1, hoverRadius: 10,
+                        }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false, // Importante para que el tamaño del canvas se ajuste
+                        responsive: true, maintainAspectRatio: false,
                         plugins: {
-                            legend: {
-                                display: false,
-                            },
+                            legend: { display: false },
                             title: {
-                                display: true,
-                                text: 'Año Leído vs. Año de Publicación',
-                                font: {
-                                    size: 20,
-                                    weight: 'bold',
-                                    family: 'Roboto',
-                                },
-                                align: 'start',
-                                color: 'var(--dark-accent)'
+                                display: true, text: 'Año Leído vs. Año de Publicación',
+                                font: { size: 20, weight: 'bold', family: 'Roboto' }, align: 'start', color: style.getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
-                                display: true,
-                                text: 'Relación entre el año de lectura y el año de publicación de los libros leídos (tamaño de la burbuja: total de libros leídos)',
-                                font: {
-                                    size: 14,
-                                    family: 'Roboto',
-                                    weight: 'normal',
-                                },
-                                padding: {
-                                    bottom: 30,
-                                    top: 0
-                                },
-                                align: 'start',
-                                color: 'var(--text-color)'
+                                display: true, text: 'Relación entre el año de lectura y el año de publicación de los libros leídos (tamaño de la burbuja: total de libros leídos)',
+                                font: { size: 14, family: 'Roboto' }, padding: { bottom: 30, top: 0 }, align: 'start', color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: {
-                                display: false, // Desactivar datalabels para burbujas a menos que se necesite mostrar 'r'
-                                color: 'black',
-                                anchor: 'end',
-                                align: 'top',
-                                font: {
-                                    family: 'Roboto',
-                                    size: 11,
-                                    weight: 'normal',
-                                },
-                                formatter: (value) => value.r / 6, // Formato para mostrar el Total Libros Leídos
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: (context) => {
-                                        return `Año de Lectura: ${context.raw.x}\nAño de Publicación: ${context.raw.y}\nTotal Libros Leídos: ${context.raw.r / 6}`;
-                                    }
-                                }
-                            }
+                            datalabels: { display: false },
+                            tooltip: { callbacks: { label: context => `Año de Lectura: ${context.raw.x}\nAño de Publicación: ${context.raw.y}\nTotal Libros Leídos: ${context.raw.r / 6}` } }
                         },
                         scales: {
                             x: {
                                 type: 'linear',
-                                title: {
-                                    display: true,
-                                    text: 'Año de Lectura',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
-                                ticks: {
-                                    autoSkip: false, // Esencial para mostrar todos los ticks
-                                    source: 'auto', // Deja que Chart.js decida los ticks, o 'labels' si quieres todos los años presentes
-                                    maxRotation: 90,
-                                    minRotation: 0,
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                    callback: function(value) {
-                                        if (Number.isInteger(value)) {
-                                            return value;
-                                        }
-                                        return null; // No mostrar tick si no es un entero
-                                    }
-                                },
-                                min: minReadYear - 1, // Establece el mínimo del eje al año más bajo de tus datos
-                                max: maxReadYear + 1, // Establece el máximo del eje al año más alto de tus datos
-                                grid: {
-                                    display: false,
-                                },
+                                title: { display: true, text: 'Año de Lectura', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                ticks: { autoSkip: false, maxRotation: 90, minRotation: 0, font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : null },
+                                min: minReadYear - 1, max: maxReadYear + 1, grid: { display: false },
                             },
                             y: {
-                                title: {
-                                    display: true,
-                                    text: 'Año de Publicación',
-                                    font: {
-                                        family: 'Roboto',
-                                        size: 13,
-                                        weight: 'normal',
-                                    },
-                                    color: 'var(--text-color)'
-                                },
+                                title: { display: true, text: 'Año de Publicación', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
                                 type: 'linear',
-                                ticks: {
-                                    font: {
-                                        size: 12,
-                                        family: 'Roboto',
-                                        color: 'var(--text-color)'
-                                    },
-                                    callback: function(value) {
-                                        if (Number.isInteger(value)) {
-                                            return value;
-                                        }
-                                        return null;
-                                    }
-                                },
-                                grid: {
-                                    drawOnChartArea: false,
-                                },
+                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : null },
+                                grid: { drawOnChartArea: false },
                             },
                         },
-                        animation: {
-                            duration: 1000, // Animación de 1 segundo para la carga inicial de la gráfica
-                            easing: 'easeOutQuart'
-                        },
+                        animation: { duration: 1000, easing: 'easeOutQuart' },
                     },
                     plugins: [ChartDataLabels],
                 });
@@ -1260,83 +841,73 @@
             }
         }
 
-
-        // --- Manejo de la navegación entre gráficas ---
-
-        // Mapeo de botones a funciones de renderizado, sus títulos para el desplegable y tipo
         const chartMap = {
-            'libros-leidos-anio': {
-                render: renderLibrosLeidosAnioChart,
-                label: 'Libros Leídos por Año',
-            },
-            'autores-leidos-anio': {
-                render: renderAutoresLeidosAnioChart,
-                label: 'Autores Leídos por Año',
-            },
-            'paginas-leidas-anio': {
-                render: renderPaginasLeidasAnioChart,
-                label: 'Páginas Leídas por Año',
-            },
-            'formato-grafica': {
-                render: renderFormatoGraficaChart,
-                label: 'Libros por Formato',
-            },
-            'tipo-lectura-grafica': {
-                render: renderTipoLecturaGraficaChart,
-                label: 'Libros por Tipo de Lectura',
-            },
-            'publicacion-vs-lectura': { // Nueva entrada para la gráfica de burbujas
-                render: renderScatterChart,
-                label: 'Año de Lectura vs. Publicación',
-            }
+            'libros-leidos-anio': { render: renderLibrosLeidosAnioChart, label: 'Libros Leídos por Año' },
+            'autores-leidos-anio': { render: renderAutoresLeidosAnioChart, label: 'Autores Leídos por Año' },
+            'paginas-leidas-anio': { render: renderPaginasLeidasAnioChart, label: 'Páginas Leídas por Año' },
+            'formato-grafica': { render: renderFormatoGraficaChart, label: 'Libros por Formato' },
+            'tipo-lectura-grafica': { render: renderTipoLecturaGraficaChart, label: 'Libros por Tipo de Lectura' },
+            'publicacion-vs-lectura': { render: renderScatterChart, label: 'Año de Lectura vs. Publicación' }
         };
 
-        const chartKeys = Object.keys(chartMap); // Array de claves para navegación secuencial
-        let currentChartIndex = 0; // Índice de la gráfica actual en chartKeys
+        const chartKeys = Object.keys(chartMap);
+        let currentChartIndex = 0;
 
-        // Función para actualizar el estado de los botones Anterior/Siguiente y el selector
         function updateNavigationState() {
-            chartSelector.value = chartKeys[currentChartIndex]; // Sincroniza el selector
-
-            // Deshabilita/habilita botones de navegación
+            chartSelector.value = chartKeys[currentChartIndex];
             prevChartButton.disabled = currentChartIndex === 0;
             nextChartButton.disabled = currentChartIndex === chartKeys.length - 1;
         }
 
-        // Función para cambiar la gráfica activa
-        async function switchChart(newChartKeyOrIndex) {
+        async function switchChart(newChartKeyOrIndex, forceRender = false) {
             let newIndex;
             if (typeof newChartKeyOrIndex === 'string') {
                 newIndex = chartKeys.indexOf(newChartKeyOrIndex);
-            } else { // Asumimos que es un índice numérico
+            } else {
                 newIndex = newChartKeyOrIndex;
             }
 
-            if (newIndex === -1 || newIndex === currentChartIndex) return; // No hacer nada si es inválido o ya es la gráfica activa
+            if (newIndex === -1 || (newIndex === currentChartIndex && !forceRender)) return;
 
-            currentChartIndex = newIndex; // Actualiza el índice global
+            if (newIndex !== currentChartIndex) {
+                 currentChartIndex = newIndex;
+            }
+            
+            updateNavigationState();
 
-            // Animación de salida (ya no hay transición CSS, pero mantenemos la clase para consistencia)
-            chartDisplayArea.classList.add('chart-transition-out');
-            updateNavigationState(); // Actualiza los botones inmediatamente para reflejar el cambio
+            if (chartInstances.currentChart) {
+                chartInstances.currentChart.destroy();
+                chartInstances.currentChart = null;
+            }
+            await chartMap[chartKeys[currentChartIndex]].render();
+        }
 
-            // Retrasar el cambio de contenido, con 0ms de retardo para hacerlo instantáneo
-            setTimeout(async () => {
-                // Renderizar la nueva gráfica
-                await chartMap[chartKeys[currentChartIndex]].render();
+        // --- Dark Mode Logic ---
+        function setPreferredTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            let themeToApply = 'light'; // Default
+            if (storedTheme) {
+                themeToApply = storedTheme;
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeToApply = 'dark';
+            }
+            document.documentElement.setAttribute('data-theme', themeToApply);
+            themeToggle.checked = (themeToApply === 'dark');
+        }
 
-                // Animación de entrada (remueve la clase para hacerla visible instantáneamente)
-                chartDisplayArea.classList.remove('chart-transition-out');
-
-                // No hay indicadores que animar en estas gráficas, pero mantenemos la estructura general
-                // setTimeout(() => { ... }, 100);
-            }, 0); // Duración de la transición CSS (ahora 0s)
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            switchChart(currentChartIndex, true); // Force re-render
         }
 
         // --- Inicialización ---
-
         document.addEventListener('DOMContentLoaded', async () => {
-            // Rellenar el menú desplegable
+            setPreferredTheme();
+            themeToggle.addEventListener('change', toggleTheme);
+
             chartKeys.forEach(key => {
                 const option = document.createElement('option');
                 option.value = key;
@@ -1344,26 +915,16 @@
                 chartSelector.appendChild(option);
             });
 
-            // Asignar listeners a los elementos de navegación
-            chartSelector.addEventListener('change', (event) => {
-                switchChart(event.target.value);
-            });
-
+            chartSelector.addEventListener('change', (event) => switchChart(event.target.value));
             prevChartButton.addEventListener('click', () => {
-                if (currentChartIndex > 0) {
-                    switchChart(currentChartIndex - 1);
-                }
+                if (currentChartIndex > 0) switchChart(currentChartIndex - 1);
             });
-
             nextChartButton.addEventListener('click', () => {
-                if (currentChartIndex < chartKeys.length - 1) {
-                    switchChart(currentChartIndex + 1);
-                }
+                if (currentChartIndex < chartKeys.length - 1) switchChart(currentChartIndex + 1);
             });
 
-            // Cargar la primera gráfica al inicio
             await chartMap[chartKeys[currentChartIndex]].render();
-            updateNavigationState(); // Establece el estado inicial de los botones y el selector
+            updateNavigationState();
         });
     </script>
 </body>
