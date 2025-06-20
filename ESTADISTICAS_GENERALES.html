@@ -18,6 +18,7 @@
             --button-active-bg: #4a8c7b;
             --button-text-color: white;
             --shadow-color: rgba(0, 0, 0, 0.25);
+            --card-bg: #FFFFFF; /* Default for light mode */
             --chart-title-color: var(--dark-accent);
             --chart-subtitle-color: var(--text-color);
             --chart-label-color: var(--text-color);
@@ -28,7 +29,7 @@
 
         /* Colores modo oscuro */
         [data-theme="dark"] {
-            --primary-bg: #252424; /* Fondo del cuerpo */
+            --primary-bg: #191818; /* Fondo del cuerpo */
             --main-accent: #6aa89c; /* Un poco más claro para contraste en oscuro */
             --dark-accent: #9bb5b3; /* Títulos y elementos importantes */
             --text-color: #e0e0e0; /* Texto general */
@@ -36,7 +37,7 @@
             --button-active-bg: #5c9489; /* Tono más oscuro de main-accent */
             --button-text-color: #ffffff;
             --shadow-color: rgba(0, 0, 0, 0.5); /* Sombra más pronunciada en oscuro */
-            --card-bg: #191818; /* Fondo de las tarjetas de gráficas */
+            --card-bg: #252424; /* Fondo de las tarjetas de gráficas */
             --chart-title-color: var(--dark-accent);
             --chart-subtitle-color: var(--text-color);
             --chart-label-color: var(--text-color);
@@ -151,15 +152,10 @@
         }
 
         .card-style {
-            background-color: var(--primary-bg); /* Ajuste para el modo oscuro */
             border-radius: 10px;
             box-shadow: 0 6px 18px var(--shadow-color);
             padding: 20px;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        /* Específico para el modo oscuro */
-        [data-theme="dark"] .card-style {
-            background-color: var(--card-bg); /* Usa el color específico de tarjeta para dark mode */
         }
 
 
@@ -220,10 +216,14 @@
         .theme-switch-wrapper {
             display: flex;
             align-items: center;
-            position: fixed; /* O absolute, según dónde lo quieras */
+            position: fixed;
             top: 20px;
-            right: 20px;
+            left: 20px; /* Cambiado de 'right' a 'left' */
             z-index: 1000;
+            color: var(--text-color); /* Color del texto del label */
+            font-size: 14px;
+            gap: 10px; /* Espacio entre el texto y el switch */
+            transition: color 0.3s ease;
         }
 
         .theme-switch {
@@ -306,7 +306,8 @@
             }
             .theme-switch-wrapper {
                 top: 10px;
-                right: 10px;
+                left: 10px; /* Cambiado para pantallas pequeñas también */
+                font-size: 12px;
             }
         }
     </style>
@@ -338,7 +339,7 @@
         const chartSelector = document.getElementById('chartSelector');
         const prevChartButton = document.getElementById('prevChartButton');
         const nextChartButton = document.getElementById('nextChartButton');
-        const themeToggle = document.getElementById('checkbox'); // Nuevo: Referencia al checkbox
+        const themeToggle = document.getElementById('checkbox');
 
         function animateValue(element, targetValue, duration = 500) {
             let startTimestamp = null;
@@ -732,22 +733,8 @@
             nextChartButton.disabled = currentChartIndex === chartKeys.length - 1;
         }
 
-        async function switchChart(newChartKeyOrIndex) {
-            let newIndex;
-            if (typeof newChartKeyOrIndex === 'string') {
-                newIndex = chartKeys.indexOf(newChartKeyOrIndex);
-            } else {
-                newIndex = newChartKeyOrIndex;
-            }
-
-            if (newIndex === -1 || newIndex === currentChartIndex) return;
-
-            currentChartIndex = newIndex;
-
-            chartDisplayArea.classList.add('chart-transition-out');
-            updateNavigationState();
-
-            const isIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
+        // Function to apply card styles based on theme and chart type
+        function applyCardStyles(isIndicator) {
             if (isIndicator) {
                 chartDisplayArea.classList.remove('card-style');
                 chartDisplayArea.style.justifyContent = 'flex-start';
@@ -759,97 +746,130 @@
                 chartDisplayArea.classList.add('card-style');
                 chartDisplayArea.style.justifyContent = 'center';
                 chartDisplayArea.style.padding = '20px';
-                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)'; // Usar la variable CSS
+                // This is crucial: dynamically get the background color
+                // from the CSS variable based on the current theme.
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                if (currentTheme === 'dark') {
+                    chartDisplayArea.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+                } else {
+                    chartDisplayArea.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-bg');
+                }
                 chartDisplayArea.style.borderRadius = '10px';
                 chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
-                 // Asegurarse de que el fondo de la tarjeta se actualice al cambiar el tema
-                if (document.documentElement.getAttribute('data-theme') === 'dark') {
-                     chartDisplayArea.style.backgroundColor = 'var(--card-bg)';
-                }
+            }
+        }
+
+
+        async function switchChart(newChartKeyOrIndex, forceRender = false) { // Added forceRender parameter
+            let newIndex;
+            if (typeof newChartKeyOrIndex === 'string') {
+                newIndex = chartKeys.indexOf(newChartKeyOrIndex);
+            } else {
+                newIndex = newChartKeyOrIndex;
             }
 
-            setTimeout(async () => {
-                if (chartInstances.currentChart) {
-                    chartInstances.currentChart.destroy();
-                    chartInstances.currentChart = null;
-                }
-                await chartMap[chartKeys[currentChartIndex]].render();
-                chartDisplayArea.classList.remove('chart-transition-out');
-            }, 0);
+            // If it's the same chart AND we are not forcing a render (e.g., from theme toggle), then return.
+            // Otherwise, proceed to render/re-render.
+            if (newIndex === -1 || (newIndex === currentChartIndex && !forceRender)) {
+                return;
+            }
 
-            setTimeout(() => {
-                if (isIndicator) {
-                    document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
-                        const target = parseFloat(valueElement.dataset.targetValue);
-                        if (!isNaN(target)) {
-                            animateValue(valueElement, target);
-                        }
-                    });
-                }
-            }, 50);
+            // Only change currentChartIndex if it's a genuinely different chart selected by user
+            if (newIndex !== currentChartIndex) {
+                 currentChartIndex = newIndex;
+                 chartDisplayArea.classList.add('chart-transition-out');
+            }
+
+
+            updateNavigationState();
+
+            const isIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
+
+            // Apply card styles immediately to update background
+            applyCardStyles(isIndicator);
+
+            // Destroy and re-render the chart
+            // This is now always executed if we reach this point, ensuring theme changes apply.
+            if (chartInstances.currentChart) {
+                chartInstances.currentChart.destroy();
+                chartInstances.currentChart = null;
+            }
+            await chartMap[chartKeys[currentChartIndex]].render();
+            chartDisplayArea.classList.remove('chart-transition-out');
+
+
+            if (isIndicator) {
+                document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                    const target = parseFloat(valueElement.dataset.targetValue);
+                    if (!isNaN(target)) {
+                        animateValue(valueElement, target);
+                    }
+                });
+            }
         }
 
         // --- Dark Mode Logic ---
         function setPreferredTheme() {
+            let themeToApply = 'light'; // Default to light
+
             // Check for parent page theme (if embedded in an iframe)
             try {
                 if (window.parent && window.parent.document && window.parent.document.body.classList.contains('dark-mode')) {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                    themeToggle.checked = true;
-                    return;
+                    themeToApply = 'dark';
                 }
             } catch (e) {
-                // Cross-origin iframe security prevents accessing parent document,
-                // so we fallback to local storage or system preference.
                 console.warn("Could not access parent document for theme detection (likely cross-origin). Falling back to local storage/system preference.");
             }
 
-            // Check local storage preference
-            const storedTheme = localStorage.getItem('theme');
-            if (storedTheme) {
-                document.documentElement.setAttribute('data-theme', storedTheme);
-                themeToggle.checked = (storedTheme === 'dark');
-            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                // Check system preference
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeToggle.checked = true;
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                themeToggle.checked = false;
+            // If not determined by parent, check local storage
+            if (themeToApply === 'light') { // Only check local storage if parent didn't set it
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme) {
+                    themeToApply = storedTheme;
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    // Check system preference
+                    themeToApply = 'dark';
+                }
             }
+
+            document.documentElement.setAttribute('data-theme', themeToApply);
+            themeToggle.checked = (themeToApply === 'dark');
+
+            // No need to call applyCardStyles here, as switchChart will handle it on initial render.
         }
 
         function toggleTheme() {
-            if (document.documentElement.getAttribute('data-theme') === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-            }
-            // Re-render the current chart to apply new colors
-            switchChart(currentChartIndex);
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+
+            // Crucial fix: Force a re-render of the current chart with the new theme
+            switchChart(currentChartIndex, true); // Pass true to forceRender
         }
 
         // Listen for changes in parent's theme (if accessible)
-        // This is a basic example and might need more robust implementation depending on parent's theme logic
         try {
             if (window.parent && window.parent.document) {
                 const parentObserver = new MutationObserver((mutations) => {
                     mutations.forEach(mutation => {
                         if (mutation.attributeName === 'class' && mutation.target === window.parent.document.body) {
-                            if (window.parent.document.body.classList.contains('dark-mode')) {
-                                if (document.documentElement.getAttribute('data-theme') !== 'dark') {
-                                    document.documentElement.setAttribute('data-theme', 'dark');
-                                    themeToggle.checked = true;
-                                    switchChart(currentChartIndex);
-                                }
-                            } else {
-                                if (document.documentElement.getAttribute('data-theme') !== 'light') {
-                                    document.documentElement.setAttribute('data-theme', 'light');
-                                    themeToggle.checked = false;
-                                    switchChart(currentChartIndex);
-                                }
+                            const isParentDarkMode = window.parent.document.body.classList.contains('dark-mode');
+                            const currentLocalTheme = document.documentElement.getAttribute('data-theme');
+
+                            if (isParentDarkMode && currentLocalTheme !== 'dark') {
+                                document.documentElement.setAttribute('data-theme', 'dark');
+                                themeToggle.checked = true;
+                                localStorage.setItem('theme', 'dark'); // Sync local storage with parent
+                                // Force re-render chart after theme change from parent
+                                switchChart(currentChartIndex, true);
+                            } else if (!isParentDarkMode && currentLocalTheme !== 'light') {
+                                document.documentElement.setAttribute('data-theme', 'light');
+                                themeToggle.checked = false;
+                                localStorage.setItem('theme', 'light'); // Sync local storage with parent
+                                // Force re-render chart after theme change from parent
+                                switchChart(currentChartIndex, true);
                             }
                         }
                     });
@@ -869,7 +889,6 @@
             // Event listener for the theme toggle button
             themeToggle.addEventListener('change', toggleTheme);
 
-
             chartKeys.forEach(key => {
                 const option = document.createElement('option');
                 option.value = key;
@@ -878,7 +897,7 @@
             });
 
             chartSelector.addEventListener('change', (event) => {
-                switchChart(event.target.value);
+                switchChart(event.target.value); // No forceRender here, as it's a genuine chart change
             });
 
             prevChartButton.addEventListener('click', () => {
@@ -893,32 +912,16 @@
                 }
             });
 
+            // Load the first visualization initially
             await chartMap[chartKeys[currentChartIndex]].render();
             updateNavigationState();
 
-            const isInitialIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
-            if (isInitialIndicator) {
-                chartDisplayArea.classList.remove('card-style');
-                chartDisplayArea.style.justifyContent = 'flex-start';
-                chartDisplayArea.style.padding = '0px';
-                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
-                chartDisplayArea.style.borderRadius = '0';
-                chartDisplayArea.style.boxShadow = 'none';
-            } else {
-                chartDisplayArea.classList.add('card-style');
-                chartDisplayArea.style.justifyContent = 'center';
-                chartDisplayArea.style.padding = '20px';
-                // Set initial card background based on current theme
-                if (document.documentElement.getAttribute('data-theme') === 'dark') {
-                    chartDisplayArea.style.backgroundColor = 'var(--card-bg)';
-                } else {
-                    chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
-                }
-                chartDisplayArea.style.borderRadius = '10px';
-                chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
-            }
+            // Ensure initial card styles are applied (this is handled by switchChart's first call)
+            const isInitialChartIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
+            applyCardStyles(isInitialChartIndicator);
 
-            if (isInitialIndicator) {
+
+            if (isInitialChartIndicator) {
                 document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
                     const target = parseFloat(valueElement.dataset.targetValue);
                     if (!isNaN(target)) {
