@@ -221,14 +221,12 @@
     <div class="navigation-container">
         <button id="prevChartButton" class="nav-button">Anterior</button>
         <select id="chartSelector" class="chart-dropdown">
-            <!-- Las opciones se generarán dinámicamente con JavaScript -->
-        </select>
+            </select>
         <button id="nextChartButton" class="nav-button">Siguiente</button>
     </div>
 
     <div id="chartDisplayArea">
-        <!-- Las visualizaciones se renderizarán aquí -->
-    </div>
+        </div>
 
     <script>
         // Array para almacenar los datos de cada JSON una vez cargados
@@ -309,6 +307,14 @@
                     indicatorsGrid.appendChild(indicatorDiv);
                 });
 
+                // Disparar animaciones después de que los elementos estén en el DOM
+                document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                    const target = parseFloat(valueElement.dataset.targetValue);
+                    if (!isNaN(target)) {
+                        animateValue(valueElement, target);
+                    }
+                });
+
             } catch (error) {
                 console.error(`Error al renderizar ${jsonFileName}:`, error);
                 chartDisplayArea.innerHTML = `<p style="color:red; text-align:center;">No se pudo cargar o renderizar la gráfica: ${chartTitle}.</p>`;
@@ -352,14 +358,12 @@
                 });
 
                 // Disparar animaciones después de que los elementos estén en el DOM
-                setTimeout(() => {
-                    document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
-                        const target = parseFloat(valueElement.dataset.targetValue);
-                        if (!isNaN(target)) {
-                            animateValue(valueElement, target);
-                        }
-                    });
-                }, 0);
+                document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                    const target = parseFloat(valueElement.dataset.targetValue);
+                    if (!isNaN(target)) {
+                        animateValue(valueElement, target);
+                    }
+                });
 
             } catch (error) {
                 console.error('Error al renderizar los indicadores de Estadísticas Generales:', error);
@@ -446,27 +450,10 @@
                 chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
             }
 
-            setTimeout(async () => {
-                // Destruir la instancia actual del gráfico si existe (útil si se introducen Chart.js más adelante)
-                if (chartInstances.currentChart) {
-                    chartInstances.currentChart.destroy();
-                    chartInstances.currentChart = null;
-                }
-                await chartMap[chartKeys[currentChartIndex]].render();
-                chartDisplayArea.classList.remove('chart-transition-out');
-            }, 0); // Transición instantánea
-
-            setTimeout(() => {
-                // Disparar las animaciones de los indicadores si el nuevo gráfico es un indicador
-                if (isIndicator) {
-                    document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
-                        const target = parseFloat(valueElement.dataset.targetValue);
-                        if (!isNaN(target)) {
-                            animateValue(valueElement, target);
-                        }
-                    });
-                }
-            }, 50); // Pequeño retardo adicional para la animación
+            // Esperar a que la función de renderizado termine
+            await chartMap[chartKeys[currentChartIndex]].render();
+            chartDisplayArea.classList.remove('chart-transition-out');
+            // La animación de los indicadores se dispara dentro de cada función de renderizado ahora.
         }
 
         // --- Inicialización ---
@@ -520,16 +507,7 @@
                 chartDisplayArea.style.borderRadius = '10px';
                 chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
             }
-
-            // Disparar las animaciones de los indicadores si la primera opción es un indicador
-            if (isInitialIndicator) {
-                document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
-                    const target = parseFloat(valueElement.dataset.targetValue);
-                    if (!isNaN(target)) {
-                        animateValue(valueElement, target);
-                    }
-                });
-            }
+            // La animación de los indicadores se dispara dentro de la función de renderizado inicial.
         });
     </script>
 </body>
