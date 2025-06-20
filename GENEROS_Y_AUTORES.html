@@ -616,12 +616,6 @@
                 tableContainer.classList.add('data-table-container'); // Esta clase ahora solo controla dimensiones y overflow
                 chartDisplayArea.appendChild(tableContainer);
 
-                const tableTitle = document.createElement('h2');
-                tableTitle.textContent = 'Libros Leídos por Autor';
-                // Añadir un margen inferior al título para separarlo de la tabla
-                tableTitle.style.marginBottom = '15px';
-                tableContainer.appendChild(tableTitle);
-
                 const tableElement = document.createElement('table');
                 tableElement.classList.add('data-table');
                 tableContainer.appendChild(tableElement);
