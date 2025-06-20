@@ -104,8 +104,8 @@
 
         #chartDisplayArea {
             width: 100%;
-            max-width: 900px; /* Ancho máximo estandarizado */
-            min-height: 500px; /* Altura mínima estandarizada */
+            max-width: 800px; /* Ancho máximo estandarizado */
+            min-height: 400px; /* Altura mínima estandarizada */
             height: auto; /* Permite que la altura se ajuste al contenido */
             display: flex;
             flex-wrap: wrap; /* Permite que los indicadores o la gráfica se distribuyan */
@@ -149,7 +149,8 @@
         /* Ajuste específico para donas */
         .donut-chart-canvas {
             max-width: 600px; /* Un poco más pequeño para donas */
-            height: auto; /* Permite que la altura se ajuste al contenido del gráfico */
+            height: 400px; /* Altura estandarizada para donas, igual que otros canvas */
+            box-sizing: border-box; /* Asegura que el padding/borde se incluya en la dimensión */
         }
 
         /* Responsividad para pantallas más pequeñas */
