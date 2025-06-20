@@ -17,7 +17,7 @@
             --hover-bg: #dce8e5; /* Color de hover de tabla original */
             --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
             --button-text-color: white;
-            --shadow-color: rgba(0, 0, 0, 0.08); /* Sombra suave para elementos flotantes */
+            --shadow-color: rgba(0, 0, 0, 0.25); /* Sombra suave para elementos flotantes */
         }
 
         body {
@@ -48,8 +48,8 @@
             flex-wrap: nowrap; /* Mantiene los elementos en una fila en pantallas grandes */
             justify-content: center;
             align-items: center;
-            gap: 20px; /* Espacio entre elementos */
-            margin-bottom: 40px; /* Más espacio debajo de la navegación */
+            gap: 5px; /* Espacio entre elementos */
+            margin-bottom: 20px; /* Más espacio debajo de la navegación */
             width: 100%;
             max-width: 900px;
         }
@@ -58,10 +58,10 @@
         .nav-button {
             background-color: var(--main-accent);
             color: var(--button-text-color);
-            padding: 10px 20px;
+            padding: 9px 16px;
             border: none;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 10px;
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
@@ -84,12 +84,12 @@
 
         /* Estilos para el menú desplegable */
         .chart-dropdown {
-            padding: 10px 25px 10px 15px; /* Más padding a la derecha para la flecha SVG */
+            padding: 9px 25px 9px 15px; /* Más padding a la derecha para la flecha SVG */
             border: 1px solid var(--main-accent);
             border-radius: 8px;
             background-color: white;
             font-family: 'Roboto', sans-serif;
-            font-size: 16px;
+            font-size: 12px;
             color: var(--text-color);
             box-shadow: 0 2px 4px var(--shadow-color);
             appearance: none; /* Elimina la flecha de dropdown predeterminada del navegador */
@@ -104,8 +104,8 @@
 
         #chartDisplayArea {
             width: 100%;
-            max-width: 900px; /* Ancho máximo estandarizado */
-            min-height: 500px; /* Altura mínima estandarizada */
+            max-width: 800px; /* Ancho máximo estandarizado */
+            min-height: 400px; /* Altura mínima estandarizada */
             height: auto; /* Permite que la altura se ajuste al contenido */
             display: flex;
             flex-wrap: wrap; /* Permite que los indicadores o la gráfica se distribuyan */
