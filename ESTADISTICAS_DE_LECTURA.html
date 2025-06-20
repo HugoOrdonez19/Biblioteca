@@ -104,7 +104,7 @@
         #chartDisplayArea {
             width: 100%;
             max-width: 800px; /* Ancho máximo estandarizado */
-            min-height: 400px; /* Altura mínima estandarizada */
+            min-height: 125px;/
             height: auto; /* Permite que la altura se ajuste al contenido */
             display: flex;
             flex-direction: column;
@@ -178,7 +178,7 @@
             height: 400px; /* Altura estandarizada */
             box-sizing: border-box;
         }
-        
+
         /* Responsividad para pantallas más pequeñas */
         @media (max-width: 768px) {
             .navigation-container {
@@ -194,8 +194,7 @@
             }
             #chartDisplayArea {
                 gap: 15px;
-                min-height: 300px;
-                height: auto;
+                height: auto; /* Se asegura que la altura se ajuste */
                 padding: 0; /* Asegura sin padding en pantallas pequeñas para este tipo */
             }
             .indicators-grid {
@@ -234,7 +233,7 @@
     <script>
         // Array para almacenar los datos de cada JSON una vez cargados
         const chartData = {};
-        const chartInstances = {}; // Para almacenar instancias de Chart.js (no usadas aquí)
+        const chartInstances = {}; // Para almacenar instancias de Chart.js (no usadas aquí, pero mantenidas)
 
         // Referencias a los elementos del DOM
         const chartDisplayArea = document.getElementById('chartDisplayArea');
@@ -268,8 +267,9 @@
             window.requestAnimationFrame(step);
         }
 
-        // --- Función para renderizar indicadores (la misma que en el archivo original) ---
+        // --- Funciones para renderizar cada tipo de visualización ---
 
+        // Función para renderizar indicadores (del archivo original ESTADISTICAS_DE_LECTURA.html)
         async function renderIndicadores(jsonFileName, chartTitle) {
             try {
                 if (!chartData[jsonFileName]) {
@@ -286,13 +286,10 @@
                 if (jsonFileName === 'totales_resumen.json') {
                     filteredData = filteredData.filter(item => item.Descripción !== 'Promedio de calificación de libros leídos');
                 }
-                // Si el indicador se movió completamente al JSON de promedios, no necesitamos un filtro de inclusión aquí,
-                // ya que la función simplemente mostrará lo que está en 'promedios_resumen.json'.
 
                 const indicatorsGrid = document.createElement('div');
                 indicatorsGrid.classList.add('indicators-grid');
                 chartDisplayArea.appendChild(indicatorsGrid);
-
 
                 filteredData.forEach(item => {
                     const indicatorDiv = document.createElement('div');
@@ -318,10 +315,69 @@
             }
         }
 
+        // Función para renderizar los indicadores de Estadísticas Generales (MOVILIZADO de ESTADISTICAS_GENERALES.html)
+        async function renderEstadisticasGeneralesIndicators() {
+            try {
+                const jsonFileName = 'estadisticas_generales_resumen.json';
+                if (!chartData[jsonFileName]) {
+                    const response = await fetch(jsonFileName);
+                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
+                    chartData[jsonFileName] = await response.json();
+                }
+
+                chartDisplayArea.innerHTML = ''; // Limpiar área
+
+                const indicatorsGrid = document.createElement('div');
+                indicatorsGrid.classList.add('indicators-grid');
+                chartDisplayArea.appendChild(indicatorsGrid);
+
+                const data = chartData[jsonFileName];
+
+                data.forEach(item => {
+                    const indicatorDiv = document.createElement('div');
+                    indicatorDiv.classList.add('indicator');
+
+                    const valueP = document.createElement('p');
+                    valueP.classList.add('value');
+                    valueP.textContent = '0'; // Valor inicial para la animación
+                    valueP.dataset.targetValue = item.Valor; // Almacenar el valor objetivo
+
+                    const labelP = document.createElement('p');
+                    labelP.classList.add('label');
+                    labelP.textContent = item.Descripción;
+
+                    indicatorDiv.appendChild(valueP);
+                    indicatorDiv.appendChild(labelP);
+                    indicatorsGrid.appendChild(indicatorDiv);
+                });
+
+                // Disparar animaciones después de que los elementos estén en el DOM
+                setTimeout(() => {
+                    document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                        const target = parseFloat(valueElement.dataset.targetValue);
+                        if (!isNaN(target)) {
+                            animateValue(valueElement, target);
+                        }
+                    });
+                }, 0);
+
+            } catch (error) {
+                console.error('Error al renderizar los indicadores de Estadísticas Generales:', error);
+                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar las estadísticas generales.</p>';
+            }
+        }
+
 
         // --- Manejo de la navegación entre visualizaciones ---
 
         const chartMap = {
+            // "Estadísticas Generales" como la primera opción
+            'general-indicators': {
+                render: renderEstadisticasGeneralesIndicators,
+                label: 'Estadísticas Generales',
+                isIndicatorChart: true
+            },
+            // Opciones originales del archivo ESTADISTICAS_DE_LECTURA.html
             'totales': {
                 render: () => renderIndicadores('totales_resumen.json', 'Estadísticas Totales'),
                 label: 'Estadísticas Totales',
@@ -337,6 +393,8 @@
                 label: 'Promedios Anuales',
                 isIndicatorChart: true
             }
+            // NOTA: Las gráficas de dona e histogramas (Libros por Estado, Distribución de Páginas,
+            // y Distribución de Años) permanecen en ESTADISTICAS_GENERALES.html según la nueva instrucción.
         };
 
         const chartKeys = Object.keys(chartMap); // Array de claves para navegación secuencial
@@ -368,28 +426,46 @@
             chartDisplayArea.classList.add('chart-transition-out');
             updateNavigationState();
 
-            // En este archivo, todas las vistas son de tipo "indicador", por lo que no hay clase .card-style
-            chartDisplayArea.classList.remove('card-style');
-            chartDisplayArea.style.justifyContent = 'flex-start'; // Alinea el contenido al inicio para indicadores
-            chartDisplayArea.style.padding = '0px'; // Sin padding para los indicadores
-            // Se eliminan background-color, border-radius y box-shadow para los indicadores para mantener su diseño original
-            chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
-            chartDisplayArea.style.borderRadius = '0';
-            chartDisplayArea.style.boxShadow = 'none';
+            // Ajustar el estilo de tarjeta y alineación explícitamente
+            const isIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
+            if (isIndicator) {
+                chartDisplayArea.classList.remove('card-style');
+                chartDisplayArea.style.justifyContent = 'flex-start';
+                chartDisplayArea.style.padding = '0px'; /* Sin padding para indicadores */
+                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
+                chartDisplayArea.style.borderRadius = '0';
+                chartDisplayArea.style.boxShadow = 'none';
+            } else {
+                // Aunque este archivo solo tiene indicadores, se mantiene la lógica
+                // por si se añaden gráficas en el futuro.
+                chartDisplayArea.classList.add('card-style');
+                chartDisplayArea.style.justifyContent = 'center';
+                chartDisplayArea.style.padding = '20px'; /* Con padding para gráficas tipo tarjeta */
+                chartDisplayArea.style.backgroundColor = 'white';
+                chartDisplayArea.style.borderRadius = '10px';
+                chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
+            }
 
             setTimeout(async () => {
+                // Destruir la instancia actual del gráfico si existe (útil si se introducen Chart.js más adelante)
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
                 await chartMap[chartKeys[currentChartIndex]].render();
                 chartDisplayArea.classList.remove('chart-transition-out');
             }, 0); // Transición instantánea
 
             setTimeout(() => {
-                // Disparar las animaciones de los indicadores
-                document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
-                    const target = parseFloat(valueElement.dataset.targetValue);
-                    if (!isNaN(target)) {
-                        animateValue(valueElement, target);
-                    }
-                });
+                // Disparar las animaciones de los indicadores si el nuevo gráfico es un indicador
+                if (isIndicator) {
+                    document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                        const target = parseFloat(valueElement.dataset.targetValue);
+                        if (!isNaN(target)) {
+                            animateValue(valueElement, target);
+                        }
+                    });
+                }
             }, 50); // Pequeño retardo adicional para la animación
         }
 
@@ -425,23 +501,36 @@
             await chartMap[chartKeys[currentChartIndex]].render();
             updateNavigationState(); // Establece el estado inicial de los botones y el selector
 
-            // Aplicar estilos iniciales para indicadores
-            chartDisplayArea.classList.remove('card-style');
-            chartDisplayArea.style.justifyContent = 'flex-start';
-            chartDisplayArea.style.padding = '0px';
-            chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
-            chartDisplayArea.style.borderRadius = '0';
-            chartDisplayArea.style.boxShadow = 'none';
+            // Aplicar estilos iniciales para indicadores (o gráficas si la primera opción es una gráfica)
+            const isInitialIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
+            if (isInitialIndicator) {
+                chartDisplayArea.classList.remove('card-style');
+                chartDisplayArea.style.justifyContent = 'flex-start';
+                chartDisplayArea.style.padding = '0px';
+                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
+                chartDisplayArea.style.borderRadius = '0';
+                chartDisplayArea.style.boxShadow = 'none';
+            } else {
+                // Aunque este archivo solo tiene indicadores, se mantiene la lógica
+                // por si se añaden gráficas en el futuro.
+                chartDisplayArea.classList.add('card-style');
+                chartDisplayArea.style.justifyContent = 'center';
+                chartDisplayArea.style.padding = '20px';
+                chartDisplayArea.style.backgroundColor = 'white';
+                chartDisplayArea.style.borderRadius = '10px';
+                chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
+            }
 
-            // Disparar las animaciones de los indicadores
-            document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
-                const target = parseFloat(valueElement.dataset.targetValue);
-                if (!isNaN(target)) {
-                    animateValue(valueElement, target);
-                }
-            });
+            // Disparar las animaciones de los indicadores si la primera opción es un indicador
+            if (isInitialIndicator) {
+                document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
+                    const target = parseFloat(valueElement.dataset.targetValue);
+                    if (!isNaN(target)) {
+                        animateValue(valueElement, target);
+                    }
+                });
+            }
         });
     </script>
 </body>
 </html>
-
