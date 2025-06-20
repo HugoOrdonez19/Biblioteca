@@ -104,7 +104,7 @@
         #chartDisplayArea {
             width: 100%;
             max-width: 800px; /* Ancho máximo estandarizado */
-            min-height: 400px; /* Altura mínima estandarizada */
+            min-height: 400px; /* Altura mínima estandarizada para gráficas */
             height: auto; /* Permite que la altura se ajuste al contenido */
             display: flex;
             flex-wrap: wrap;
@@ -132,7 +132,7 @@
             transform: translateY(20px);
         }
 
-        /* Estilos para indicadores */
+        /* Estilos para indicadores (se mantiene aunque ya no haya en este archivo por consistencia) */
         .indicators-grid {
             display: flex;
             flex-wrap: wrap;
@@ -140,7 +140,7 @@
             align-items: flex-start; /* Alinea los indicadores en la parte superior de su línea */
             gap: 20px;
             width: 100%;
-			padding-bottom: 375px;
+            padding-bottom: 375px; /* Esto probablemente necesite ajuste si no hay indicadores */
         }
 
         .indicator {
@@ -181,7 +181,7 @@
             height: 400px; /* Altura estandarizada para donas, igual que otros canvas */
             box-sizing: border-box; /* Asegura que el padding/borde se incluya en la dimensión */
         }
-        
+
         /* Responsividad para pantallas más pequeñas */
         @media (max-width: 768px) {
             .navigation-container {
@@ -271,58 +271,9 @@
             window.requestAnimationFrame(step);
         }
 
-        // --- Funciones para renderizar cada tipo de visualización ---
+        // --- Funciones para renderizar cada tipo de visualización (permanecen aquí) ---
 
-        async function renderEstadisticasGeneralesIndicators() {
-            try {
-                const jsonFileName = 'estadisticas_generales_resumen.json'; 
-                if (!chartData[jsonFileName]) {
-                    const response = await fetch(jsonFileName);
-                    if (!response.ok) throw new Error(`Error al cargar ${jsonFileName}: ${response.statusText}`);
-                    chartData[jsonFileName] = await response.json();
-                }
-
-                chartDisplayArea.innerHTML = ''; // Limpiar área
-
-                const indicatorsGrid = document.createElement('div');
-                indicatorsGrid.classList.add('indicators-grid');
-                chartDisplayArea.appendChild(indicatorsGrid);
-
-                const data = chartData[jsonFileName];
-
-                data.forEach(item => {
-                    const indicatorDiv = document.createElement('div');
-                    indicatorDiv.classList.add('indicator');
-
-                    const valueP = document.createElement('p');
-                    valueP.classList.add('value');
-                    valueP.textContent = '0'; // Valor inicial para la animación
-                    valueP.dataset.targetValue = item.Valor; // Almacenar el valor objetivo
-
-                    const labelP = document.createElement('p');
-                    labelP.classList.add('label');
-                    labelP.textContent = item.Descripción;
-
-                    indicatorDiv.appendChild(valueP);
-                    indicatorDiv.appendChild(labelP);
-                    indicatorsGrid.appendChild(indicatorDiv);
-                });
-
-                // Disparar animaciones después de que los elementos estén en el DOM
-                setTimeout(() => {
-                    document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
-                        const target = parseFloat(valueElement.dataset.targetValue);
-                        if (!isNaN(target)) {
-                            animateValue(valueElement, target);
-                        }
-                    });
-                }, 0);
-                
-            } catch (error) {
-                console.error('Error al renderizar los indicadores de Estadísticas Generales:', error);
-                chartDisplayArea.innerHTML = '<p style="color:red; text-align:center;">No se pudo cargar o renderizar las estadísticas generales.</p>';
-            }
-        }
+        // NOTA: renderEstadisticasGeneralesIndicators ha sido movido a ESTADISTICAS_DE_LECTURA.html
 
         async function renderLibrosPorEstadoDonutChart() {
             try {
@@ -659,11 +610,7 @@
         // --- Manejo de la navegación entre visualizaciones ---
 
         const chartMap = {
-            'general-indicators': {
-                render: renderEstadisticasGeneralesIndicators,
-                label: 'Estadísticas Generales',
-                isIndicatorChart: true
-            },
+            // Se elimina 'general-indicators' de este chartMap
             'book-status-donut': {
                 render: renderLibrosPorEstadoDonutChart,
                 label: 'Libros ordenados por Estado',
@@ -682,7 +629,7 @@
         };
 
         const chartKeys = Object.keys(chartMap);
-        let currentChartIndex = 0;
+        let currentChartIndex = 0; // Se inicializa a 0, que ahora será 'book-status-donut'
 
         function updateNavigationState() {
             chartSelector.value = chartKeys[currentChartIndex];
@@ -724,6 +671,10 @@
             }
 
             setTimeout(async () => {
+                if (chartInstances.currentChart) {
+                    chartInstances.currentChart.destroy();
+                    chartInstances.currentChart = null;
+                }
                 await chartMap[chartKeys[currentChartIndex]].render();
                 chartDisplayArea.classList.remove('chart-transition-out');
             }, 0);
