@@ -9,15 +9,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Definición de colores principales para fácil mantenimiento */
-            --primary-bg: #FFFFFF; /* Color de fondo original */
-            --main-accent: #5ca593; /* Color de acento principal original */
-            --dark-accent: #2d6c68; /* Color de título original */
+            /* Colores modo claro */
+            --primary-bg: #FFFFFF; /* Fondo del cuerpo */
+            --main-accent: #5ca593; /* Color de acento principal */
+            --dark-accent: #2d6c68; /* Color de título y elementos importantes */
             --text-color: #333; /* Color de texto general para contraste suave */
-            --hover-bg: #dce8e5; /* Color de hover de tabla original */
+            --hover-bg: #dce8e5; /* Color de hover de tabla/botones */
             --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
             --button-text-color: white;
             --shadow-color: rgba(0, 0, 0, 0.25); /* Sombra suave para elementos flotantes */
+            --card-bg: #FFFFFF; /* Fondo de las tarjetas de gráficas */
+            --chart-title-color: var(--dark-accent);
+            --chart-subtitle-color: var(--text-color);
+            --chart-label-color: var(--text-color);
+            --chart-grid-color: #eee;
+            --chart-bar-color: rgba(92, 165, 147, 1);
+            --chart-bar-hover-color: rgba(45, 108, 104, 1);
+        }
+
+        /* Colores modo oscuro */
+        [data-theme="dark"] {
+            --primary-bg: #191818; /* Fondo del cuerpo */
+            --main-accent: #6aa89c; /* Un poco más claro para contraste en oscuro */
+            --dark-accent: #9bb5b3; /* Títulos y elementos importantes */
+            --text-color: #e0e0e0; /* Texto general */
+            --hover-bg: #3a3939; /* Hover de tabla/botones */
+            --button-active-bg: #5c9489; /* Tono más oscuro de main-accent */
+            --button-text-color: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.5); /* Sombra más pronunciada en oscuro */
+            --card-bg: #252424; /* Fondo de las tarjetas de gráficas */
+            --chart-title-color: var(--dark-accent);
+            --chart-subtitle-color: var(--text-color);
+            --chart-label-color: var(--text-color);
+            --chart-grid-color: #444; /* Líneas de la cuadrícula más oscuras */
+            --chart-bar-color: rgba(106, 168, 156, 0.8); /* Barras del histograma */
+            --chart-bar-hover-color: rgba(90, 150, 138, 1); /* Hover de barras */
         }
 
         canvas {
@@ -36,6 +62,7 @@
             min-height: 100vh;
             color: var(--text-color);
             box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave para el modo */
         }
 
         h1 {
@@ -45,6 +72,7 @@
             margin-bottom: 30px;
             text-align: center;
             width: 100%;
+            transition: color 0.3s ease;
         }
 
         /* Contenedor para el menú desplegable y botones de navegación */
@@ -69,7 +97,7 @@
             font-size: 10px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
             box-shadow: 0 2px 4px var(--shadow-color);
             white-space: nowrap; /* Evita que el texto se rompa */
         }
@@ -92,7 +120,7 @@
             padding: 9px 25px 9px 15px; /* Más padding a la derecha para la flecha SVG */
             border: 1px solid var(--main-accent);
             border-radius: 8px;
-            background-color: white;
+            background-color: var(--primary-bg); /* Cambiado para que respete el tema */
             font-family: 'Roboto', sans-serif;
             font-size: 12px;
             color: var(--text-color);
@@ -105,6 +133,12 @@
             background-size: 20px;
             cursor: pointer;
             outline: none; /* Eliminar el contorno al enfocar */
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .chart-dropdown {
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236aa89c'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+             border-color: var(--main-accent);
         }
 
         #chartDisplayArea {
@@ -123,15 +157,16 @@
             box-sizing: border-box;
             position: relative;
             overflow: hidden; /* Asegura que no haya desbordamiento si la gráfica es más grande de lo esperado */
-            background-color: white; /* Añadido para el fondo de la "tarjeta" */
+            background-color: var(--card-bg); /* Añadido para el fondo de la "tarjeta" */
             border-radius: 10px; /* Añadido para esquinas redondeadas */
             box-shadow: 0 6px 18px var(--shadow-color); /* Añadido para la sombra */
             padding: 20px; /* Añadido para el padding de la "tarjeta" */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         /* Clase para aplicar estilo de "tarjeta" */
         .card-style {
-            background-color: white;
+            background-color: var(--card-bg);
             border-radius: 10px;
             box-shadow: 0 6px 18px var(--shadow-color);
             padding: 20px;
@@ -175,7 +210,8 @@
         .data-table th, .data-table td {
             padding: 7px 15px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--chart-grid-color); /* Usar variable para el color del borde */
+            color: var(--text-color); /* Asegurar color de texto */
         }
 
         .data-table th {
@@ -195,7 +231,11 @@
         }
 
         .data-table tr:nth-child(even) {
-            background-color: #f6f6f6;
+            background-color: var(--primary-bg); /* Usar primary-bg para filas pares, será card-bg en oscuro */
+        }
+        
+        [data-theme="dark"] .data-table tr:nth-child(even) {
+            background-color: #2a2a2a; /* Un tono más oscuro para filas pares en modo oscuro */
         }
 
         .data-table tr:hover {
@@ -229,6 +269,63 @@
             font-weight: normal; /* Asegura que no sea negrita por defecto si se hereda */
             font-size: 14px;
         }
+
+        /* Estilos para el interruptor de modo nocturno */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            color: var(--text-color);
+            font-size: 14px;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .theme-switch {
+			display: inline-block;
+			height: 18px;
+			position: relative;
+			width: 36px;
+		}
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+			background-color: #fff;
+			bottom: 3px;
+			content: "";
+			height: 12px;
+			left: 3px;
+			position: absolute;
+			transition: .4s;
+			width: 12px;
+			border-radius: 50%;
+		}
+
+        input:checked + .slider {
+            background-color: var(--main-accent);
+        }
+
+        input:checked + .slider:before {
+			transform: translateX(18px);
+		}
 
 
         /* Responsividad para pantallas más pequeñas */
@@ -266,22 +363,32 @@
             #selectedYear {
                 font-size: 12px;
             }
+            .theme-switch-wrapper {
+                top: 10px;
+                left: 10px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
 
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+    </div>
+
     <div class="navigation-container">
         <button id="prevChartButton" class="nav-button">Anterior</button>
         <select id="chartSelector" class="chart-dropdown">
-            <!-- Las opciones se generarán dinámicamente con JavaScript -->
-        </select>
+            </select>
         <button id="nextChartButton" class="nav-button">Siguiente</button>
     </div>
 
     <div id="chartDisplayArea" class="card-style">
-        <!-- Las gráficas y la tabla se renderizarán aquí -->
-    </div>
+        </div>
 
     <script>
         // Array para almacenar los datos de cada JSON una vez cargados
@@ -293,6 +400,7 @@
         const chartSelector = document.getElementById('chartSelector');
         const prevChartButton = document.getElementById('prevChartButton');
         const nextChartButton = document.getElementById('nextChartButton');
+        const themeToggle = document.getElementById('checkbox');
 
         // --- Funciones para renderizar cada tipo de gráfica o tabla ---
 
@@ -331,8 +439,8 @@
                             {
                                 label: 'Libros Leídos por Género',
                                 data: totalLeidos,
-                                backgroundColor: 'rgba(92, 165, 147, 1)',
-                                hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color'),
+                                hoverBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-hover-color'),
                                 yAxisID: 'y',
                                 borderRadius: 8,
                             },
@@ -354,7 +462,7 @@
                                     family: 'Roboto',
                                 },
                                 align: 'start',
-                                color: 'var(--dark-accent)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
                                 display: true,
@@ -369,7 +477,7 @@
                                     top: 0
                                 },
                                 align: 'start',
-                                color: 'var(--text-color)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-subtitle-color')
                             },
                             datalabels: {
                                 display: false,
@@ -387,8 +495,8 @@
                                     font: {
                                         size: 12,
                                         family: 'Roboto',
-                                        color: 'var(--text-color)'
                                     },
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
                                 title: {
                                     display: true,
@@ -398,7 +506,7 @@
                                         size: 13,
                                         weight: 'normal',
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
                             },
                             y: {
@@ -412,14 +520,14 @@
                                         size: 13,
                                         weight: 'normal',
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
                                 ticks: {
                                     font: {
                                         size: 12,
                                         family: 'Roboto',
-                                        color: 'var(--text-color)'
                                     },
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color'),
                                     callback: function(value) {
                                         return Number.isInteger(value) ? value : '';
                                     }
@@ -478,9 +586,9 @@
                                 y: item["Calificación Promedio"],
                                 r: item["Total Libros"],
                             })),
-                            backgroundColor: 'rgba(92, 165, 147, 0.85)',
-                            borderColor: 'rgba(45, 108, 104, 1)',
-                            hoverBackgroundColor: 'rgba(45, 108, 104, 1)',
+                            backgroundColor: 'rgba(92, 165, 147, 0.85)', // Could also be dynamic
+                            borderColor: 'rgba(45, 108, 104, 1)', // Could also be dynamic
+                            hoverBackgroundColor: 'rgba(45, 108, 104, 1)', // Could also be dynamic
                             borderWidth: 1,
                             hoverRadius: 10,
                         }]
@@ -501,7 +609,7 @@
                                     family: 'Roboto'
                                 },
                                 align: 'start',
-                                color: 'var(--dark-accent)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
                                 display: true,
@@ -516,7 +624,7 @@
                                     top: 0
                                 },
                                 align: 'start',
-                                color: 'var(--text-color)'
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--chart-subtitle-color')
                             },
                             tooltip: {
                                 callbacks: {
@@ -544,7 +652,7 @@
                                         size: 13,
                                         weight: 'normal'
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
                                 ticks: {
                                     autoSkip: false,
@@ -552,8 +660,8 @@
                                     minRotation: 0,
                                     font: {
                                         size: 12,
-                                        color: 'var(--text-color)'
-                                    }
+                                    },
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
                                 grid: {
                                     display: false
@@ -568,13 +676,13 @@
                                         size: 13,
                                         weight: 'normal'
                                     },
-                                    color: 'var(--text-color)'
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
                                 ticks: {
                                     font: {
                                         size: 12,
-                                        color: 'var(--text-color)'
                                     },
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color'),
                                     callback: function(value) {
                                         return parseFloat(value).toFixed(1);
                                     }
@@ -610,10 +718,8 @@
 
                 chartDisplayArea.innerHTML = ''; // Limpiar área
 
-                // La chartDisplayArea ya tiene la clase 'card-style' y el padding,
-                // por lo que el contenedor de la tabla no necesita duplicar esos estilos visuales.
                 const tableContainer = document.createElement('div');
-                tableContainer.classList.add('data-table-container'); // Esta clase ahora solo controla dimensiones y overflow
+                tableContainer.classList.add('data-table-container');
                 chartDisplayArea.appendChild(tableContainer);
 
                 const tableElement = document.createElement('table');
@@ -762,7 +868,7 @@
             nextChartButton.disabled = currentChartIndex === chartKeys.length - 1;
         }
 
-        async function switchChart(newChartKeyOrIndex) {
+        async function switchChart(newChartKeyOrIndex, forceRender = false) {
             let newIndex;
             if (typeof newChartKeyOrIndex === 'string') {
                 newIndex = chartKeys.indexOf(newChartKeyOrIndex);
@@ -770,22 +876,104 @@
                 newIndex = newChartKeyOrIndex;
             }
 
-            if (newIndex === -1 || newIndex === currentChartIndex) return;
+            if (newIndex === -1 || (newIndex === currentChartIndex && !forceRender)) return;
 
-            currentChartIndex = newIndex;
-
-            chartDisplayArea.classList.add('chart-transition-out');
+            if (newIndex !== currentChartIndex) {
+                 currentChartIndex = newIndex;
+                 chartDisplayArea.classList.add('chart-transition-out');
+            }
+            
             updateNavigationState();
 
-            setTimeout(async () => {
-                await chartMap[chartKeys[currentChartIndex]].render();
-                chartDisplayArea.classList.remove('chart-transition-out');
-            }, 0); 
+            // Destroy and re-render the chart
+            if (chartInstances.currentChart) {
+                chartInstances.currentChart.destroy();
+                chartInstances.currentChart = null;
+            }
+            await chartMap[chartKeys[currentChartIndex]].render();
+            chartDisplayArea.classList.remove('chart-transition-out');
         }
+
+        // --- Dark Mode Logic ---
+        function setPreferredTheme() {
+            let themeToApply = 'light'; // Default to light
+
+            // Check for parent page theme (if embedded in an iframe)
+            try {
+                if (window.parent && window.parent.document && window.parent.document.body.classList.contains('dark-mode')) {
+                    themeToApply = 'dark';
+                }
+            } catch (e) {
+                console.warn("Could not access parent document for theme detection (likely cross-origin). Falling back to local storage/system preference.");
+            }
+
+            // If not determined by parent, check local storage
+            if (themeToApply === 'light') { // Only check local storage if parent didn't set it
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme) {
+                    themeToApply = storedTheme;
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    // Check system preference
+                    themeToApply = 'dark';
+                }
+            }
+
+            document.documentElement.setAttribute('data-theme', themeToApply);
+            themeToggle.checked = (themeToApply === 'dark');
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+
+            // Crucial fix: Force a re-render of the current chart with the new theme
+            switchChart(currentChartIndex, true); // Pass true to forceRender
+        }
+
+        // Listen for changes in parent's theme (if accessible)
+        try {
+            if (window.parent && window.parent.document) {
+                const parentObserver = new MutationObserver((mutations) => {
+                    mutations.forEach(mutation => {
+                        if (mutation.attributeName === 'class' && mutation.target === window.parent.document.body) {
+                            const isParentDarkMode = window.parent.document.body.classList.contains('dark-mode');
+                            const currentLocalTheme = document.documentElement.getAttribute('data-theme');
+
+                            if (isParentDarkMode && currentLocalTheme !== 'dark') {
+                                document.documentElement.setAttribute('data-theme', 'dark');
+                                themeToggle.checked = true;
+                                localStorage.setItem('theme', 'dark'); // Sync local storage with parent
+                                // Force re-render chart after theme change from parent
+                                switchChart(currentChartIndex, true);
+                            } else if (!isParentDarkMode && currentLocalTheme !== 'light') {
+                                document.documentElement.setAttribute('data-theme', 'light');
+                                themeToggle.checked = false;
+                                localStorage.setItem('theme', 'light'); // Sync local storage with parent
+                                // Force re-render chart after theme change from parent
+                                switchChart(currentChartIndex, true);
+                            }
+                        }
+                    });
+                });
+                parentObserver.observe(window.parent.document.body, { attributes: true });
+            }
+        } catch (e) {
+            console.warn("Could not set up MutationObserver for parent document (likely cross-origin).");
+        }
+
 
         // --- Inicialización ---
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Set initial theme based on preference
+            setPreferredTheme();
+
+            // Event listener for the theme toggle button
+            themeToggle.addEventListener('change', toggleTheme);
+
             chartKeys.forEach(key => {
                 const option = document.createElement('option');
                 option.value = key;
