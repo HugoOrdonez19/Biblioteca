@@ -25,8 +25,8 @@
             --chart-grid-color: #eee;
             --chart-bar-color: rgba(92, 165, 147, 1);
             --chart-bar-hover-color: rgba(45, 108, 104, 1);
-            --chart-line-color: rgba(28, 78, 96, 1);
-            --chart-line-point-color: rgba(28, 78, 96, 1);
+            --chart-line-color: rgba(139, 144, 173, 1);
+            --chart-line-point-color: rgba(139, 144, 173, 1);
         }
 
         /* Colores modo oscuro */
@@ -46,8 +46,8 @@
             --chart-grid-color: #444; /* Líneas de la cuadrícula más oscuras */
             --chart-bar-color: rgba(106, 168, 156, 1);
             --chart-bar-hover-color: rgba(90, 115, 138, 1);
-            --chart-line-color: rgba(155, 181, 179, 1); /* Color de línea para modo oscuro */
-            --chart-line-point-color: rgba(155, 181, 179, 1);
+            --chart-line-color: rgba(255, 127, 127, 0.7); /* Color de línea para modo oscuro */
+            --chart-line-point-color: rgba(255, 127, 127, 0.7);
         }
 
         body {
@@ -351,7 +351,7 @@
                                 borderWidth: 2,
                                 fill: false,
                                 pointBackgroundColor: style.getPropertyValue('--chart-line-point-color'),
-                                pointHoverRadius: 6,
+                                pointHoverRadius: 7,
                                 tension: 0.5,
                                 yAxisID: 'y1',
                             },
@@ -364,45 +364,160 @@
                             legend: {
                                 position: 'top',
                                 labels: {
-                                    font: { size: 12, family: 'Roboto' },
+                                    font: { 
+										size: 12, 
+										family: 'Roboto' 
+									},
                                     color: style.getPropertyValue('--chart-label-color')
                                 },
                             },
                             title: {
                                 display: true,
                                 text: 'Libros Leídos por Año',
-                                font: { size: 20, weight: 'bold', family: 'Roboto' },
+                                font: { 
+									size: 20, 
+									weight: 'bold', 
+									family: 'Roboto' 
+								},
                                 align: 'start',
-                                color: style.getPropertyValue('--chart-title-color')
+                                color: style.getPropertyValue('--chart-title-color'),
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
                             },
                             subtitle: {
                                 display: true,
                                 text: 'Cantidad de libros leídos cada año y total acumulado',
-                                font: { size: 14, family: 'Roboto', weight: 'normal' },
-                                padding: { bottom: 10, top: 0 },
+                                font: { 
+									size: 13, 
+									family: 'Roboto', 
+									weight: 'normal' 
+								},
+                                padding: { 
+									bottom: 10, 
+									top: 0 
+								},
                                 align: 'start',
                                 color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: { display: false },
+                            datalabels: { 
+								display: false 
+							},
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									label: function (context) {
+										const dataset = context.dataset;
+										const value = context.parsed.y || context.raw;
+										let labelText = '';
+										
+										// Construir el texto del label con el nombre del dataset y el valor
+										if (dataset.label) {
+											labelText = `${dataset.label}: `;
+										}
+										
+										// Agregar el valor formateado
+										if (value !== undefined && value !== null) {
+											labelText += value.toLocaleString('es-GT', { 
+												minimumFractionDigits: 0, 
+												maximumFractionDigits: 2 
+											});
+										}
+										
+										return labelText;
+									}
+								},
+								titleColor: function (context) {
+									const dataPoint = context.tooltip.dataPoints[0];
+									const dataset = dataPoint.dataset;
+									
+									// Verificar si es el dataset de línea (tiene type: 'line')
+									if (dataset.type === 'line') {
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-line-color').trim() || dataset.borderColor;
+									} else {
+										// Si no tiene type definido, es el dataset de barras (tipo base del chart)
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color').trim() || dataset.backgroundColor;
+									}
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								}
+							}
                         },
                         scales: {
                             y: {
                                 type: 'linear', position: 'left',
-                                title: { display: true, text: 'Libros Leídos (Anual)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
-                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
+                                title: { 
+									display: true, 
+									text: 'Libros Leídos (Anual)', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                ticks: { 
+									font: { size: 11, 
+									family: 'Roboto' 
+								}, 
+								color: style.getPropertyValue('--chart-label-color'), 
+								callback: value => Number.isInteger(value) ? value : '' 
+								},
                                 grid: { drawOnChartArea: false }, min: 0, max: 90,
                             },
                             y1: {
                                 type: 'linear', position: 'right',
-                                title: { display: true, text: 'Libros Leídos (Acumulado)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
-                                grid: { drawOnChartArea: false },
-                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
+                                title: { 
+									display: true, 
+									text: 'Libros Leídos (Acumulado)', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                grid: { 
+									drawOnChartArea: false 
+								},
+                                ticks: { 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color'), 
+									callback: value => Number.isInteger(value) ? value : '' 
+								},
                                 min: -50, max: 300,
                             },
                             x: {
-                                grid: { display: false },
-                                ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
-                                title: { display: true, text: 'Año de Lectura', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                grid: { 
+									display: false 
+								},
+                                ticks: { 
+									autoSkip: true, 
+									maxRotation: 45, 
+									minRotation: 0, 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                title: { 
+									display: true, 
+									text: 'Año de Lectura', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
                             },
                         },
                         animation: { duration: 1000, easing: 'easeOutQuart' }
@@ -475,36 +590,166 @@
                         plugins: {
                             legend: {
                                 position: 'top',
-                                labels: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
+                                labels: { 
+									font: { 
+										size: 12, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
                             },
                             title: {
-                                display: true, text: 'Autores Leídos por Año',
-                                font: { size: 20, weight: 'bold', family: 'Roboto' }, align: 'start', color: style.getPropertyValue('--chart-title-color')
+                                display: true, 
+								text: 'Autores Leídos por Año',
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
+                                font: { 
+									size: 20, 
+									weight: 'bold', 
+									family: 'Roboto' 
+								}, 
+								align: 'start', 
+								color: style.getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
-                                display: true, text: 'Cantidad de autores leídos cada año y total acumulado',
-                                font: { size: 14, family: 'Roboto', weight: 'normal' }, padding: { bottom: 10, top: 0 }, align: 'start', color: style.getPropertyValue('--chart-subtitle-color')
+                                display: true, 
+								text: 'Cantidad de autores leídos cada año y total acumulado',
+                                font: { 
+									size: 13, 
+									family: 'Roboto', 
+									weight: 'normal' 
+								}, 
+								padding: { 
+									bottom: 10, 
+									top: 0 
+								}, 
+								align: 'start', 
+								color: style.getPropertyValue('--chart-subtitle-color')
                             },
                             datalabels: { display: false },
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									label: function (context) {
+										const dataset = context.dataset;
+										const value = context.parsed.y || context.raw;
+										let labelText = '';
+										
+										// Construir el texto del label con el nombre del dataset y el valor
+										if (dataset.label) {
+											labelText = `${dataset.label}: `;
+										}
+										
+										// Agregar el valor formateado
+										if (value !== undefined && value !== null) {
+											labelText += value.toLocaleString('es-GT', { 
+												minimumFractionDigits: 0, 
+												maximumFractionDigits: 2 
+											});
+										}
+										
+										return labelText;
+									}
+								},
+								titleColor: function (context) {
+									const dataPoint = context.tooltip.dataPoints[0];
+									const dataset = dataPoint.dataset;
+									
+									// Verificar si es el dataset de línea (tiene type: 'line')
+									if (dataset.type === 'line') {
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-line-color').trim() || dataset.borderColor;
+									} else {
+										// Si no tiene type definido, es el dataset de barras (tipo base del chart)
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color').trim() || dataset.backgroundColor;
+									}
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								}
+							}
                         },
                         scales: {
                             y: {
-                                type: 'linear', position: 'left',
-                                title: { display: true, text: 'Autores Leídos (Anual)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
-                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
-                                grid: { drawOnChartArea: false }, min: 0, max: 80,
+                                type: 'linear', 
+								position: 'left',
+                                title: { 
+									display: true, 
+									text: 'Autores Leídos (Anual)', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                ticks: { 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color'), 
+									callback: value => Number.isInteger(value) ? value : '' 
+								},
+                                grid: { 
+									drawOnChartArea: false 
+								}, 
+								min: 0, 
+								max: 80,
                             },
                             y1: {
                                 type: 'linear', position: 'right',
-                                title: { display: true, text: 'Autores Leídos (Acumulado)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
-                                grid: { drawOnChartArea: false },
-                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
-                                min: -50, max: 250,
+                                title: { 
+									display: true, 
+									text: 'Autores Leídos (Acumulado)', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                grid: { 
+									drawOnChartArea: false 
+								},
+                                ticks: { 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color'), 
+									callback: value => Number.isInteger(value) ? value : '' 
+								},
+                                min: -50, 
+								max: 250,
                             },
                             x: {
-                                grid: { display: false },
-                                ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
-                                title: { display: true, text: 'Año de Lectura', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                grid: { 
+									display: false 
+								},
+                                ticks: { 
+									autoSkip: true, 
+									maxRotation: 45, 
+									minRotation: 0, 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                title: { 
+									display: true, 
+									text: 'Año de Lectura', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
                             },
                         },
                         animation: { duration: 1000, easing: 'easeOutQuart' }
@@ -572,40 +817,174 @@
                         ],
                     },
                     options: {
-                        responsive: true, maintainAspectRatio: false,
+                        responsive: true, 
+						maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'top',
-                                labels: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
+                                labels: { 
+									font: { 
+										size: 12, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
                             },
                             title: {
-                                display: true, text: 'Páginas Leídas por Año',
-                                font: { size: 20, weight: 'bold', family: 'Roboto' }, align: 'start', color: style.getPropertyValue('--chart-title-color')
+                                display: true, 
+								text: 'Páginas Leídas por Año',
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
+                                font: { 
+									size: 20, 
+									weight: 'bold', 
+									family: 'Roboto' 
+								}, 
+								align: 'start', 
+								color: style.getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
-                                display: true, text: 'Cantidad de páginas leídas cada año y total acumulado',
-                                font: { size: 14, family: 'Roboto', weight: 'normal' }, padding: { bottom: 10, top: 0 }, align: 'start', color: style.getPropertyValue('--chart-subtitle-color')
+                                display: true, 
+								text: 'Cantidad de páginas leídas cada año y total acumulado',
+                                font: { 
+									size: 13, 
+									family: 'Roboto', 
+									weight: 'normal' 
+								}, 
+								padding: { 
+									bottom: 10, 
+									top: 0 
+								}, 
+								align: 'start', 
+								color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: { display: false },
+                            datalabels: { 
+								display: false 
+							},
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									label: function (context) {
+										const dataset = context.dataset;
+										const value = context.parsed.y || context.raw;
+										let labelText = '';
+										
+										// Construir el texto del label con el nombre del dataset y el valor
+										if (dataset.label) {
+											labelText = `${dataset.label}: `;
+										}
+										
+										// Agregar el valor formateado
+										if (value !== undefined && value !== null) {
+											labelText += value.toLocaleString('es-GT', { 
+												minimumFractionDigits: 0, 
+												maximumFractionDigits: 2 
+											});
+										}
+										
+										return labelText;
+									}
+								},
+								titleColor: function (context) {
+									const dataPoint = context.tooltip.dataPoints[0];
+									const dataset = dataPoint.dataset;
+									
+									// Verificar si es el dataset de línea (tiene type: 'line')
+									if (dataset.type === 'line') {
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-line-color').trim() || dataset.borderColor;
+									} else {
+										// Si no tiene type definido, es el dataset de barras (tipo base del chart)
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color').trim() || dataset.backgroundColor;
+									}
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								}
+							}
                         },
                         scales: {
                             y: {
-                                type: 'linear', position: 'left',
-                                title: { display: true, text: 'Páginas Leídas (Anual)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
-                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
-                                grid: { drawOnChartArea: false }, min: 0, max: 25000,
+                                type: 'linear', 
+								position: 'left',
+                                title: { 
+									display: true, 
+									text: 'Páginas Leídas (Anual)', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color')
+								},
+                                ticks: { 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color'), 
+									callback: value => Number.isInteger(value) ? value : '' 
+								},
+                                grid: { 
+									drawOnChartArea: false 
+								}, 
+								min: 0, 
+								max: 25000,
                             },
                             y1: {
-                                type: 'linear', position: 'right',
-                                title: { display: true, text: 'Páginas Leídas (Acumulado)', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
-                                grid: { drawOnChartArea: false },
-                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : '' },
-                                min: -10000, max: 80000,
+                                type: 'linear', 
+								position: 'right',
+                                title: { 
+									display: true, 
+									text: 'Páginas Leídas (Acumulado)', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                grid: { 
+									drawOnChartArea: false 
+								},
+                                ticks: { 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color'), 
+									callback: value => Number.isInteger(value) ? value : '' 
+								},
+                                min: -10000, 
+								max: 80000,
                             },
                             x: {
-                                grid: { display: false },
-                                ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color') },
-                                title: { display: true, text: 'Año de Lectura', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                grid: { 
+									display: false 
+								},
+                                ticks: { 
+									autoSkip: true, 
+									maxRotation: 45, 
+									minRotation: 0, 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                title: { 
+									display: true, 
+									text: 'Año de Lectura', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
                             },
                         },
                         animation: { duration: 1000, easing: 'easeOutQuart' }
@@ -653,33 +1032,112 @@
                     type: 'doughnut',
                     data: {
                         labels: labels,
-                        datasets: [{
-                            data: values, backgroundColor: colors,
-                            hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
-                            borderWidth: 0, hoverOffset: 20,
-                        }]
+                        datasets: [
+							{
+								data: values, 
+								backgroundColor: colors,
+								hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
+								borderWidth: 0, 
+								hoverOffset: 20,
+							}
+						]
                     },
                     options: {
-                        responsive: true, maintainAspectRatio: false,
-                        layout: { padding: { bottom: 30 } },
+                        responsive: true, 
+						maintainAspectRatio: false,
+                        layout: { 
+							padding: { 
+								bottom: 30 
+							} 
+						},
                         plugins: {
                             title: {
-                                display: true, text: 'Formato', font: { size: 20, family: 'Roboto' },
-                                align: 'start', color: style.getPropertyValue('--chart-title-color')
+                                display: true, 
+								text: 'Formato', 
+								font: { 
+									size: 20, 
+									family: 'Roboto' 
+								},
+                                align: 'start', 
+								color: style.getPropertyValue('--chart-title-color'),
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
                             },
                             subtitle: {
-                                display: true, text: 'Libros leídos agrupados por formato de lectura',
-                                font: { size: 14, family: 'Roboto' }, align: 'start',
-                                padding: { bottom: 20 }, color: style.getPropertyValue('--chart-subtitle-color')
+                                display: true, 
+								text: 'Libros leídos agrupados por formato de lectura',
+                                font: { 
+									size: 13, 
+									family: 'Roboto' 
+								}, 
+								align: 'start',
+                                padding: { 
+									bottom: 20 
+								}, 
+								color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: { display: false },
+                            datalabels: { 
+								display: false 
+							},
                             legend: {
-                                display: true, position: 'top',
-                                labels: { font: { family: 'Roboto', size: 12 }, color: style.getPropertyValue('--chart-label-color') }
+                                display: true, 
+								position: 'top',
+                                labels: { 
+									font: { 
+										family: 'Roboto', 
+										size: 12 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								}
                             },
-                            tooltip: { callbacks: { label: context => `${context.raw || 0} libros` } }
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									title: function(tooltipItems) {
+										const item = tooltipItems[0];
+										if (item) {
+											const dataset = item.chart.data.datasets[item.datasetIndex];
+											return dataset.label;
+										}
+										return '';
+									},
+									label: function(context) {
+										let labelText = '';
+
+										if (context.raw !== undefined && context.raw !== null) {
+											labelText += `${context.raw.toLocaleString('es-GT', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} libros`;
+										}
+
+										return labelText;
+									}
+								},
+								titleColor: function(context) {
+									const tooltip = context.tooltip;
+									if (tooltip.dataPoints.length > 0) {
+										const dataPoint = tooltip.dataPoints[0];
+										const dataset = dataPoint.dataset;
+										if (dataset.backgroundColor) {
+											return dataset.backgroundColor[dataPoint.dataIndex] || dataset.backgroundColor;
+										}
+									}
+									return 'rgba(0, 0, 0, 0.8)';
+								},
+								titleFont: {
+									weight: 'bold',
+									size:13,
+								}
+							}
                         },
-                        animation: { animateScale: true, animateRotate: true },
+                        animation: { 
+							animateScale: true, 
+							animateRotate: true 
+						},
                     },
                     plugins: [ChartDataLabels],
                 });
@@ -724,33 +1182,111 @@
                     type: 'doughnut',
                     data: {
                         labels: labels,
-                        datasets: [{
-                            data: values, backgroundColor: colors,
-                            hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
-                            borderWidth: 0, hoverOffset: 20,
-                        }]
+                        datasets: [
+							{
+								data: values, 
+								backgroundColor: colors,
+								hoverBackgroundColor: colors.map(color => color.replace('1)', '0.8)')),
+								borderWidth: 0, 
+								hoverOffset: 20,
+							}
+						]
                     },
                     options: {
-                        responsive: true, maintainAspectRatio: false,
-                        layout: { padding: { bottom: 30 } },
+                        responsive: true, 
+						maintainAspectRatio: false,
+                        layout: { 
+							padding: { 
+								bottom: 30 
+							} 
+						},
                         plugins: {
                             title: {
-                                display: true, text: 'Tipo de Lectura',
-                                font: { size: 20, family: 'Roboto' }, align: 'start', color: style.getPropertyValue('--chart-title-color')
+                                display: true, 
+								text: 'Tipo de Lectura',
+                                font: { 
+									size: 20, 
+									family: 'Roboto' 
+								}, 
+								align: 'start', 
+								color: style.getPropertyValue('--chart-title-color'),
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
                             },
                             subtitle: {
-                                display: true, text: 'Libros leídos agrupados por tipo de lectura',
-                                font: { size: 14, family: 'Roboto' }, align: 'start',
-                                padding: { bottom: 20 }, color: style.getPropertyValue('--chart-subtitle-color')
+                                display: true, 
+								text: 'Libros leídos agrupados por tipo de lectura',
+                                font: { 
+									size: 13, 
+									family: 'Roboto' 
+								}, 
+								align: 'start',
+                                padding: { 
+									bottom: 20 
+								}, 
+								color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: { display: false },
+                            datalabels: { 
+								display: false 
+							},
                             legend: {
-                                display: true, position: 'top',
-                                labels: { font: { family: 'Roboto', size: 12 }, color: style.getPropertyValue('--chart-label-color') }
+                                display: true, 
+								position: 'top',
+                                labels: { 
+									font: { 
+										family: 'Roboto', 
+										size: 12 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								}
                             },
-                            tooltip: { callbacks: { label: context => `${context.raw || 0} libros` } }
+                            tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									title: function(tooltipItems) {
+										const item = tooltipItems[0];
+										if (item) {
+											const dataset = item.chart.data.datasets[item.datasetIndex];
+											return dataset.label;
+										}
+										return '';
+									},
+									label: function(context) {
+										let labelText = '';
+
+										if (context.raw !== undefined && context.raw !== null) {
+											labelText += `${context.raw.toLocaleString('es-GT', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} libros`;
+										}
+
+										return labelText;
+									}
+								},
+								titleColor: function(context) {
+									const tooltip = context.tooltip;
+									if (tooltip.dataPoints.length > 0) {
+										const dataPoint = tooltip.dataPoints[0];
+										const dataset = dataPoint.dataset;
+										if (dataset.backgroundColor) {
+											return dataset.backgroundColor[dataPoint.dataIndex] || dataset.backgroundColor;
+										}
+									}
+									return 'rgba(0, 0, 0, 0.8)';
+								},
+								titleFont: {
+									weight: 'bold'
+								}
+							}
                         },
-                        animation: { animateScale: true, animateRotate: true },
+                        animation: { 
+							animateScale: true, 
+							animateRotate: true 
+						},
                     },
                     plugins: [ChartDataLabels],
                 });
@@ -782,8 +1318,9 @@
 
                 const data = chartData[jsonFileName];
                 const dataset = data.map(item => ({
-                    x: item["Año de Lectura"], y: item["Año de publicación"],
-                    r: item["Total Libros Leídos"] * 6,
+                    x: item["Año de Lectura"], 
+					y: item["Año de publicación"],
+                    r: item["Total Libros Leídos"]*7 ,
                 }));
                 const allReadYears = Array.from(new Set(data.map(item => item["Año de Lectura"]))).sort((a, b) => a - b);
                 const minReadYear = Math.min(...allReadYears);
@@ -794,44 +1331,153 @@
                 chartInstances.currentChart = new Chart(ctx, {
                     type: 'bubble',
                     data: {
-                        datasets: [{
-                            label: 'Año Leído vs. Año de Publicación', data: dataset,
-                            backgroundColor: style.getPropertyValue('--chart-bar-color').replace('1)', '0.85)'),
-                            borderColor: style.getPropertyValue('--chart-bar-hover-color'),
-                            hoverBackgroundColor: style.getPropertyValue('--chart-bar-hover-color'),
-                            borderWidth: 1, hoverRadius: 10,
-                        }]
+                        datasets: [
+							{
+								label: 'Año Leído vs. Año de Publicación', 
+								data: dataset,
+								backgroundColor: style.getPropertyValue('--chart-bar-color'),
+                                hoverBackgroundColor: style.getPropertyValue('--chart-bar-hover-color'),
+								borderWidth: 1, 
+								hoverRadius: 10,
+								hitRadius:5,
+								radius:25,
+							}
+						]
                     },
                     options: {
-                        responsive: true, maintainAspectRatio: false,
+                        responsive: true, 
+						maintainAspectRatio: false,
                         plugins: {
-                            legend: { display: false },
+                            legend: { 
+								display: false 
+							},
                             title: {
-                                display: true, text: 'Año Leído vs. Año de Publicación',
-                                font: { size: 20, weight: 'bold', family: 'Roboto' }, align: 'start', color: style.getPropertyValue('--chart-title-color')
+                                display: true, 
+								text: 'Año Leído vs. Año de Publicación',
+                                font: { 
+									size: 20, 
+									weight: 'bold', 
+									family: 'Roboto' 
+								}, 
+								align: 'start', 
+								color: style.getPropertyValue('--chart-title-color'),
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
                             },
                             subtitle: {
-                                display: true, text: 'Relación entre el año de lectura y el año de publicación de los libros leídos (tamaño de la burbuja: total de libros leídos)',
-                                font: { size: 14, family: 'Roboto' }, padding: { bottom: 30, top: 0 }, align: 'start', color: style.getPropertyValue('--chart-subtitle-color')
+                                display: true, 
+								text: 'Relación entre el año de lectura y el año de publicación de los libros leídos (tamaño de la burbuja: total de libros leídos)',
+                                font: { 
+									size: 13, 
+									family: 'Roboto' 
+								}, 
+								padding: { 
+									bottom: 30, 
+									top: 0 
+								}, 
+								align: 'start', 
+								color: style.getPropertyValue('--chart-subtitle-color')
                             },
-                            datalabels: { display: false },
-                            tooltip: { callbacks: { label: context => `Año de Lectura: ${context.raw.x}\nAño de Publicación: ${context.raw.y}\nTotal Libros Leídos: ${context.raw.r / 6}` } }
+                            datalabels: { 
+								display: false 
+							},
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									title: function (tooltipItems) {
+										const item = tooltipItems[0];
+										return item ? `Año de Lectura: ${item.raw.x}` : '';
+									},
+									label: function (context) {
+										const { x, y, r } = context.raw;
+										return [
+											`Año de Lectura: ${x}`,
+											`Año de Publicación: ${y}`,
+											`Total Libros Leídos: ${(r / 7).toLocaleString('es-GT', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+										];
+									}
+								},
+								titleColor: function (context) {
+									const style = getComputedStyle(document.documentElement);
+									const dataPoint = context.tooltip.dataPoints[0];
+									const dataset = dataPoint.dataset;
+
+									// Cambia el color según la configuración de estilo
+									return dataset.backgroundColor || style.getPropertyValue('--chart-bar-color').trim();
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								},
+								borderColor: function (context) {
+									const style = getComputedStyle(document.documentElement);
+									return style.getPropertyValue('--chart-bar-color').trim() || 'rgba(0, 0, 0, 0.1)';
+								},
+							}
                         },
                         scales: {
                             x: {
                                 type: 'linear',
-                                title: { display: true, text: 'Año de Lectura', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
-                                ticks: { autoSkip: false, maxRotation: 90, minRotation: 0, font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : null },
-                                min: minReadYear - 1, max: maxReadYear + 1, grid: { display: false },
+                                title: { 
+									display: true, 
+									text: 'Año de Lectura', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
+                                ticks: { 
+									autoSkip: false, 
+									maxRotation: 90, 
+									minRotation: 0, 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color'), 
+									callback: value => Number.isInteger(value) ? value : null 
+								},
+                                min: minReadYear - 1, 
+								max: maxReadYear + 1, 
+								grid: { 
+									display: false 
+								},
                             },
                             y: {
-                                title: { display: true, text: 'Año de Publicación', font: { family: 'Roboto', size: 13 }, color: style.getPropertyValue('--chart-label-color') },
+                                title: { 
+									display: true, 
+									text: 'Año de Publicación', 
+									font: { 
+										family: 'Roboto', 
+										size: 13 
+									}, 
+									color: style.getPropertyValue('--chart-label-color') 
+								},
                                 type: 'linear',
-                                ticks: { font: { size: 12, family: 'Roboto' }, color: style.getPropertyValue('--chart-label-color'), callback: value => Number.isInteger(value) ? value : null },
-                                grid: { drawOnChartArea: false },
+                                ticks: { 
+									font: { 
+										size: 11, 
+										family: 'Roboto' 
+									}, 
+									color: style.getPropertyValue('--chart-label-color'), 
+									callback: value => Number.isInteger(value) ? value : null 
+								},
+                                grid: { 
+									drawOnChartArea: false 
+								},
                             },
                         },
-                        animation: { duration: 1000, easing: 'easeOutQuart' },
+                        animation: { 
+							duration: 1000, 
+							easing: 'easeOutQuart' 
+						},
                     },
                     plugins: [ChartDataLabels],
                 });
