@@ -178,7 +178,7 @@
         }
         
         #yearSlider {
-            width: 70%;
+            width: 85%;
             max-width: 500px;
             margin-top: 10px;
         }
@@ -186,13 +186,13 @@
         #selectedYearDisplayContainer {
             text-align: center;
             font-family: 'Roboto', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             margin-top: -15px;
             color: var(--text-color);
         }
         #selectedYear {
             font-weight: normal;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         /* Estilos para el interruptor de modo nocturno */
@@ -347,23 +347,82 @@
                         }],
                     },
                     options: {
-                        responsive: true, maintainAspectRatio: false,
+                        responsive: true, 
+						maintainAspectRatio: false,
                         plugins: {
-                            legend: { display: false },
-                            title: { display: true, text: 'Calificaciones', font: { size: 20, weight: 'bold' }, align: 'start', color: colors.titleColor },
-                            subtitle: { display: true, text: 'Libros leídos agrupados por calificación dada', font: { size: 14 }, padding: { bottom: 30 }, align: 'start', color: colors.subtitleColor },
-                            datalabels: { display: false },
+                            legend: { 
+								display: false 
+							},
+                            title: { 
+								display: true, 
+								text: 'Calificaciones', 
+								font: { 
+									size: 20, 
+									weight: 'bold' 
+								}, 
+								align: 'start', 
+								color: colors.titleColor,
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
+							},
+                            subtitle: { 
+								display: true, 
+								text: 'Libros leídos agrupados por calificación dada', 
+								font: { 
+									size: 13 
+								}, 
+								padding: { 
+									bottom: 30 
+								}, 
+								align: 'start', 
+								color: colors.subtitleColor 
+							},
+                            datalabels: { 
+								display: false 
+							},
                         },
                         scales: {
                             x: {
-                                title: { display: true, text: 'Calificación', font: { size: 13 }, color: colors.labelColor },
-                                ticks: { font: { size: 12 }, color: colors.labelColor },
-                                grid: { display: false }
+                                title: { 
+									display: true, 
+									text: 'Calificación', 
+									font: { 
+										size: 13 
+									}, 
+									color: colors.labelColor 
+								},
+                                ticks: { 
+									font: { 
+										size: 11 
+									}, 
+									color: colors.labelColor 
+								},
+                                grid: { 
+									display: false 
+								}
                             },
                             y: {
-                                title: { display: true, text: 'Cantidad de Libros', font: { size: 13 }, color: colors.labelColor },
-                                ticks: { font: { size: 12 }, color: colors.labelColor, callback: val => Number.isInteger(val) ? val : '' },
-                                grid: { drawOnChartArea: false }
+                                title: { 
+									display: true, 
+									text: 'Cantidad de Libros', 
+									font: { 
+										size: 13 
+									}, 
+									color: colors.labelColor 
+								},
+                                ticks: { 
+									display: true, 
+									font: { 
+										size: 11 
+										}, 
+									color: colors.labelColor, 
+									callback: val => Number.isInteger(val) ? val : '',
+								},
+                                grid: { 
+									drawOnChartArea: false,								
+								},
                             }
                         },
                         animation: { duration: 1000, easing: 'easeOutQuart' },
@@ -434,22 +493,77 @@
                     options: {
                         responsive: true, maintainAspectRatio: true,
                         plugins: {
-                            legend: { display: false },
-                            title: { display: true, text: 'Calificaciones por Año', font: { size: 20, weight: 'bold' }, align: 'start', color: colors.titleColor },
-                            subtitle: { display: true, text: 'Libros leídos por calificación (filtrado por año)', font: { size: 14 }, padding: { bottom: 25 }, align: 'start', color: colors.subtitleColor },
-                            datalabels: { display: false },
+                            legend: { 
+								display: false 
+							},
+                            title: { 
+								display: true, 
+								text: 'Calificaciones por Año', 
+								font: { 
+									size: 20, 
+									weight: 'bold' 
+								}, 
+								align: 'start', 
+								color: colors.titleColor,
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
+							},
+                            subtitle: { 
+								display: true, 
+								text: 'Libros leídos por calificación (filtrado por año)', 
+								font: { 
+									size: 13 
+								}, 
+								padding: { 
+									bottom: 25 
+								}, 
+								align: 'start', 
+								color: colors.subtitleColor
+							},
+                            datalabels: { 
+								display: false 
+							},
                         },
                         scales: {
                             x: {
-                                title: { display: true, text: 'Calificación', font: { size: 13 }, color: colors.labelColor },
-                                ticks: { font: { size: 12 }, color: colors.labelColor },
-                                grid: { display: false }
+                                title: { 
+									display: true, 
+									text: 'Calificación', 
+									font: { 
+										size: 13 
+									}, 
+									color: colors.labelColor 
+								},
+                                ticks: { 
+									font: { 
+										size: 11 
+									}, 
+									color: colors.labelColor 
+								},
+                                grid: { 
+									display: false 
+								}
                             },
                             y: {
-                                title: { display: true, text: 'Cantidad de Libros', font: { size: 13 }, color: colors.labelColor },
-                                ticks: { font: { size: 12 }, color: colors.labelColor, callback: val => Number.isInteger(val) ? val : '' },
+                                title: { 
+									display: true, 
+									text: 'Cantidad de Libros', 
+									font: { 
+										size: 13
+									}, 
+									color: colors.labelColor 
+								},
+                                ticks: { 
+									font: { 
+										size: 11 
+									}, 
+									color: colors.labelColor, 
+									callback: val => Number.isInteger(val) ? val : '' 
+								},
                                 grid: { drawOnChartArea: false }
-                            }
+                            },
                         },
                     },
                     plugins: [ChartDataLabels],
@@ -463,7 +577,7 @@
                     chart.data.labels = updatedData.labels;
                     chart.data.datasets[0].data = updatedData.values;
                     chart.data.datasets[0].label = `Libros Leídos (${year})`;
-                    chart.update('none'); // 'none' for no animation
+                    chart.update(); // 'none' for no animation
                 });
 
             } catch (error) {
@@ -496,42 +610,136 @@
                         labels: data.map(item => item['Año de Lectura']),
                         datasets: [
                             {
-                                label: 'Promedio Global', data: data.map(item => item['Calificación Promedio Global']),
-                                type: 'line', borderColor: colors.lineColor, borderWidth: 2, fill: false,
-                                pointBackgroundColor: colors.linePointColor, tension: 0.5, yAxisID: 'y1', pointHoverRadius: 6,
+                                label: 'Promedio Global', 
+								data: data.map(item => item['Calificación Promedio Global']),
+                                type: 'line', 
+								borderColor: colors.lineColor, 
+								borderWidth: 2, 
+								fill: false,
+                                pointBackgroundColor: colors.linePointColor, 
+								tension: 0.5, 
+								yAxisID: 'y1', 
+								pointHoverRadius: 6,
                             },
                             {
-                                label: 'Promedio Anual', data: data.map(item => item['Calificación Promedio Anual']),
-                                backgroundColor: colors.barColor, hoverBackgroundColor: colors.barHoverColor,
-                                borderRadius: 8, yAxisID: 'y',
+                                label: 'Promedio Anual', 
+								data: data.map(item => item['Calificación Promedio Anual']),
+                                backgroundColor: colors.barColor, 
+								hoverBackgroundColor: colors.barHoverColor,
+                                borderRadius: 8, 
+								yAxisID: 'y',
                             },
                         ],
                     },
                     options: {
-                        responsive: true, maintainAspectRatio: false,
+                        responsive: true, 
+						maintainAspectRatio: false,
                         plugins: {
-                            legend: { position: 'top', labels: { font: { size: 12 }, color: colors.labelColor } },
-                            title: { display: true, text: 'Calificaciones Promedio', font: { size: 20, weight: 'bold' }, align: 'start', color: colors.titleColor },
-                            subtitle: { display: true, text: 'Promedio anual vs. promedio global acumulado', font: { size: 14 }, padding: { bottom: 10 }, align: 'start', color: colors.subtitleColor },
-                            datalabels: { display: false },
+                            legend: { 
+								position: 'top', 
+								labels: { 
+									font: { 
+										size: 12 
+									}, 
+									color: colors.labelColor 
+								} 
+							},
+                            title: { 
+								display: true, 
+								text: 'Calificaciones Promedio', 
+								font: { 
+									size: 20, 
+									weight: 'bold' 
+								}, 
+								align: 'start', 
+								color: colors.titleColor,
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
+							},
+                            subtitle: { 
+								display: true, 
+								text: 'Promedio anual vs. promedio global acumulado', 
+								font: { 
+									size: 13 
+								}, 
+								padding: {
+									bottom: 10 
+								}, 
+								align: 'start', 
+								color: colors.subtitleColor
+							},
+                            datalabels: { 
+								display: false
+							},
                         },
                         scales: {
                             y: {
-                                type: 'linear', position: 'left', min: 3, max: 4.5,
-                                title: { display: true, text: 'Calificación Promedio', font: { size: 13 }, color: colors.labelColor },
-                                ticks: { font: { size: 12 }, color: colors.labelColor, callback: val => val.toFixed(1) },
-                                grid: { drawOnChartArea: false },
+                                type: 'linear', 
+								position: 'left', 
+								min: 3,
+								max: 5,
+                                title: { 
+									display: true, 
+									text: 'Calificación Promedio', 
+									font: { 
+										size: 13
+									}, 
+									color: colors.labelColor 
+								},
+                                ticks: {
+									font: { 
+										size: 11 
+									}, 
+									color: colors.labelColor, 
+									callback: val => val.toFixed(1) 
+								},
+                                grid: { 
+									drawOnChartArea: false 
+								},
                             },
                             y1: {
-                                type: 'linear', position: 'right', min: 3, max: 4.5,
-                                title: { display: true, text: 'Promedio Global', font: { size: 13 }, color: colors.labelColor },
-                                ticks: { font: { size: 12 }, color: colors.labelColor, callback: val => val.toFixed(1) },
-                                grid: { drawOnChartArea: false },
+                                type: 'linear', 
+								position: 'right', 
+								min: 3, 
+								max: 5,
+                                title: { 
+									display: true, 
+									text: 'Promedio Global', 
+									font: { 
+										size: 13 
+									}, 
+									color: colors.labelColor 
+								},
+                                ticks: { 
+									font: { 
+										size: 11 
+									}, 
+									color: colors.labelColor, 
+									callback: val => val.toFixed(1) 
+								},
+                                grid: { 
+									drawOnChartArea: false 
+								},
                             },
                             x: {
-                                title: { display: true, text: 'Año de Lectura', font: { size: 13 }, color: colors.labelColor },
-                                ticks: { font: { size: 12 }, color: colors.labelColor },
-                                grid: { display: false },
+                                title: { 
+									display: true, 
+									text: 'Año de Lectura', 
+									font: { 
+										size: 13 }, 
+										color: colors.labelColor 
+									},
+                                ticks: { 
+									font: { 
+										size: 11 
+									}, 
+									color: colors.labelColor 
+								},
+                                grid: { 
+									display: false 
+								},
                             },
                         },
                     },
