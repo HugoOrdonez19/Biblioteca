@@ -6,7 +6,7 @@
     <title>Dashboard de Géneros y Autores</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         :root {
             /* Colores modo claro */
@@ -462,13 +462,17 @@
                                     family: 'Roboto',
                                 },
                                 align: 'start',
+								padding: {
+                                    bottom: 0,
+                                    top: 0
+								},
                                 color: getComputedStyle(document.documentElement).getPropertyValue('--chart-title-color')
                             },
                             subtitle: {
                                 display: true,
                                 text: 'Cantidad de libros leídos agrupados por géneros',
                                 font: {
-                                    size: 14,
+                                    size: 13,
                                     family: 'Roboto',
                                     weight: 'normal',
                                 },
@@ -482,6 +486,34 @@
                             datalabels: {
                                 display: false,
                             },
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									title: function (tooltipItems) {
+										const item = tooltipItems[0];
+										return item ? `Género: ${item.label}` : '';
+									},
+									label: function (context) {
+										return `Total Libros Leídos: ${context.parsed.y}`;
+									}
+								},
+								titleColor: function (context) {
+									const style = getComputedStyle(document.documentElement);
+									return style.getPropertyValue('--chart-bar-color').trim();
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								},
+								borderColor: function (context) {
+									const style = getComputedStyle(document.documentElement);
+									return style.getPropertyValue('--chart-bar-color').trim() || 'rgba(0, 0, 0, 0.1)';
+								},
+							}
                         },
                         scales: {
                             x: {
@@ -493,7 +525,7 @@
                                     maxRotation: 90,
                                     minRotation: 0,
                                     font: {
-                                        size: 12,
+                                        size: 11,
                                         family: 'Roboto',
                                     },
                                     color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
@@ -524,7 +556,7 @@
                                 },
                                 ticks: {
                                     font: {
-                                        size: 12,
+                                        size: 11,
                                         family: 'Roboto',
                                     },
                                     color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color'),
@@ -588,7 +620,7 @@
                             })),
                             backgroundColor: 'rgba(92, 165, 147, 0.85)', // Could also be dynamic
                             borderColor: 'rgba(45, 108, 104, 1)', // Could also be dynamic
-                            hoverBackgroundColor: 'rgba(45, 108, 104, 1)', // Could also be dynamic
+                            hoverBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-hover-color'),
                             borderWidth: 1,
                             hoverRadius: 10,
                         }]
@@ -608,6 +640,10 @@
                                     weight: 'bold',
                                     family: 'Roboto'
                                 },
+								 padding: {
+                                    bottom: 0,
+                                    top: 0
+                                },
                                 align: 'start',
                                 color: getComputedStyle(document.documentElement).getPropertyValue('--chart-title-color')
                             },
@@ -615,7 +651,7 @@
                                 display: true,
                                 text: 'Calificación promedio de cada género leído (tamaño de la burbuja: total de libros)',
                                 font: {
-                                    size: 14,
+                                    size: 13,
                                     family: 'Roboto',
                                     weight: 'normal'
                                 },
@@ -627,15 +663,41 @@
                                 color: getComputedStyle(document.documentElement).getPropertyValue('--chart-subtitle-color')
                             },
                             tooltip: {
-                                callbacks: {
-                                    label: (context) => {
-                                        const genero = labels[context.raw.x];
-                                        const calificacion = context.raw.y;
-                                        const totalLibros = context.raw.r;
-                                        return `Género: ${genero}\nCalificación Promedio: ${calificacion}\nTotal Libros: ${totalLibros}`;
-                                    }
-                                }
-                            },
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									title: function (tooltipItems) {
+										const item = tooltipItems[0];
+										const labels = item.chart.data.labels;
+										return item ? `Género: ${labels[item.raw.x]}` : '';
+									},
+									label: function (context) {
+										const labels = context.chart.data.labels;
+										const genero = labels[context.raw.x];
+										const calificacion = context.raw.y;
+										const totalLibros = context.raw.r;
+										return [
+											`Calificación Promedio: ${calificacion}`,
+											`Total Libros: ${totalLibros}`
+										];
+									}
+								},
+								titleColor: function (context) {
+									const style = getComputedStyle(document.documentElement);
+									return style.getPropertyValue('--chart-bar-color').trim();
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								},
+								borderColor: function (context) {
+									const style = getComputedStyle(document.documentElement);
+									return style.getPropertyValue('--chart-bar-color').trim() || 'rgba(0, 0, 0, 0.1)';
+								},
+							},
                             datalabels: {
                                 display: false,
                             }
@@ -659,7 +721,7 @@
                                     maxRotation: 90,
                                     minRotation: 0,
                                     font: {
-                                        size: 12,
+                                        size: 11,
                                     },
                                     color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color')
                                 },
@@ -680,7 +742,7 @@
                                 },
                                 ticks: {
                                     font: {
-                                        size: 12,
+                                        size: 11,
                                     },
                                     color: getComputedStyle(document.documentElement).getPropertyValue('--chart-label-color'),
                                     callback: function(value) {
