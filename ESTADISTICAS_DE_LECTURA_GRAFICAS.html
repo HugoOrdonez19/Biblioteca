@@ -455,7 +455,9 @@
                         },
                         scales: {
                             y: {
-                                type: 'linear', position: 'left',
+								display: false,
+                                type: 'linear', 
+								position: 'left',
                                 title: { 
 									display: true, 
 									text: 'Libros Leídos (Anual)', 
@@ -475,7 +477,9 @@
                                 grid: { drawOnChartArea: false }, min: 0, max: 90,
                             },
                             y1: {
-                                type: 'linear', position: 'right',
+								display: false,
+                                type: 'linear', 
+								position: 'right',
                                 title: { 
 									display: true, 
 									text: 'Libros Leídos (Acumulado)', 
@@ -683,6 +687,7 @@
                         },
                         scales: {
                             y: {
+								display: false,
                                 type: 'linear', 
 								position: 'left',
                                 title: { 
@@ -709,6 +714,7 @@
 								max: 80,
                             },
                             y1: {
+								display: false,
                                 type: 'linear', position: 'right',
                                 title: { 
 									display: true, 
@@ -920,6 +926,7 @@
                         },
                         scales: {
                             y: {
+								display: false,
                                 type: 'linear', 
 								position: 'left',
                                 title: { 
@@ -946,6 +953,7 @@
 								max: 25000,
                             },
                             y1: {
+								display: false,
                                 type: 'linear', 
 								position: 'right',
                                 title: { 
@@ -1187,6 +1195,7 @@
                 const colors = [
                     'rgba(92, 165, 147, 1)', 'rgba(135, 194, 163, 1)',
                     'rgba(173, 213, 187, 1)', 'rgba(45, 108, 104, 1)',
+					'rgba(30, 80, 75, 1)',
                 ];
 
                 const ctx = canvas.getContext('2d');
