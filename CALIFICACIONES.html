@@ -25,8 +25,8 @@
             --chart-grid-color: #eee;
             --chart-bar-color: rgba(92, 165, 147, 1);
             --chart-bar-hover-color: rgba(45, 108, 104, 1);
-            --chart-line-color: rgba(28, 78, 96, 1);
-            --chart-line-point-color: rgba(28, 78, 96, 1);
+            --chart-line-color: rgba(139, 144, 173, 1);
+            --chart-line-point-color: rgba(139, 144, 173, 1);
         }
 
         [data-theme="dark"] {
@@ -46,8 +46,8 @@
             --chart-grid-color: #444;
             --chart-bar-color: rgba(106, 168, 156, 1);
             --chart-bar-hover-color: rgba(90, 115, 138, 1);
-            --chart-line-color: rgba(155, 181, 179, 1);
-            --chart-line-point-color: rgba(155, 181, 179, 1);
+            --chart-line-color: rgba(255, 127, 127, 0.7);
+            --chart-line-point-color: rgba(255, 127, 127, 0.7);
         }
 
         body {
@@ -358,7 +358,8 @@
 								text: 'Calificaciones', 
 								font: { 
 									size: 20, 
-									weight: 'bold' 
+									weight: 'bold',
+									family: 'Roboto'
 								}, 
 								align: 'start', 
 								color: colors.titleColor,
@@ -371,7 +372,8 @@
 								display: true, 
 								text: 'Libros leídos agrupados por calificación dada', 
 								font: { 
-									size: 13 
+									size: 13,
+									family: 'Roboto',
 								}, 
 								padding: { 
 									bottom: 30 
@@ -382,6 +384,51 @@
                             datalabels: { 
 								display: false 
 							},
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									label: function (context) {
+										const dataset = context.dataset;
+										const value = context.parsed.y || context.raw;
+										let labelText = '';
+										
+										// Construir el texto del label con el nombre del dataset y el valor
+										if (dataset.label) {
+											labelText = `${dataset.label}: `;
+										}
+										
+										// Agregar el valor formateado
+										if (value !== undefined && value !== null) {
+											labelText += value.toLocaleString('es-GT', { 
+												minimumFractionDigits: 0, 
+												maximumFractionDigits: 2 
+											});
+										}
+										
+										return labelText;
+									}
+								},
+								titleColor: function (context) {
+									const dataPoint = context.tooltip.dataPoints[0];
+									const dataset = dataPoint.dataset;
+									
+									// Verificar si es el dataset de línea (tiene type: 'line')
+									if (dataset.type === 'line') {
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-line-color').trim() || dataset.borderColor;
+									} else {
+										// Si no tiene type definido, es el dataset de barras (tipo base del chart)
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color').trim() || dataset.backgroundColor;
+									}
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								}
+							}
                         },
                         scales: {
                             x: {
@@ -389,13 +436,15 @@
 									display: true, 
 									text: 'Calificación', 
 									font: { 
-										size: 13 
+										size: 13,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								},
                                 ticks: { 
 									font: { 
-										size: 11 
+										size: 11,
+										family: 'Roboto',										
 									}, 
 									color: colors.labelColor 
 								},
@@ -408,14 +457,16 @@
 									display: true, 
 									text: 'Cantidad de Libros', 
 									font: { 
-										size: 13 
+										size: 13,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								},
                                 ticks: { 
 									display: true, 
 									font: { 
-										size: 11 
+										size: 11,
+										family: 'Roboto',										
 										}, 
 									color: colors.labelColor, 
 									callback: val => Number.isInteger(val) ? val : '',
@@ -501,7 +552,8 @@
 								text: 'Calificaciones por Año', 
 								font: { 
 									size: 20, 
-									weight: 'bold' 
+									weight: 'bold',
+									family: 'Roboto',
 								}, 
 								align: 'start', 
 								color: colors.titleColor,
@@ -514,7 +566,8 @@
 								display: true, 
 								text: 'Libros leídos por calificación (filtrado por año)', 
 								font: { 
-									size: 13 
+									size: 13,
+									family: 'Roboto',
 								}, 
 								padding: { 
 									bottom: 25 
@@ -525,6 +578,51 @@
                             datalabels: { 
 								display: false 
 							},
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									label: function (context) {
+										const dataset = context.dataset;
+										const value = context.parsed.y || context.raw;
+										let labelText = '';
+										
+										// Construir el texto del label con el nombre del dataset y el valor
+										if (dataset.label) {
+											labelText = `${dataset.label}: `;
+										}
+										
+										// Agregar el valor formateado
+										if (value !== undefined && value !== null) {
+											labelText += value.toLocaleString('es-GT', { 
+												minimumFractionDigits: 0, 
+												maximumFractionDigits: 2 
+											});
+										}
+										
+										return labelText;
+									}
+								},
+								titleColor: function (context) {
+									const dataPoint = context.tooltip.dataPoints[0];
+									const dataset = dataPoint.dataset;
+									
+									// Verificar si es el dataset de línea (tiene type: 'line')
+									if (dataset.type === 'line') {
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-line-color').trim() || dataset.borderColor;
+									} else {
+										// Si no tiene type definido, es el dataset de barras (tipo base del chart)
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color').trim() || dataset.backgroundColor;
+									}
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								}
+							}
                         },
                         scales: {
                             x: {
@@ -532,13 +630,15 @@
 									display: true, 
 									text: 'Calificación', 
 									font: { 
-										size: 13 
+										size: 13,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								},
                                 ticks: { 
 									font: { 
-										size: 11 
+										size: 11,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								},
@@ -551,13 +651,15 @@
 									display: true, 
 									text: 'Cantidad de Libros', 
 									font: { 
-										size: 13
+										size: 13,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								},
                                 ticks: { 
 									font: { 
-										size: 11 
+										size: 11,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor, 
 									callback: val => Number.isInteger(val) ? val : '' 
@@ -619,7 +721,7 @@
                                 pointBackgroundColor: colors.linePointColor, 
 								tension: 0.5, 
 								yAxisID: 'y1', 
-								pointHoverRadius: 6,
+								pointHoverRadius: 7,
                             },
                             {
                                 label: 'Promedio Anual', 
@@ -635,11 +737,15 @@
                         responsive: true, 
 						maintainAspectRatio: false,
                         plugins: {
-                            legend: { 
+                            legend: {
 								position: 'top', 
-								labels: { 
+								labels: {
+									boxWidth:7.75,	
+									boxHeight:7.75,
+									usePointStyle: true,
 									font: { 
-										size: 12 
+										size: 12,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								} 
@@ -649,7 +755,8 @@
 								text: 'Calificaciones Promedio', 
 								font: { 
 									size: 20, 
-									weight: 'bold' 
+									weight: 'bold',
+									family: 'Roboto',
 								}, 
 								align: 'start', 
 								color: colors.titleColor,
@@ -662,7 +769,8 @@
 								display: true, 
 								text: 'Promedio anual vs. promedio global acumulado', 
 								font: { 
-									size: 13 
+									size: 13,
+									family: 'Roboto',
 								}, 
 								padding: {
 									bottom: 10 
@@ -673,6 +781,51 @@
                             datalabels: { 
 								display: false
 							},
+							tooltip: {
+								displayColors: false,
+								bodyFont: {
+									size: 12,
+									family: 'Roboto'
+								},
+								callbacks: {
+									label: function (context) {
+										const dataset = context.dataset;
+										const value = context.parsed.y || context.raw;
+										let labelText = '';
+										
+										// Construir el texto del label con el nombre del dataset y el valor
+										if (dataset.label) {
+											labelText = `${dataset.label}: `;
+										}
+										
+										// Agregar el valor formateado
+										if (value !== undefined && value !== null) {
+											labelText += value.toLocaleString('es-GT', { 
+												minimumFractionDigits: 0, 
+												maximumFractionDigits: 2 
+											});
+										}
+										
+										return labelText;
+									}
+								},
+								titleColor: function (context) {
+									const dataPoint = context.tooltip.dataPoints[0];
+									const dataset = dataPoint.dataset;
+									
+									// Verificar si es el dataset de línea (tiene type: 'line')
+									if (dataset.type === 'line') {
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-line-color').trim() || dataset.borderColor;
+									} else {
+										// Si no tiene type definido, es el dataset de barras (tipo base del chart)
+										return getComputedStyle(document.documentElement).getPropertyValue('--chart-bar-color').trim() || dataset.backgroundColor;
+									}
+								},
+								titleFont: {
+									weight: 'bold',
+									size: 13,
+								}
+							}
                         },
                         scales: {
                             y: {
@@ -684,13 +837,15 @@
 									display: true, 
 									text: 'Calificación Promedio', 
 									font: { 
-										size: 13
+										size: 13,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								},
                                 ticks: {
 									font: { 
-										size: 11 
+										size: 11,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor, 
 									callback: val => val.toFixed(1) 
@@ -708,13 +863,15 @@
 									display: true, 
 									text: 'Promedio Global', 
 									font: { 
-										size: 13 
+										size: 13,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								},
                                 ticks: { 
 									font: { 
-										size: 11 
+										size: 11,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor, 
 									callback: val => val.toFixed(1) 
@@ -728,12 +885,15 @@
 									display: true, 
 									text: 'Año de Lectura', 
 									font: { 
-										size: 13 }, 
-										color: colors.labelColor 
+										size: 13,
+										family: 'Roboto',
+									}, 
+									color: colors.labelColor 
 									},
                                 ticks: { 
 									font: { 
-										size: 11 
+										size: 11,
+										family: 'Roboto',
 									}, 
 									color: colors.labelColor 
 								},
