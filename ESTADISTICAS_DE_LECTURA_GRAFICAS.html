@@ -25,8 +25,8 @@
             --chart-grid-color: #eee;
             --chart-bar-color: rgba(92, 165, 147, 1);
             --chart-bar-hover-color: rgba(45, 108, 104, 1);
-            --chart-line-color: rgba(139, 144, 173, 1);
-            --chart-line-point-color: rgba(139, 144, 173, 1);
+            --chart-line-color: rgba(255, 127, 127, 0.7);
+            --chart-line-point-color: rgba(255, 127, 127, 0.7);
         }
 
         /* Colores modo oscuro */
@@ -364,6 +364,9 @@
                             legend: {
                                 position: 'top',
                                 labels: {
+									boxWidth:7.75,	
+									boxHeight:7.75,
+									usePointStyle: true,
                                     font: { 
 										size: 12, 
 										family: 'Roboto' 
@@ -591,6 +594,9 @@
                             legend: {
                                 position: 'top',
                                 labels: { 
+									boxWidth:7.75,	
+									boxHeight:7.75,
+									usePointStyle: true,
 									font: { 
 										size: 12, 
 										family: 'Roboto' 
@@ -822,7 +828,10 @@
                         plugins: {
                             legend: {
                                 position: 'top',
-                                labels: { 
+                                labels: {
+									boxWidth:7.75,	
+									boxHeight:7.75,
+									usePointStyle: true,
 									font: { 
 										size: 12, 
 										family: 'Roboto' 
@@ -1084,7 +1093,10 @@
                             legend: {
                                 display: true, 
 								position: 'top',
-                                labels: { 
+                                labels: {
+									boxWidth:7.75,	
+									boxHeight:7.75,
+									usePointStyle: true,
 									font: { 
 										family: 'Roboto', 
 										size: 12 
@@ -1235,6 +1247,9 @@
                                 display: true, 
 								position: 'top',
                                 labels: { 
+									boxWidth:7.75,	
+									boxHeight:7.75,
+									usePointStyle: true,
 									font: { 
 										family: 'Roboto', 
 										size: 12 
@@ -1397,7 +1412,6 @@
 									label: function (context) {
 										const { x, y, r } = context.raw;
 										return [
-											`Año de Lectura: ${x}`,
 											`Año de Publicación: ${y}`,
 											`Total Libros Leídos: ${(r / 7).toLocaleString('es-GT', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
 										];
