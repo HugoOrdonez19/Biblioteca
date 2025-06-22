@@ -9,15 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Definición de colores principales para fácil mantenimiento */
-            --primary-bg: #FFFFFF; /* Color de fondo */
-            --main-accent: #5ca593; /* Color de acento principal */
-            --dark-accent: #2d6c68; /* Color de título oscuro */
-            --text-color: #333; /* Color de texto general */
-            --hover-bg: #dce8e5; /* Color de hover de tabla/botones */
-            --button-active-bg: #4a8c7b; /* Tono más oscuro de main-accent para botón activo */
+            /* Colores modo claro */
+            --primary-bg: #FFFFFF;
+            --main-accent: #5ca593;
+            --dark-accent: #2d6c68;
+            --text-color: #333;
+            --hover-bg: #dce8e5;
+            --button-active-bg: #4a8c7b;
             --button-text-color: white;
-            --shadow-color: rgba(0, 0, 0, 0.25); /* Sombra suave para elementos flotantes */
+            --shadow-color: rgba(0, 0, 0, 0.25);
+            --indicator-text-color: white; /* Color de texto para los indicadores */
+        }
+
+        [data-theme="dark"] {
+            /* Colores modo oscuro */
+            --primary-bg: #191818;
+            --main-accent: #6aa89c;
+            --dark-accent: #9bb5b3;
+            --text-color: #e0e0e0;
+            --hover-bg: #3a3939;
+            --button-active-bg: #5c9489;
+            --button-text-color: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --indicator-text-color: #ffffff;
         }
 
         body {
@@ -31,6 +45,7 @@
             min-height: 100vh;
             color: var(--text-color);
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         h1 {
@@ -40,9 +55,9 @@
             margin-bottom: 30px;
             text-align: center;
             width: 100%;
+            transition: color 0.3s ease;
         }
 
-        /* Contenedor para el menú desplegable y botones de navegación */
         .navigation-container {
             display: flex;
             flex-wrap: nowrap;
@@ -54,7 +69,6 @@
             max-width: 900px;
         }
 
-        /* Estilos para los botones Anterior/Siguiente */
         .nav-button {
             background-color: var(--main-accent);
             color: var(--button-text-color);
@@ -64,7 +78,7 @@
             font-size: 10px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
             box-shadow: 0 2px 4px var(--shadow-color);
             white-space: nowrap;
         }
@@ -82,12 +96,11 @@
             opacity: 0.7;
         }
 
-        /* Estilos para el menú desplegable */
         .chart-dropdown {
             padding: 9px 25px 9px 15px;
             border: 1px solid var(--main-accent);
             border-radius: 8px;
-            background-color: white;
+            background-color: var(--primary-bg);
             font-family: 'Roboto', sans-serif;
             font-size: 12px;
             color: var(--text-color);
@@ -99,65 +112,78 @@
             background-size: 20px;
             cursor: pointer;
             outline: none;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        [data-theme="dark"] .chart-dropdown {
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236aa89c'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+             border-color: var(--main-accent);
         }
 
         #chartDisplayArea {
             width: 100%;
-            max-width: 800px; /* Ancho máximo estandarizado */
-            min-height: 125px;/
-            height: auto; /* Permite que la altura se ajuste al contenido */
+            max-width: 800px;
+            min-height: 125px;
+            height: auto;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Siempre alineado arriba para los indicadores */
+            justify-content: flex-start;
             align-items: center;
             gap: 15px;
             opacity: 1;
             transform: translateY(0);
-            transition: none; /* Transición a 0s para eliminar la animación */
+            transition: none;
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
-            padding: 0; /* Sin padding de tarjeta, solo fondo general */
-            background-color: var(--primary-bg); /* Fondo para que los indicadores queden sobre el body */
-            border-radius: 0; /* Sin bordes redondeados por defecto para indicadores */
-            box-shadow: none; /* Sin sombra por defecto para indicadores */
+            padding: 0;
+            background-color: var(--primary-bg);
+            border-radius: 0;
+            box-shadow: none;
         }
 
-        /* Clase para aplicar estilo de "tarjeta" (no usada en este archivo, pero mantenida para consistencia) */
         .card-style {
-            background-color: white;
+            background-color: var(--primary-bg);
             border-radius: 10px;
             box-shadow: 0 6px 18px var(--shadow-color);
             padding: 20px;
         }
 
-        /* Animación de transición (solo opacidad y transformación, no fondo) */
         .chart-transition-out {
             opacity: 0;
             transform: translateY(20px);
         }
 
-        /* Estilos para indicadores */
         .indicators-grid {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: flex-start; /* Alinea los indicadores en la parte superior de su línea */
+            align-items: flex-start;
             gap: 20px;
             width: 100%;
+            /* -- CAMBIO CLAVE -- Se añade padding para dar espacio a la sombra */
+            padding: 10px 10px 20px 10px; 
+            box-sizing: border-box;
         }
 
         .indicator {
-            text-align: center;
             background-color: var(--main-accent);
-            color: white;
-            padding: 10px 10px 10px 10px;
+            color: var(--indicator-text-color);
+            padding: 15px;
             border-radius: 10px;
             width: 150px;
-            box-shadow: 0px 4px 6px var(--shadow-color);
+            height: 150px; /* Altura constante para todos los indicadores */
+            box-shadow: 0px 4px 10px var(--shadow-color); /* Sombra un poco más extendida */
             user-select: none;
             flex-shrink: 0;
             box-sizing: border-box;
+            /* Flexbox para centrar contenido */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         .indicator .value {
             font-size: 32px;
@@ -168,19 +194,60 @@
             font-size: 12px;
             margin: 0;
             margin-top: 8px;
-            min-height: 38px;
+            min-height: 0; /* Se anula para que Flexbox controle el espacio */
+        }
+        
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            color: var(--text-color);
+            font-size: 14px;
+            gap: 10px;
+            transition: color 0.3s ease;
         }
 
-        /* Estilos genéricos para los canvas de Chart.js (no usados en este archivo, pero para consistencia) */
-        .chartjs-canvas {
-            max-width: 800px; /* Ancho máximo estandarizado */
-            width: 100%;
-            height: 400px; /* Altura estandarizada */
-            box-sizing: border-box;
+        .theme-switch {
+            display: inline-block;
+            height: 18px;
+            position: relative;
+            width: 36px;
         }
 
-        /* Responsividad para pantallas más pequeñas */
+        .theme-switch input { display: none; }
+
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            background-color: #fff;
+            bottom: 3px;
+            content: "";
+            height: 12px;
+            left: 3px;
+            position: absolute;
+            transition: .4s;
+            width: 12px;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--main-accent); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
         @media (max-width: 768px) {
+            h1 { font-size: 24px; }
             .navigation-container {
                 flex-direction: column;
                 gap: 15px;
@@ -189,34 +256,39 @@
                 width: 90%;
                 text-align: center;
             }
-            .chart-dropdown {
-                background-position: right 15px center;
-            }
+            .chart-dropdown { background-position: right 15px center; }
             #chartDisplayArea {
                 gap: 15px;
-                height: auto; /* Se asegura que la altura se ajuste */
-                padding: 0; /* Asegura sin padding en pantallas pequeñas para este tipo */
+                height: auto;
+                padding: 0;
             }
-            .indicators-grid {
-                align-content: flex-start; /* Para que no se centren verticalmente en pantallas pequeñas */
+            .indicators-grid { 
+                align-content: flex-start;
+                padding: 10px;
             }
             .indicator {
                 width: calc(50% - 10px);
-                padding: 15px;
+                height: 140px; /* Ajuste de altura para pantallas pequeñas */
+                padding: 10px;
             }
-            .indicator .value {
-                font-size: 32px;
-            }
-            .indicator .label {
-                min-height: auto;
-            }
-            h1 {
-                font-size: 24px;
+            .indicator .value { font-size: 28px; }
+            .indicator .label { min-height: auto; }
+            .theme-switch-wrapper {
+                top: 10px;
+                left: 10px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
+
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+    </div>
 
     <div class="navigation-container">
         <button id="prevChartButton" class="nav-button">Anterior</button>
@@ -229,17 +301,15 @@
         </div>
 
     <script>
-        // Array para almacenar los datos de cada JSON una vez cargados
         const chartData = {};
-        const chartInstances = {}; // Para almacenar instancias de Chart.js (no usadas aquí, pero mantenidas)
+        const chartInstances = {};
 
-        // Referencias a los elementos del DOM
         const chartDisplayArea = document.getElementById('chartDisplayArea');
         const chartSelector = document.getElementById('chartSelector');
         const prevChartButton = document.getElementById('prevChartButton');
         const nextChartButton = document.getElementById('nextChartButton');
+        const themeToggle = document.getElementById('checkbox');
 
-        // Función para animar el valor de un número (utilizada por los indicadores)
         function animateValue(element, targetValue, duration = 500) {
             let startTimestamp = null;
             const isFloat = targetValue.toString().includes(".");
@@ -264,10 +334,7 @@
             }
             window.requestAnimationFrame(step);
         }
-
-        // --- Funciones para renderizar cada tipo de visualización ---
-
-        // Función para renderizar indicadores (del archivo original ESTADISTICAS_DE_LECTURA.html)
+        
         async function renderIndicadores(jsonFileName, chartTitle) {
             try {
                 if (!chartData[jsonFileName]) {
@@ -276,11 +343,10 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
+                chartDisplayArea.innerHTML = '';
 
                 let filteredData = chartData[jsonFileName];
 
-                // Filtra el indicador "Promedio de calificación de libros leídos" de "Estadísticas Totales"
                 if (jsonFileName === 'totales_resumen.json') {
                     filteredData = filteredData.filter(item => item.Descripción !== 'Promedio de calificación de libros leídos');
                 }
@@ -307,7 +373,6 @@
                     indicatorsGrid.appendChild(indicatorDiv);
                 });
 
-                // Disparar animaciones después de que los elementos estén en el DOM
                 document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
                     const target = parseFloat(valueElement.dataset.targetValue);
                     if (!isNaN(target)) {
@@ -321,7 +386,6 @@
             }
         }
 
-        // Función para renderizar los indicadores de Estadísticas Generales (MOVILIZADO de ESTADISTICAS_GENERALES.html)
         async function renderEstadisticasGeneralesIndicators() {
             try {
                 const jsonFileName = 'estadisticas_generales_resumen.json';
@@ -331,7 +395,7 @@
                     chartData[jsonFileName] = await response.json();
                 }
 
-                chartDisplayArea.innerHTML = ''; // Limpiar área
+                chartDisplayArea.innerHTML = '';
 
                 const indicatorsGrid = document.createElement('div');
                 indicatorsGrid.classList.add('indicators-grid');
@@ -345,8 +409,8 @@
 
                     const valueP = document.createElement('p');
                     valueP.classList.add('value');
-                    valueP.textContent = '0'; // Valor inicial para la animación
-                    valueP.dataset.targetValue = item.Valor; // Almacenar el valor objetivo
+                    valueP.textContent = '0';
+                    valueP.dataset.targetValue = item.Valor;
 
                     const labelP = document.createElement('p');
                     labelP.classList.add('label');
@@ -357,7 +421,6 @@
                     indicatorsGrid.appendChild(indicatorDiv);
                 });
 
-                // Disparar animaciones después de que los elementos estén en el DOM
                 document.querySelectorAll('#chartDisplayArea .value').forEach(valueElement => {
                     const target = parseFloat(valueElement.dataset.targetValue);
                     if (!isNaN(target)) {
@@ -371,17 +434,12 @@
             }
         }
 
-
-        // --- Manejo de la navegación entre visualizaciones ---
-
         const chartMap = {
-            // "Estadísticas Generales" como la primera opción
             'general-indicators': {
                 render: renderEstadisticasGeneralesIndicators,
                 label: 'Estadísticas Generales',
                 isIndicatorChart: true
             },
-            // Opciones originales del archivo ESTADISTICAS_DE_LECTURA.html
             'totales': {
                 render: () => renderIndicadores('totales_resumen.json', 'Estadísticas Totales'),
                 label: 'Estadísticas Totales',
@@ -397,69 +455,69 @@
                 label: 'Promedios Anuales',
                 isIndicatorChart: true
             }
-            // NOTA: Las gráficas de dona e histogramas (Libros por Estado, Distribución de Páginas,
-            // y Distribución de Años) permanecen en ESTADISTICAS_GENERALES.html según la nueva instrucción.
         };
 
-        const chartKeys = Object.keys(chartMap); // Array de claves para navegación secuencial
-        let currentChartIndex = 0; // Índice de la gráfica actual en chartKeys
+        const chartKeys = Object.keys(chartMap);
+        let currentChartIndex = 0;
 
-        // Función para actualizar el estado de los botones Anterior/Siguiente y el selector
         function updateNavigationState() {
-            chartSelector.value = chartKeys[currentChartIndex]; // Sincroniza el selector
-
-            // Deshabilita/habilita botones de navegación
+            chartSelector.value = chartKeys[currentChartIndex];
             prevChartButton.disabled = currentChartIndex === 0;
             nextChartButton.disabled = currentChartIndex === chartKeys.length - 1;
         }
 
-        // Función para cambiar la gráfica activa
         async function switchChart(newChartKeyOrIndex) {
             let newIndex;
             if (typeof newChartKeyOrIndex === 'string') {
                 newIndex = chartKeys.indexOf(newChartKeyOrIndex);
-            } else { // Asumimos que es un índice numérico
+            } else {
                 newIndex = newChartKeyOrIndex;
             }
 
-            if (newIndex === -1 || newIndex === currentChartIndex) return; // No hacer nada si es inválido o ya es la gráfica activa
+            if (newIndex === -1 || newIndex === currentChartIndex) return;
 
-            currentChartIndex = newIndex; // Actualiza el índice global
-
-            // Animación de salida (ya no hay transición CSS, pero mantenemos la clase para consistencia)
+            currentChartIndex = newIndex;
             chartDisplayArea.classList.add('chart-transition-out');
             updateNavigationState();
 
-            // Ajustar el estilo de tarjeta y alineación explícitamente
-            const isIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
-            if (isIndicator) {
-                chartDisplayArea.classList.remove('card-style');
-                chartDisplayArea.style.justifyContent = 'flex-start';
-                chartDisplayArea.style.padding = '0px'; /* Sin padding para indicadores */
-                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
-                chartDisplayArea.style.borderRadius = '0';
-                chartDisplayArea.style.boxShadow = 'none';
-            } else {
-                // Aunque este archivo solo tiene indicadores, se mantiene la lógica
-                // por si se añaden gráficas en el futuro.
-                chartDisplayArea.classList.add('card-style');
-                chartDisplayArea.style.justifyContent = 'center';
-                chartDisplayArea.style.padding = '20px'; /* Con padding para gráficas tipo tarjeta */
-                chartDisplayArea.style.backgroundColor = 'white';
-                chartDisplayArea.style.borderRadius = '10px';
-                chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
-            }
+            // Lógica para quitar estilos de tarjeta, ya que todos son indicadores
+            chartDisplayArea.classList.remove('card-style');
+            chartDisplayArea.style.justifyContent = 'flex-start';
+            chartDisplayArea.style.padding = '0px';
+            chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
+            chartDisplayArea.style.borderRadius = '0';
+            chartDisplayArea.style.boxShadow = 'none';
 
-            // Esperar a que la función de renderizado termine
             await chartMap[chartKeys[currentChartIndex]].render();
             chartDisplayArea.classList.remove('chart-transition-out');
-            // La animación de los indicadores se dispara dentro de cada función de renderizado ahora.
+        }
+        
+        // --- Lógica para el modo oscuro ---
+        function setPreferredTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            let themeToApply = 'light'; // Por defecto
+            if (storedTheme) {
+                themeToApply = storedTheme;
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeToApply = 'dark';
+            }
+            document.documentElement.setAttribute('data-theme', themeToApply);
+            themeToggle.checked = (themeToApply === 'dark');
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            // No es necesario forzar un re-render, los estilos CSS se aplican automáticamente
         }
 
         // --- Inicialización ---
-
         document.addEventListener('DOMContentLoaded', async () => {
-            // Rellenar el menú desplegable
+            setPreferredTheme();
+            themeToggle.addEventListener('change', toggleTheme);
+            
             chartKeys.forEach(key => {
                 const option = document.createElement('option');
                 option.value = key;
@@ -467,7 +525,6 @@
                 chartSelector.appendChild(option);
             });
 
-            // Asignar listeners a los elementos de navegación
             chartSelector.addEventListener('change', (event) => {
                 switchChart(event.target.value);
             });
@@ -484,30 +541,16 @@
                 }
             });
 
-            // Cargar la primera gráfica al inicio
             await chartMap[chartKeys[currentChartIndex]].render();
-            updateNavigationState(); // Establece el estado inicial de los botones y el selector
+            updateNavigationState();
 
-            // Aplicar estilos iniciales para indicadores (o gráficas si la primera opción es una gráfica)
-            const isInitialIndicator = chartMap[chartKeys[currentChartIndex]].isIndicatorChart;
-            if (isInitialIndicator) {
-                chartDisplayArea.classList.remove('card-style');
-                chartDisplayArea.style.justifyContent = 'flex-start';
-                chartDisplayArea.style.padding = '0px';
-                chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
-                chartDisplayArea.style.borderRadius = '0';
-                chartDisplayArea.style.boxShadow = 'none';
-            } else {
-                // Aunque este archivo solo tiene indicadores, se mantiene la lógica
-                // por si se añaden gráficas en el futuro.
-                chartDisplayArea.classList.add('card-style');
-                chartDisplayArea.style.justifyContent = 'center';
-                chartDisplayArea.style.padding = '20px';
-                chartDisplayArea.style.backgroundColor = 'white';
-                chartDisplayArea.style.borderRadius = '10px';
-                chartDisplayArea.style.boxShadow = '0 6px 18px var(--shadow-color)';
-            }
-            // La animación de los indicadores se dispara dentro de la función de renderizado inicial.
+            // Aplicar estilos iniciales (todos son indicadores en este archivo)
+            chartDisplayArea.classList.remove('card-style');
+            chartDisplayArea.style.justifyContent = 'flex-start';
+            chartDisplayArea.style.padding = '0px';
+            chartDisplayArea.style.backgroundColor = 'var(--primary-bg)';
+            chartDisplayArea.style.borderRadius = '0';
+            chartDisplayArea.style.boxShadow = 'none';
         });
     </script>
 </body>
