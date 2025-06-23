@@ -6,8 +6,8 @@
     },
     {
         "G\u00e9nero":"Fant\u00e1stico",
-        "Calificaci\u00f3n Promedio":3.46,
-        "Total Libros":39
+        "Calificaci\u00f3n Promedio":3.51,
+        "Total Libros":41
     },
     {
         "G\u00e9nero":"Suspenso",
@@ -15,14 +15,14 @@
         "Total Libros":34
     },
     {
-        "G\u00e9nero":"Realista",
-        "Calificaci\u00f3n Promedio":3.9,
+        "G\u00e9nero":"Hist\u00f3rico",
+        "Calificaci\u00f3n Promedio":4.23,
         "Total Libros":30
     },
     {
-        "G\u00e9nero":"Hist\u00f3rico",
-        "Calificaci\u00f3n Promedio":4.24,
-        "Total Libros":29
+        "G\u00e9nero":"Realista",
+        "Calificaci\u00f3n Promedio":3.87,
+        "Total Libros":30
     },
     {
         "G\u00e9nero":"Terror",
@@ -52,21 +52,21 @@
     {
         "G\u00e9nero":"Rom\u00e1ntico",
         "Calificaci\u00f3n Promedio":4.0,
+        "Total Libros":17
+    },
+    {
+        "G\u00e9nero":"Filos\u00f3fico",
+        "Calificaci\u00f3n Promedio":3.5,
+        "Total Libros":16
+    },
+    {
+        "G\u00e9nero":"Humor",
+        "Calificaci\u00f3n Promedio":4.06,
         "Total Libros":16
     },
     {
         "G\u00e9nero":"Misterio",
         "Calificaci\u00f3n Promedio":3.73,
-        "Total Libros":15
-    },
-    {
-        "G\u00e9nero":"Humor",
-        "Calificaci\u00f3n Promedio":4.0,
-        "Total Libros":15
-    },
-    {
-        "G\u00e9nero":"Filos\u00f3fico",
-        "Calificaci\u00f3n Promedio":3.4,
         "Total Libros":15
     },
     {
@@ -96,8 +96,8 @@
     },
     {
         "G\u00e9nero":"Aventuras",
-        "Calificaci\u00f3n Promedio":3.33,
-        "Total Libros":3
+        "Calificaci\u00f3n Promedio":3.75,
+        "Total Libros":4
     },
     {
         "G\u00e9nero":"Ciencias sociales",
