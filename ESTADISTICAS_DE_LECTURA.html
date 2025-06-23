@@ -245,40 +245,6 @@
 
         input:checked + .slider { background-color: var(--main-accent); }
         input:checked + .slider:before { transform: translateX(18px); }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 24px; }
-            .navigation-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .nav-button, .chart-dropdown {
-                width: 90%;
-                text-align: center;
-            }
-            .chart-dropdown { background-position: right 15px center; }
-            #chartDisplayArea {
-                gap: 15px;
-                height: auto;
-                padding: 0;
-            }
-            .indicators-grid { 
-                align-content: flex-start;
-                padding: 10px;
-            }
-            .indicator {
-                width: calc(50% - 10px);
-                height: 140px; /* Ajuste de altura para pantallas pequeñas */
-                padding: 10px;
-            }
-            .indicator .value { font-size: 28px; }
-            .indicator .label { min-height: auto; }
-            .theme-switch-wrapper {
-                top: 10px;
-                left: 10px;
-                font-size: 12px;
-            }
-        }
     </style>
 </head>
 <body>
