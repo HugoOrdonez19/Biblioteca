@@ -326,49 +326,6 @@
         input:checked + .slider:before {
 			transform: translateX(18px);
 		}
-
-
-        /* Responsividad para pantallas más pequeñas */
-        @media (max-width: 768px) {
-            .navigation-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .nav-button, .chart-dropdown {
-                width: 90%;
-                text-align: center;
-            }
-            .chart-dropdown {
-                background-position: right 15px center;
-            }
-            #chartDisplayArea {
-                gap: 15px;
-                min-height: 300px; /* Mantenemos min-height para asegurar espacio */
-                height: auto; /* Permite que se ajuste para evitar recortes severos en pantallas pequeñas */
-                padding: 15px; /* Ajuste el padding para pantallas pequeñas */
-            }
-            .chartjs-canvas, .data-table-container {
-                padding: 0; /* Ya tiene padding el contenedor */
-                height: 300px; /* Ajuste de altura para móvil */
-            }
-            h1 {
-                font-size: 24px;
-            }
-            #yearSlider {
-                width: 90%;
-            }
-            #selectedYearDisplayContainer {
-                font-size: 12px;
-            }
-            #selectedYear {
-                font-size: 12px;
-            }
-            .theme-switch-wrapper {
-                top: 10px;
-                left: 10px;
-                font-size: 12px;
-            }
-        }
     </style>
 </head>
 <body>
