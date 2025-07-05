@@ -5,7 +5,7 @@
     },
     {
         "G\u00e9neros":"Fant\u00e1stico",
-        "Total Libros":41
+        "Total Libros":42
     },
     {
         "G\u00e9neros":"Suspenso",
@@ -40,12 +40,12 @@
         "Total Libros":20
     },
     {
-        "G\u00e9neros":"Rom\u00e1ntico",
+        "G\u00e9neros":"Filos\u00f3fico",
         "Total Libros":17
     },
     {
-        "G\u00e9neros":"Filos\u00f3fico",
-        "Total Libros":16
+        "G\u00e9neros":"Rom\u00e1ntico",
+        "Total Libros":17
     },
     {
         "G\u00e9neros":"Humor",
@@ -64,11 +64,11 @@
         "Total Libros":9
     },
     {
-        "G\u00e9neros":"Autoayuda",
-        "Total Libros":6
+        "G\u00e9neros":"S\u00e1tira",
+        "Total Libros":7
     },
     {
-        "G\u00e9neros":"S\u00e1tira",
+        "G\u00e9neros":"Autoayuda",
         "Total Libros":6
     },
     {
