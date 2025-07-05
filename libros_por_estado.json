@@ -1,18 +1,18 @@
 [
     {
         "Estado":"Disponible",
-        "Total Libros":387
+        "Total Libros":386
     },
     {
         "Estado":"En espera",
-        "Total Libros":23
+        "Total Libros":21
     },
     {
         "Estado":"Leyendo",
-        "Total Libros":2
+        "Total Libros":3
     },
     {
         "Estado":"Le\u00eddo",
-        "Total Libros":271
+        "Total Libros":272
     }
 ]
