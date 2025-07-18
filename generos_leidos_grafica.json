@@ -1,15 +1,15 @@
 [
     {
+        "G\u00e9neros":"Fant\u00e1stico",
+        "Total Libros":43
+    },
+    {
         "G\u00e9neros":"Drama",
         "Total Libros":43
     },
     {
-        "G\u00e9neros":"Fant\u00e1stico",
-        "Total Libros":42
-    },
-    {
         "G\u00e9neros":"Suspenso",
-        "Total Libros":34
+        "Total Libros":35
     },
     {
         "G\u00e9neros":"Realista",
@@ -21,7 +21,7 @@
     },
     {
         "G\u00e9neros":"Terror",
-        "Total Libros":28
+        "Total Libros":29
     },
     {
         "G\u00e9neros":"Otros",
