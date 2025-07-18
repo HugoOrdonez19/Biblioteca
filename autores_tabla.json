@@ -10,19 +10,14 @@
         "Calificaci\u00f3n Promedio":"4.33"
     },
     {
-        "Autor":"C.S. LEWIS",
-        "Cantidad de Libros":7,
-        "Calificaci\u00f3n Promedio":"3.57"
-    },
-    {
         "Autor":"Claudia PI\u00d1EIRO",
         "Cantidad de Libros":7,
         "Calificaci\u00f3n Promedio":"3.71"
     },
     {
-        "Autor":"Mario VARGAS LLOSA",
-        "Cantidad de Libros":5,
-        "Calificaci\u00f3n Promedio":"4.20"
+        "Autor":"C.S. LEWIS",
+        "Cantidad de Libros":7,
+        "Calificaci\u00f3n Promedio":"3.57"
     },
     {
         "Autor":"Carlos SANCHEZ",
@@ -30,9 +25,19 @@
         "Calificaci\u00f3n Promedio":"3.00"
     },
     {
-        "Autor":"David FOENKINOS",
+        "Autor":"Mario VARGAS LLOSA",
+        "Cantidad de Libros":5,
+        "Calificaci\u00f3n Promedio":"4.20"
+    },
+    {
+        "Autor":"Stephen KING",
         "Cantidad de Libros":4,
-        "Calificaci\u00f3n Promedio":"4.50"
+        "Calificaci\u00f3n Promedio":"3.25"
+    },
+    {
+        "Autor":"Paul AUSTER",
+        "Cantidad de Libros":4,
+        "Calificaci\u00f3n Promedio":"3.25"
     },
     {
         "Autor":"J.R.R. TOLKIEN",
@@ -50,14 +55,9 @@
         "Calificaci\u00f3n Promedio":"3.75"
     },
     {
-        "Autor":"Paul AUSTER",
+        "Autor":"David FOENKINOS",
         "Cantidad de Libros":4,
-        "Calificaci\u00f3n Promedio":"3.25"
-    },
-    {
-        "Autor":"Stephen KING",
-        "Cantidad de Libros":4,
-        "Calificaci\u00f3n Promedio":"3.25"
+        "Calificaci\u00f3n Promedio":"4.50"
     },
     {
         "Autor":"Adolfo BIOY CASERES",
@@ -70,6 +70,11 @@
         "Calificaci\u00f3n Promedio":"3.67"
     },
     {
+        "Autor":"El\u00edas VALDEZ",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
         "Autor":"Blake CROUCH",
         "Cantidad de Libros":2,
         "Calificaci\u00f3n Promedio":"5.00"
@@ -80,14 +85,14 @@
         "Calificaci\u00f3n Promedio":"4.00"
     },
     {
-        "Autor":"Alejandro ZAMBRA",
-        "Cantidad de Libros":2,
-        "Calificaci\u00f3n Promedio":"1.50"
-    },
-    {
         "Autor":"Alessandro BARICCO",
         "Cantidad de Libros":2,
         "Calificaci\u00f3n Promedio":"3.00"
+    },
+    {
+        "Autor":"Alejandro ZAMBRA",
+        "Cantidad de Libros":2,
+        "Calificaci\u00f3n Promedio":"1.50"
     },
     {
         "Autor":"Agustina BAZTERRICA",
@@ -185,9 +190,9 @@
         "Calificaci\u00f3n Promedio":"3.50"
     },
     {
-        "Autor":"El\u00edas VALDEZ",
+        "Autor":"Jorge Luis BORGES",
         "Cantidad de Libros":2,
-        "Calificaci\u00f3n Promedio":"3.00"
+        "Calificaci\u00f3n Promedio":"4.00"
     },
     {
         "Autor":"Joel DICKER",
@@ -205,8 +210,8 @@
         "Calificaci\u00f3n Promedio":"4.00"
     },
     {
-        "Autor":"Jorge Luis BORGES",
-        "Cantidad de Libros":2,
+        "Autor":"Arto PAASILINNA",
+        "Cantidad de Libros":1,
         "Calificaci\u00f3n Promedio":"4.00"
     },
     {
@@ -225,14 +230,14 @@
         "Calificaci\u00f3n Promedio":"5.00"
     },
     {
-        "Autor":"Arto PAASILINNA",
+        "Autor":"Agatha CHRISTIE",
         "Cantidad de Libros":1,
         "Calificaci\u00f3n Promedio":"4.00"
     },
     {
-        "Autor":"Agatha CHRISTIE",
+        "Autor":"Adam NEVILL",
         "Cantidad de Libros":1,
-        "Calificaci\u00f3n Promedio":"4.00"
+        "Calificaci\u00f3n Promedio":"5.00"
     },
     {
         "Autor":"Algernon BLACKWOOD",
